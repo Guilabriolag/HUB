@@ -1,28 +1,95 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HUB - Em Breve</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding-top: 20%;
-  background-color: #f5f5f5;
-}
-h1 {
-  font-size: 48px;
-  color: #333;
-}
-p {
-  font-size: 24px;
-  color: #555;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUB - Em Breve | LABRIOLAG</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset básico */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Montserrat', 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0ff, #ff0);
+      text-align: center;
+      color: #fff;
+    }
+
+    .logo {
+      max-width: 200px;
+      margin-bottom: 30px;
+      transition: transform 0.5s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1);
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.5rem;
+      color: #111;
+      margin-bottom: 40px;
+    }
+
+    .contact {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 1rem;
+      color: #000;
+    }
+
+    .contact a {
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .contact a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    @media(max-width: 600px){
+      h1 { font-size: 2.2rem; }
+      p { font-size: 1.2rem; }
+      .logo { max-width: 150px; }
+    }
+  </style>
 </head>
 <body>
-<h1>HUB</h1>
-<p>Estamos chegando em breve!</p>
+  <img class="logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" alt="LABRIOLAG Logo">
+  
+  <h1>HUB</h1>
+  <p>Estamos chegando em breve!</p>
+
+  <div class="contact">
+    <span>E-mail: <a href="mailto:Pix@xmail.net">Pix@xmail.net</a></span>
+    <span>Pix: <a href="mailto:Pix@xmail.net">Pix@xmail.net</a></span>
+    <span>Bipa Sats: $Labriola</span>
+    <span>GitHub: <a href="https://github.com/Guilabriolag" target="_blank">github.com/Guilabriolag</a></span>
+  </div>
+
+  <footer>
+    &copy; 2025 LABRIOLAG — Laboratório de Ideias Influentes
+  </footer>
 </body>
 </html>
