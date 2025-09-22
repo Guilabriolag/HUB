@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LABRIOLAG | Vitrine de Clientes</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Paleta de Cores e Estilos Base */
+        :root {
+            --azul-eletrico: #0066FF;
+            --amarelo: #FFCC00;
+            --preto: #000000;
+            --branco: #FFFFFF;
+            --cinza-escuro: #1a1a1a;
+            --font-principal: 'Poppins', sans-serif;
+            --font-secundaria: 'Montserrat', sans-serif;
+        }
+
+        /* Adiciona box-sizing para evitar problemas de layout */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-principal);
+            background-color: var(--branco);
+            color: var(--preto);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--preto);
+            transition: color 0.3s ease;
+        }
+        
+        button {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0052cc;
+            transform: translateY(-2px);
+        }
+        
+        /* Cabeçalho Público */
+        header {
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background-color: var(--branco);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        /* Seção Principal (Hero) */
+        .hero-section {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: #f0f2f5;
+        }
+
+        .hero-section h1 {
+            font-family: var(--font-secundaria);
+            font-size: clamp(2rem, 5vw, 3rem); /* Fonte responsiva */
+            margin: 0;
+        }
+
+        .hero-section p {
+            max-width: 600px;
+            margin: 20px auto 0;
+            font-size: clamp(1rem, 2vw, 1.1rem); /* Fonte responsiva */
+            color: #555;
+        }
+
+        /* Galeria de Projetos */
+        .gallery-section {
+            padding: 60px 0;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background-color: var(--branco);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; /* Adicionado para indicar que é clicável */
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .card-content h3 {
+            font-family: var(--font-secundaria);
+            margin: 0 0 10px;
+        }
+
+        .card-content p {
+            font-size: 0.9rem;
+            color: #777;
+            margin: 0 0 20px;
+        }
+
+        .card-content a.btn {
+            display: inline-block;
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background-color: var(--amarelo);
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-secundaria);
+            font-size: 2rem;
+            margin: 0 0 15px;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Rodapé */
+        footer {
+            background-color: var(--cinza-escuro);
+            color: #888;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="#">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Logo LABRIOLAG">
+            </a>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1>Nossos Empreendimentos</h1>
+            <p>Conheça alguns dos projetos que criamos em parceria com nossos clientes, transformando suas visões em realidade digital e interativa.</p>
+        </div>
+    </section>
+
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-grid">
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/2962ff/fff?text=Padaria+do+Ze" alt="Padaria do Zé">
+                    <div class="card-content">
+                        <h3>Padaria do Zé</h3>
+                        <p>Um site institucional com catálogo de produtos e blog para receitas.</p>
+                        <a href="#" class="btn">Ver Projeto</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/FFCC00/000?text=MimoGame" alt="MimoGame">
+                    <div class="card-content">
+                        <h3>MimoGame</h3>
+                        <p>Um jogo digital de tabuleiro, criado para engajar clientes de forma divertida.</p>
+                        <a href="#" class="btn">Ver Projeto</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/000/fff?text=GAST%C3%83O" alt="GASTÃO">
+                    <div class="card-content">
+                        <h3>GASTÃO</h3>
+                        <p>Plataforma para gestão de agendamentos e automação de serviços.</p>
+                        <a href="#" class="btn">Ver Projeto</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="https://placehold.co/600x400/2962ff/fff?text=Imob_Lab" alt="Imob_Lab">
+                    <div class="card-content">
+                        <h3>Imob_Lab</h3>
+                        <p>Ferramenta completa para corretores de imóveis com tours 3D interativos.</p>
+                        <a href="#" class="btn">Ver Projeto</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Quer transformar sua ideia em um projeto de sucesso?</h2>
+            <p>Seja o próximo a ter um empreendimento digital feito sob medida para você.</p>
+            <button onclick="window.location.href='login.html'">Fale Conosco</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LABRIOLAG. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+    
+</body>
+</html>
