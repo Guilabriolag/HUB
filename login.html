@@ -359,17 +359,18 @@
                 const password = passwordInput.value.trim();
                 
                 // Credenciais de teste
-                const labriLiveEmail = 'g.labri@live.com';
-                const labriLivePassword = 'labri-password'; // Substitua por uma senha segura
-                const labriDemoEmail = 'labridemo@labriolag.net';
-                const labriDemoPassword = 'demo';
+                const developerEmails = ['g.labri@live.com', 'dev@labriolag.com'];
+                const developerPassword = 'labri-password'; // Substitua por uma senha segura
+                
+                const demoEmails = ['labridemo@labriolag.net', 'demo@labriolag.com'];
+                const demoPassword = 'demo';
 
-                if (email === labriLiveEmail && password === labriLivePassword) {
+                if (developerEmails.includes(email) && password === developerPassword) {
                     alert("Acesso total concedido! Redirecionando para o Dashboard.");
-                    window.location.href = "dashboard.html"; // Redireciona para o Dashboard completo
-                } else if (email === labriDemoEmail && password === labriDemoPassword) {
+                    window.location.href = "labrilive.html";
+                } else if (demoEmails.includes(email) && password === demoPassword) {
                     alert("Acesso de demonstração concedido! Redirecionando...");
-                    window.location.href = "dashboard-demo.html"; // Redireciona para o Dashboard de demonstração
+                    window.location.href = "dashboard-demo.html";
                 } else {
                     alert("E-mail ou senha incorretos.");
                 }
