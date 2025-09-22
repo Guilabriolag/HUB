@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1>Teste de Redirecionamento</h1>
+        <p>Clique no botão para ver se o redirecionamento funciona.</p>
+        <button onclick="fazerLogin()">Tentar Login de Desenvolvedor</button>
+    </div>
+
+    <script>
+        function fazerLogin() {
+            window.location.href = "labrilive.html";
+        }
+    </script>
+</body>
+</html>
