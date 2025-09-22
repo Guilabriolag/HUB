@@ -296,7 +296,7 @@
         <div class="login-form-container" id="login-form-container">
             <h2>Acesse seu Laboratório</h2>
             <form id="login-form">
-                <input type="email" id="email-input" placeholder="E-mail" required>
+                <input type="text" id="email-input" placeholder="Login ou E-mail" required>
                 <input type="password" id="password-input" placeholder="Senha" required>
                 <button type="submit">Login</button>
             </form>
@@ -355,30 +355,30 @@
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault(); // Impede o envio do formulário
                 
-                const email = emailInput.value.trim();
+                const login = emailInput.value.trim();
                 const password = passwordInput.value.trim();
                 
                 // Credenciais de teste
-                const developerEmails = ['g.labri@live.com', 'dev@labriolag.com', 'g.labri'];
-                const developerPassword = 'labri-password';
+                const developerLogins = ['g.labri@live.com', 'dev@labriolag.com', 'g.labri'];
+                const developerPassword = '###*';
                 
-                const adminEmail = 'adm.labri';
-                const adminPassword = 'labri-admin';
+                const adminLogin = 'adm.labri';
+                const adminPassword = '####';
 
-                const demoEmails = ['labridemo@labriolag.net', 'demo@labriolag.com', 'demo'];
+                const demoLogins = ['labridemo@labriolag.net', 'demo@labriolag.com', 'demo'];
                 const demoPassword = '1234';
 
-                if (developerEmails.includes(email) && password === developerPassword) {
+                if (developerLogins.includes(login) && password === developerPassword) {
                     alert("Acesso de desenvolvedor concedido! Redirecionando para o painel Labri Live.");
                     window.location.href = "labrilive.html";
-                } else if (email === adminEmail && password === adminPassword) {
+                } else if (login === adminLogin && password === adminPassword) {
                     alert("Acesso de administrador concedido! Redirecionando para o painel de cliente.");
                     window.location.href = "dashboard.html";
-                } else if (demoEmails.includes(email) && password === demoPassword) {
+                } else if (demoLogins.includes(login) && password === demoPassword) {
                     alert("Acesso de demonstração concedido! Redirecionando...");
                     window.location.href = "dashboard-demo.html";
                 } else {
-                    alert("E-mail ou senha incorretos.");
+                    alert("Login ou senha incorretos.");
                 }
             });
 
