@@ -290,19 +290,11 @@
 
         <div class="options-menu" id="options-menu">
             <a href="vitrine-clientes.html">Visitante</a>
-            <a href="#" id="login-link">Login</a>
+            <a href="labrilive.html">Acesso Desenvolvedor</a>
+            <a href="dashboard.html">Acesso Administrador</a>
+            <a href="dashboard-demo.html">Acesso Demonstração</a>
         </div>
         
-        <div class="login-form-container" id="login-form-container">
-            <h2>Acesse seu Laboratório</h2>
-            <form id="login-form">
-                <input type="text" id="email-input" placeholder="Login ou E-mail" required>
-                <input type="password" id="password-input" placeholder="Senha" required>
-                <button type="submit">Login</button>
-            </form>
-            <p style="margin-top: 15px;"><a href="#" style="color: var(--preto);">Esqueci minha senha</a></p>
-        </div>
-
         <div class="floating-btn floating-plus">
             <i class="fas fa-plus"></i>
         </div>
@@ -331,47 +323,12 @@
 
             const mainAcessBtn = document.getElementById('main-acess-btn');
             const optionsMenu = document.getElementById('options-menu');
-            const loginLink = document.getElementById('login-link');
-            const loginFormContainer = document.getElementById('login-form-container');
-            const loginForm = document.getElementById('login-form');
-            const emailInput = document.getElementById('email-input');
-            const passwordInput = document.getElementById('password-input');
 
             mainAcessBtn.addEventListener('click', () => {
                 mainAcessBtn.style.display = 'none';
                 optionsMenu.style.display = 'block';
             });
             
-            loginLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                optionsMenu.style.display = 'none';
-                loginFormContainer.style.display = 'block';
-            });
-            
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const login = emailInput.value.trim();
-                
-                // Credenciais de teste
-                const devLogin = 'g.labri@live.com';
-                const admLogin = 'adm.labri';
-                const demoLogin = 'demo';
-
-                if (login === devLogin) {
-                    alert("Acesso de desenvolvedor concedido! Redirecionando para o painel Labri Live.");
-                    window.location.href = "labrilive.html";
-                } else if (login === admLogin) {
-                    alert("Acesso de administrador concedido! Redirecionando para o painel de cliente.");
-                    window.location.href = "dashboard.html";
-                } else if (login === demoLogin) {
-                    alert("Acesso de demonstração concedido! Redirecionando...");
-                    window.location.href = "dashboard-demo.html";
-                } else {
-                    alert("Login incorreto.");
-                }
-            });
-
             const floatingContactBtn = document.querySelector('.floating-contact');
             floatingContactBtn.addEventListener('click', () => {
                 alert("Essa funcionalidade será implementada em breve. Redirecionando para a página inicial.");
