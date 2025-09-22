@@ -352,29 +352,23 @@
                 e.preventDefault();
                 
                 const login = emailInput.value.trim();
-                const password = passwordInput.value.trim();
                 
                 // Credenciais de teste
                 const devLogin = 'g.labri@live.com';
-                const devPass = 'dev123';
-                
                 const admLogin = 'adm.labri';
-                const admPass = '####';
-
                 const demoLogin = 'demo';
-                const demoPass = '1234';
 
-                if (login === devLogin && password === devPass) {
+                if (login === devLogin) {
                     alert("Acesso de desenvolvedor concedido! Redirecionando para o painel Labri Live.");
                     window.location.href = "labrilive.html";
-                } else if (login === admLogin && password === admPass) {
+                } else if (login === admLogin) {
                     alert("Acesso de administrador concedido! Redirecionando para o painel de cliente.");
                     window.location.href = "dashboard.html";
-                } else if (login === demoLogin && password === demoPass) {
+                } else if (login === demoLogin) {
                     alert("Acesso de demonstração concedido! Redirecionando...");
                     window.location.href = "dashboard-demo.html";
                 } else {
-                    alert("Login ou senha incorretos.");
+                    alert("Login incorreto.");
                 }
             });
 
