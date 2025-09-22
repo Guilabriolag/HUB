@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LABRIOLAG HUB | Área de Trabalho</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Paleta de Cores e Estilos Base */
+        :root {
+            --azul-eletrico: #0066FF;
+            --amarelo: #FFCC00;
+            --preto: #000000;
+            --branco: #FFFFFF;
+            --cinza-escuro: #1a1a1a;
+            --font-principal: 'Poppins', sans-serif;
+            --font-secundaria: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-principal);
+            background-color: #f0f2f5;
+            color: var(--preto);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--preto);
+            transition: color 0.3s ease;
+        }
+        
+        button {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0052cc;
+            transform: translateY(-2px);
+        }
+
+        /* Layout do Painel */
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Menu Lateral */
+        .sidebar {
+            width: 250px;
+            background-color: var(--branco);
+            padding: 30px 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo img {
+            height: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            color: #555;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .sidebar nav a i {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #e6e6e6;
+            color: var(--preto);
+        }
+
+        .sidebar nav a.active {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+        }
+        
+        .sidebar nav a.active i {
+            color: var(--branco);
+        }
+        
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-profile i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        h1 {
+            font-family: var(--font-secundaria);
+            font-weight: 700;
+        }
+
+        /* Seções de Trabalho */
+        .work-section {
+            background-color: var(--branco);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            font-family: var(--font-secundaria);
+            margin: 0;
+            text-align: left;
+        }
+
+        .section-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .item-card {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            width: calc(33.333% - 20px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .item-card.full-width {
+            width: 100%;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: var(--font-principal);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+                flex-direction: row;
+                justify-content: space-around;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+            .sidebar .logo {
+                display: none;
+            }
+
+            .sidebar nav {
+                display: flex;
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .sidebar nav a {
+                padding: 10px;
+                text-align: center;
+                flex-direction: column;
+            }
+            
+            .sidebar nav a i {
+                margin: 0;
+                margin-bottom: 5px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+
+            .item-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="#">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Logo LABRIOLAG">
+                </a>
+            </div>
+            <nav>
+                <a href="dashboard.html">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="workspace.html" class="active">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Área de Trabalho</span>
+                </a>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Área de Trabalho</h1>
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Nome do Usuário</span>
+                </div>
+            </div>
+
+            <div class="work-section">
+                <div class="section-header">
+                    <h2>Álbuns</h2>
+                    <button>+ Novo Álbum</button>
+                </div>
+                <div class="section-content">
+                    <div class="item-card">
+                        <h3>Álbum 1</h3>
+                        <p>32 fotos</p>
+                    </div>
+                    <div class="item-card">
+                        <h3>Padaria do Zé</h3>
+                        <p>15 fotos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-section">
+                <div class="section-header">
+                    <h2>Textos</h2>
+                    <button>+ Novo Texto</button>
+                </div>
+                <div class="section-content">
+                    <div class="item-card full-width">
+                        <h3>Descrição do MimoGame</h3>
+                        <p>Rápido, divertido e engajador...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-section">
+                <div class="section-header">
+                    <h2>Links</h2>
+                    <button>+ Novo Link</button>
+                </div>
+                <div class="section-content">
+                    <div class="item-card">
+                        <h3>Site da Padaria</h3>
+                        <p>https://padariadoze.com</p>
+                    </div>
+                    <div class="item-card">
+                        <h3>Manual do MimoGame</h3>
+                        <p>https://labriolag.com/manual-mimo</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    
+</body>
+</html>
