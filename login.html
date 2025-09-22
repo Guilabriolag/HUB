@@ -359,15 +359,21 @@
                 const password = passwordInput.value.trim();
                 
                 // Credenciais de teste
-                const developerEmails = ['g.labri@live.com', 'dev@labriolag.com'];
-                const developerPassword = 'labri-password'; // Substitua por uma senha segura
+                const developerEmails = ['g.labri@live.com', 'dev@labriolag.com', 'g.labri'];
+                const developerPassword = 'labri-password';
                 
-                const demoEmails = ['labridemo@labriolag.net', 'demo@labriolag.com'];
-                const demoPassword = 'demo';
+                const adminEmail = 'adm.labri';
+                const adminPassword = 'labri-admin';
+
+                const demoEmails = ['labridemo@labriolag.net', 'demo@labriolag.com', 'demo'];
+                const demoPassword = '1234';
 
                 if (developerEmails.includes(email) && password === developerPassword) {
-                    alert("Acesso total concedido! Redirecionando para o Dashboard.");
+                    alert("Acesso de desenvolvedor concedido! Redirecionando para o painel Labri Live.");
                     window.location.href = "labrilive.html";
+                } else if (email === adminEmail && password === adminPassword) {
+                    alert("Acesso de administrador concedido! Redirecionando para o painel de cliente.");
+                    window.location.href = "dashboard.html";
                 } else if (demoEmails.includes(email) && password === demoPassword) {
                     alert("Acesso de demonstração concedido! Redirecionando...");
                     window.location.href = "dashboard-demo.html";
