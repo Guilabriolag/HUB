@@ -10,18 +10,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* PALETA DE CORES LABRIOLAG */
+        /* APLICANDO A NOVA PALETA DE CORES LABRIOLAG (ShowHome) */
         :root {
-            --azul-eletrico: #0066FF; /* Cor Principal Vibrante */
-            --amarelo: #FFCC00; /* Cor de Destaque e Interação */
+            --azul-eletrico: #0066FF; 
+            --amarelo: #FFCC00; 
             --preto: #000000;
             --branco: #FFFFFF;
             --cinza-escuro: #1a1a1a;
-            --color-danger: #ef4444; /* Vermelho Revenda */
             --font-principal: 'Montserrat', sans-serif;
         }
 
         /* RESET e ESTRUTURA BÁSICA */
+        * { box-sizing: border-box; }
         body {
             font-family: var(--font-principal);
             background-color: var(--branco);
@@ -32,160 +32,214 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden; /* Evita scroll horizontal em mobile */
         }
-        #content {
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-        #content.show { opacity: 1; }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* SPLASH SCREEN (UX: Transição Suave) */
-        .splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--cinza-escuro);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
-        }
-        .splash-screen.fade-out { opacity: 0; visibility: hidden; }
-        .splash-logo-text {
-            color: var(--branco);
-            font-size: 32px;
-            font-weight: 900;
-            animation: bounceIn 1s ease-in-out;
-        }
-        .splash-logo-text span { color: var(--amarelo); }
-        @keyframes bounceIn { /* ... (Manter animação) ... */ }
-
-        /* CABEÇALHO E LOGO */
-        header { padding: 20px 0; position: absolute; top: 0; width: 100%; z-index: 99; }
-        header .container { display: flex; justify-content: center; align-items: center; }
-        .logo a { font-size: 24px; font-weight: 700; color: var(--preto); }
-        .logo a span { color: var(--azul-eletrico); }
-
-        /* BOTÃO ACESSAR (Desktop e Mobile) */
-        .acessar-btn {
+        
+        /* CLASSES DE UTILIDADE */
+        .full-center {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 50;
         }
+
+        /* 1. SPLASH SCREEN (UX: Transição Suave) */
+        .splash-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cinza-escuro); 
+            z-index: 1000;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+            /* Flex para centralizar no mobile */
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+        .splash-logo-text {
+            color: var(--branco);
+            font-size: 32px; /* Padrão Mobile */
+            font-weight: 900;
+            animation: bounceIn 1s ease-in-out;
+        }
+        .splash-logo-text span { color: var(--amarelo); }
+        .splash-screen.fade-out { opacity: 0; visibility: hidden; }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* 2. CONTEÚDO PRINCIPAL (Garante que o fundo fique visível) */
+        #content {
+            flex: 1;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: relative; /* Para que os botões absolutos funcionem */
+        }
+        #content.show { opacity: 1; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+        /* 3. BOTÃO ACESSAR (UX: Chamativo e Grande) */
         .acessar-btn button {
-            background-color: var(--amarelo);
+            background-color: var(--amarelo); 
             color: var(--preto);
-            font-size: 22px; /* Reduzido levemente para mobile */
-            padding: 20px 40px;
+            font-size: 20px; /* Padrão Mobile */
+            padding: 20px 40px; 
+            border: none;
             border-radius: 50px;
             font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.4);
             transition: all 0.3s ease;
         }
+        .acessar-btn button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 204, 0, 0.5);
+        }
 
-        /* MENU DE OPÇÕES (MODAL) */
+        /* 4. MENU DE OPÇÕES (UX: Minimalista e Focado) */
         .options-menu {
             display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.98);
+            /* ... posição full-center ... */
+            background-color: var(--branco); 
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
-            z-index: 60;
-            width: 90%; /* Ocupa 90% da largura em mobile */
-            max-width: 450px; /* Limite em desktop */
+            max-width: 350px; /* Largura Focada no Mobile */
+            width: 90%;
             border-top: 5px solid var(--amarelo);
-            box-sizing: border-box; /* Garante que o padding não estoure a largura */
-        }
-        .options-menu h2 {
-            font-weight: 700;
-            color: var(--azul-eletrico);
-            font-size: 24px;
         }
         .options-menu a {
+            padding: 15px 20px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+        .options-menu a i { margin-right: 8px; }
+
+        /* 5. FORMULÁRIO DE LOGIN (UX: Limpo) */
+        .login-form-container {
+            display: none;
+            /* ... posição full-center ... */
+            background-color: var(--branco);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 350px; 
+            width: 90%;
+            border-top: 5px solid var(--amarelo);
+        }
+        .login-form-container input {
             display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .login-form-container button {
+            width: 100%;
             background-color: var(--azul-eletrico);
             color: var(--branco);
-            padding: 15px 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            font-size: 15px;
-            text-align: left; /* Melhor UX para botões em mobile */
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 5px;
         }
-        .options-menu a i { margin-right: 10px; }
 
-        /* RODAPÉ E BOTÕES FLUTUANTES (UX: Acessibilidade) */
-        .floating-btn {
-            position: fixed;
-            bottom: 20px; /* Mais perto da borda em mobile */
-            width: 55px; /* Menor em mobile */
-            height: 55px;
-            font-size: 22px;
-            z-index: 100;
-        }
-        .floating-contact { right: 20px; }
-
+        /* 6. RODAPÉ E BOTÕES FLUTUANTES (UX: Acessibilidade) */
         footer {
             background-color: var(--cinza-escuro);
-            color: #ccc;
             padding: 20px 0;
             text-align: center;
             font-size: 13px;
         }
-        footer p { margin: 5px 0; }
-        footer .container { padding: 0 20px; }
-
-        /* ======================================= */
-        /* RESPONSIVIDADE (PARA TELAS GRANDES) */
-        /* ======================================= */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px; /* Mais perto da borda no mobile */
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            font-size: 22px;
+            z-index: 100;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        /* ESTILOS ESPECÍFICOS PARA DESKTOP (Maior que 768px) */
         @media (min-width: 768px) {
-            .logo a { font-size: 32px; } /* Logo maior no desktop */
+            .splash-logo-text { font-size: 56px; }
             
             .acessar-btn button {
                 font-size: 28px;
-                padding: 25px 50px;
+                padding: 25px 50px; 
             }
-
+            
             .options-menu {
-                padding: 40px;
-                max-width: 500px; /* Mais espaço no desktop */
+                padding: 50px;
+                max-width: 450px;
             }
-            .options-menu h2 { font-size: 28px; }
+            .options-menu a {
+                font-size: 16px;
+                padding: 18px 30px;
+            }
+            
+            .login-form-container {
+                padding: 50px;
+                max-width: 450px;
+            }
 
             .floating-btn {
                 bottom: 30px;
+                right: 30px;
                 width: 65px;
                 height: 65px;
                 font-size: 24px;
             }
-            .floating-contact { right: 30px; }
-
-            footer { font-size: 14px; }
+            
+            /* Centraliza logo no desktop */
+            header .container {
+                justify-content: flex-start; 
+            }
         }
     </style>
 </head>
 <body>
 
+    <div class="full-center acessar-btn">
+        <button id="main-acess-btn">CONHECER O LABORATÓRIO</button>
+    </div>
+
+    <div class="full-center options-menu" id="options-menu">
+        <h2>LABORATÓRIO DE IDEIAS INFLUENTES</h2>
+        <p class="slogan">O ecossistema de projetos que transformam sua presença digital.</p>
+        
+        <a href="LabSystem/index.html" style="background-color: var(--azul-eletrico);"><i class="fas fa-rocket mr-2"></i> Portal LabSystem (Soluções)</a>
+        <a href="LabSystem/Shop/revenda.html" style="background-color: #ef4444;"><i class="fas fa-handshake mr-2"></i> Área de Parceria (Revenda)</a>
+        <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" style="background-color: #4CAF50;"><i class="fas fa-gamepad mr-2"></i> MimoGames / Interativos</a>
+        
+        <a href="#" id="login-link" style="background-color: var(--cinza-escuro);"><i class="fas fa-user-lock mr-2"></i> Acesso Master / Gestão</a>
+        
+         <p style="margin-top: 20px; font-size: 14px;"><a href="#" id="back-to-menu-link" style="color: var(--azul-eletrico); font-weight: 600;">&larr; Voltar ao Início</a></p>
+    </div>
+    
+    <div class="full-center login-form-container" id="login-form-container">
+        <h2>Acesso Restrito</h2>
+        <input type="email" placeholder="E-mail de Usuário Master" required>
+        <input type="password" placeholder="Senha" required>
+        <button>Entrar no Sistema</button>
+        <p style="margin-top: 15px;"><a href="#" style="color: var(--azul-eletrico); font-weight: 600;">Esqueci minha senha</a></p>
+         <p style="margin-top: 15px;"><a href="#" id="back-to-menu-link-2" style="color: #666; font-size: 14px;">&larr; Voltar ao Menu</a></p>
+    </div>
     <div class="splash-screen">
         <h1 class="splash-logo-text">LABRI<span style="color: var(--amarelo);">OLAG</span></h1>
     </div>
@@ -195,37 +249,11 @@
             <div class="container">
                 <div class="logo">
                     <a href="index.html">
-                        LABRI<span style="color: var(--azul-eletrico);">OLAG</span>
+                        LABRI<span style="color: var(--amarelo);">OLAG</span>
                     </a>
                 </div>
             </div>
         </header>
-
-        <div class="acessar-btn">
-            <button id="main-acess-btn">CONHECER O LABORATÓRIO</button>
-        </div>
-
-        <div class="options-menu" id="options-menu">
-            <h2>LABORATÓRIO DE IDEIAS INFLUENTES</h2>
-            <p class="slogan">O ecossistema de projetos que transformam sua presença digital.</p>
-            
-            <a href="LabSystem/index.html"><i class="fas fa-desktop"></i> Portal LabSystem (Soluções de Negócios)</a>
-            <a href="LabSystem/Shop/revenda.html" style="background-color: var(--color-danger);"><i class="fas fa-handshake"></i> Área de Parceria (Revenda Master)</a>
-            <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" style="background-color: #4CAF50;"><i class="fas fa-gamepad"></i> MimoGames / Projetos Interativos</a>
-            
-            <a href="#" id="login-link" style="background-color: var(--cinza-escuro);"><i class="fas fa-user-lock"></i> Acesso Master / Gestão</a>
-            
-            <p style="margin-top: 20px; font-size: 14px;"><a href="#" id="back-to-main-link" style="color: var(--azul-eletrico); font-weight: 600;">&larr; Voltar à tela inicial</a></p>
-        </div>
-        
-        <div class="login-form-container" id="login-form-container">
-            <h2>Acesso Restrito</h2>
-            <input type="email" placeholder="E-mail de Usuário Master" required>
-            <input type="password" placeholder="Senha" required>
-            <button>Entrar no Sistema</button>
-            <p style="margin-top: 15px;"><a href="#" style="color: var(--azul-eletrico); font-weight: 600;">Esqueci minha senha</a></p>
-             <p style="margin-top: 15px;"><a href="#" id="back-to-menu-link-2" style="color: #666; font-size: 14px;">&larr; Voltar ao Menu</a></p>
-        </div>
 
         <div class="floating-btn floating-contact" title="Fale com a LABRIOLAG via WhatsApp">
             <i class="fab fa-whatsapp"></i>
@@ -250,45 +278,42 @@
                     splash.style.display = 'none';
                     content.classList.add('show');
                 }, 1000);
-            }, 1500); // 1.5s de show + 1s de fade
+            }, 1500); // Tempo de splash
 
             // Referências de Elementos
             const mainAcessBtn = document.getElementById('main-acess-btn');
             const optionsMenu = document.getElementById('options-menu');
             const loginLink = document.getElementById('login-link');
             const loginFormContainer = document.getElementById('login-form-container');
-            const backToMainLink = document.getElementById('back-to-main-link'); // Novo link para voltar
+            const backToMenuLink = document.getElementById('back-to-menu-link');
             const backToMenuLink2 = document.getElementById('back-to-menu-link-2'); 
             const floatingContactBtn = document.querySelector('.floating-contact');
 
-            // 1. ACESSAR -> Abre o Menu
+            // Lógica de Transição (Guestologia)
             mainAcessBtn.addEventListener('click', () => {
                 mainAcessBtn.style.display = 'none';
                 optionsMenu.style.display = 'block';
             });
             
-            // 2. LOGIN -> Abre o Formulário de Login
             loginLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 optionsMenu.style.display = 'none';
                 loginFormContainer.style.display = 'block';
             });
             
-            // 3. Voltar do Menu de Opções
-            backToMainLink.addEventListener('click', (e) => {
+            // Voltar ao Menu
+            backToMenuLink.addEventListener('click', (e) => {
                  e.preventDefault();
                  optionsMenu.style.display = 'none';
                  mainAcessBtn.style.display = 'block';
             });
-            
-            // 4. Voltar do Formulário de Login
             backToMenuLink2.addEventListener('click', (e) => {
                  e.preventDefault();
                  loginFormContainer.style.display = 'none';
                  optionsMenu.style.display = 'block';
             });
 
-            // 5. Redirecionamento de Contato Flutuante (WhatsApp)
+            // Redirecionamento de Contato Flutuante (WhatsApp)
             floatingContactBtn.addEventListener('click', () => {
                 window.open("https://wa.me/5511943198316", '_blank');
             });
