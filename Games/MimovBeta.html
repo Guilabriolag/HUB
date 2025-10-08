@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MimoGame Arcade</title>
+  <style>
+    :root { --cor-tema: #b22222; }
+     body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+      background: #fdfaf6;
+      color: #333;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+    input, select, button {
+      width: 100%; font-size: 16px;
+      margin: 10px 0; padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    button {
+      background-color: var(--cor-tema);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    #btnGerarArquivo {
+        background-color: #3CB371; /* Verde para destacar a ação principal */
+        font-size: 18px;
+        padding: 15px;
+    }
+    section.aba { display: none; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    section.aba.active { display: block; }
+    h3 { color: var(--cor-tema); }
+    #telaJogo {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px; margin-top: 20px;
+    }
+    .carta {
+      font-size: 32px; background: #eee;
+      padding: 20px; text-align: center;
+      border-radius: 10px; user-select: none;
+      cursor: pointer;
+    }
+    #perfilVisual {
+      text-align: center; font-weight: bold;
+      margin-bottom: 10px; padding: 10px;
+      background-color: #f0f0f0; border-radius: 8px;
+    }
+    footer {
+      background: var(--cor-tema); color: white;
+      padding: 20px; text-align: center;
+      font-size: 14px; margin-top: 30px;
+      border-radius: 12px 12px 0 0;
+    }
+    #whatsappBtn {
+      display: none;
+      margin-top: 15px; padding: 10px 20px;
+      background-color: #25D366;
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .modal {
+        display: none; position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: #000000aa;
+        justify-content: center; align-items: center;
+        z-index: 10002;
+    }
+    .modal-conteudo {
+        background: white; padding: 25px;
+        border-radius: 12px; text-align: center;
+        max-width: 350px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .modal-conteudo button { margin-top: 10px; }
+    /* Estilos do Tour */
+    .tour-passo-conteudo { text-align: center; max-width: 90%; }
+    .tour-balao {
+      position: absolute; background: white; border: 1px solid #ccc;
+      padding: 15px; border-radius: 10px; max-width: 250px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .tour-balao h4 { margin-top: 0; color: var(--cor-tema); }
+    .tour-balao::after {
+      content: ''; position: absolute; width: 0; height: 0;
+      border-left: 10px solid transparent; border-right: 10px solid transparent;
+      border-top: 10px solid #fff; bottom: -10px; left: 50%; transform: translateX(-50%);
+    }
+    .tour-highlight {
+      position: relative; z-index: 10001;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .marcador-pop {
+      position: fixed; bottom: 80px; right: 20px;
+      background: #fff; border: 1px solid #ddd;
+      border-radius: 12px; padding: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 999; width: 220px;
+      display: none;
+    }
+    .marcador-pop h4 { color: var(--cor-tema); text-align: center; margin: 5px 0 15px 0; }
+    .marcador-pop button {
+      width: 100%; margin: 5px 0; padding: 10px;
+      font-size: 14px; border-radius: 6px;
+      background: #f5f5f5; color: #333;
+      text-align: left;
+    }
+     .marcador-pop button:hover { background: #e0e0e0; }
+    .marcador-pop .btn-fechar { 
+      background: #f44336; 
+      color: white;
+      margin-bottom: 0;
+    }
+    #botaoMarcador {
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--cor-tema); color: white;
+      border: none; width: 60px; height: 60px;
+      border-radius: 50%; font-size: 28px;
+      z-index: 998; display: none;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .splash {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #fff8f0;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      z-index: 1000;
+      animation: fadeOut 2s ease forwards;
+      animation-delay: 2.5s;
+    }
+    .splash img { width: 120px; border-radius: 20px; margin-bottom: 15px; }
+    .splash h1 { color: var(--cor-tema); }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+    .aviso-demo {
+      position: fixed; top: 0; left: 0; width: 100%;
+      background: #ffeb3b; color: #333; text-align: center;
+      padding: 10px; font-weight: bold; z-index: 1000;
+      display: none;
+    }
+    .tour-botoes-navegacao {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .tour-botoes-navegacao button {
+        width: auto;
+        flex-grow: 1;
+        margin: 0;
+        padding: 10px 15px;
+    }
+    #btnTourPular {
+      background-color: #f44336;
+    }
+  </style>
+</head>
+<body>
+
+<div id="avisoDemo" class="aviso-demo">Modo de Demonstração Ativado. As configurações não serão salvas permanentemente e a geração de arquivos está desabilitada.</div>
+
+<div id="splash" class="splash">
+  <img id="splashLogo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2XPuXiJsszG17i6fxzPhgoDAuG379KNT0apLUvOM8fwKUvMcmkFsdfpv-FknrSvU00AoTPLL7VwhAYsEYSb_4c7DvQQyopmugO3S8SKlDNS9j8YflH2YGCBfxkW19M40w5ULl1HthIvBXLwWgj1swjvxkMdQbxR71jQLDOhEFGTb625N_koVX6PMbg9-0/s716/Clipped_image_20250916_133639.png" alt="Logo" />
+  <h1 id="splashTitulo">MimoGame</h1>
+  <p id="splashSubtitulo">LABRIOLAG</p>
+</div>
+
+<div id="marcadorPop" class="marcador-pop">
+  <h4>Menu Principal</h4>
+  <button onclick="abrirAba('jogos')">🎮 Jogos</button>
+  <button onclick="abrirAba('login')">👤 Digitar Nome</button>
+  <button class="btn-fechar" onclick="fecharMarcador()">❌ Fechar Menu</button>
+</div>
+
+<button id="botaoMarcador" onclick="mostrarMarcador()">⚙️</button>
+
+<section id="login" class="aba">
+  <h3 id="loginTitulo">Identifique-se para jogar</h3>
+  <input type="text" id="nome" placeholder="Digite seu nome" />
+  <input type="password" id="senha" placeholder="Senha (para administradores)" />
+  <button onclick="validarLogin()">Entrar</button>
+</section>
+
+<div id="perfilVisual" style="display:none;"></div>
+
+<section id="jogos" class="aba">
+  <h3>Jogo da Memória</h3>
+  <button onclick="iniciarMemoria()">Iniciar Jogo</button>
+  <div id="telaJogo"></div>
+</section>
+
+<section id="config2" class="aba">
+  <h3>Configurações do Comerciante</h3>
+  <button onclick="mostrarModalTrocaSenha()">🔑 Trocar Senha</button>
+  <label for="nomeLoja">Nome do Negócio:</label>
+  <input type="text" id="nomeLoja" placeholder="Nome do seu negócio" />
+  <label for="logoLoja">URL da sua Logo:</label>
+  <input type="url" id="logoLoja" placeholder="https://..." />
+  <label for="sloganLoja">Slogan (frase no rodapé):</label>
+  <input type="text" id="sloganLoja" placeholder="Ex: A melhor pizza da cidade!" />
+  <label for="whatsappLoja">Nº de WhatsApp (com DDD):</label>
+  <input type="tel" id="whatsappLoja" placeholder="Ex: 11987654321" />
+  <label for="tipoLoja">Estilo do Negócio (define o tema):</label>
+  <select id="tipoLoja">
+    <option value="">-- Usar Tema Padrão --</option>
+    <option value="game">🕹️ Game</option>
+    <option value="pizzaria">🍕 Pizzaria</option>
+    <option value="lanchonete">🥤 Lanchonete</option>
+    <option value="restaurante">🍽️ Restaurante</option>
+    <option value="hamburgueria">🍔 Hamburgueria</option>
+    <option value="padaria">🍞 Padaria</option>
+    <option value="doceira">🍬 Doceira</option>
+    <option value="acaitaria">🍧 Açaitaria</option>
+    <option value="sorveteria">🍨 Sorveteria</option>
+    <option value="posto_gasolina">⛽ Posto de Gasolina</option>
+    <option value="dentista">🦷 Dentista</option>
+    <option value="saude">🩺 Saúde</option>
+    <option value="marceneiro">🪚 Marceneiro</option>
+    <option value="advocacia">⚖️ Advocacia</option>
+    <option value="seguranca">🛡️ Segurança</option>
+    <option value="balada">🕺 Balada</option>
+    <option value="hotel">🏨 Hotel</option>
+  </select>
+  <label for="premioTexto">Texto do Prêmio:</label>
+  <input type="text" id="premioTexto" placeholder="Ex: Um café grátis!" />
+  <button onclick="visualizarConfiguracoes('comerciante')">👀 Visualizar Configs</button>
+  <button onclick="salvarConfig2(true)">Apenas Salvar para Mim</button>
+  <button id="btnGerarArquivo" onclick="gerarArquivoConfigurado()">✅ Salvar e Gerar Arquivo para Cliente</button>
+</section>
+
+<section id="painelDev" class="aba">
+  <h3>🧪 Painel de Controle DEVGUI</h3>
+  <h4>Personalização Padrão do App</h4>
+  <label>URL da Logo Padrão:</label>
+  <input id="devSplashLogo" placeholder="URL da logo na splash" />
+  <label>Título Padrão (Splash):</label>
+  <input id="devSplashTitulo" placeholder="Título na splash" />
+  <label>Subtítulo Padrão (Splash):</label>
+  <input id="devSplashSubtitulo" placeholder="Subtítulo na splash" />
+  <label>Slogan Padrão (Rodapé):</label>
+  <input id="devSlogan" placeholder="Slogan padrão do app" />
+  <label>Contato Padrão (Rodapé):</label>
+  <input id="devContato" placeholder="Telefone ou endereço no rodapé" />
+  <label for="devTema">Tema Padrão do App:</label>
+  <select id="devTema">
+    <option value="game">🕹️ Game</option>
+    <option value="pizzaria">🍕 Pizzaria</option>
+    <option value="lanchonete">🥤 Lanchonete</option>
+    <option value="restaurante">🍽️ Restaurante</option>
+    <option value="hamburgueria">🍔 Hamburgueria</option>
+    <option value="padaria">🍞 Padaria</option>
+    <option value="doceira">🍬 Doceira</option>
+    <option value="acaitaria">🍧 Açaitaria</option>
+    <option value="sorveteria">🍨 Sorveteria</option>
+    <option value="posto_gasolina">⛽ Posto de Gasolina</option>
+    <option value="dentista">🦷 Dentista</option>
+    <option value="saude">🩺 Saúde</option>
+    <option value="marceneiro">🪚 Marceneiro</option>
+    <option value="advocacia">⚖️ Advocacia</option>
+    <option value="seguranca">🛡️ Segurança</option>
+    <option value="balada">🕺 Balada</option>
+    <option value="hotel">🏨 Hotel</option>
+  </select>
+  <button onclick="visualizarConfiguracoes('dev')">👀 Visualizar Configs</button>
+  <button onclick="salvarConfigDev()">Aplicar Customizações</button>
+  <h4>Ferramentas de Teste</h4>
+  <button onclick="simularVitoria()">Simular Vitória</button>
+  <button onclick="resetarDados()">🧹 Resetar Dados Salvos</button>
+</section>
+
+<div id="modalRecompensa" class="modal">
+  <div class="modal-conteudo"><h3>🎉 Você ganhou!</h3><p id="textoRecompensa"></p><button onclick="fecharModal('recompensa')">Fechar</button></div>
+</div>
+
+<div id="modalVisualizacao" class="modal">
+    <div class="modal-conteudo">
+        <h3>Pré-visualização das Configurações</h3>
+        <pre id="textoVisualizacao"></pre>
+        <button onclick="fecharModal('visualizacao')">Fechar</button>
+    </div>
+</div>
+
+<div id="modalTrocaSenha" class="modal">
+    <div class="modal-conteudo">
+        <h3>Trocar Senha</h3>
+        <p>Por favor, crie uma senha pessoal para seu acesso.</p>
+        <input type="password" id="senhaAtual" placeholder="Senha Atual (chave de acesso)" />
+        <input type="password" id="novaSenha" placeholder="Nova Senha" />
+        <input type="password" id="confirmaNovaSenha" placeholder="Confirme a Nova Senha" />
+        <button onclick="trocarSenha()">Trocar Senha</button>
+        <button id="btnFecharTrocaSenha" onclick="fecharModal('trocaSenha')">Cancelar</button>
+        <p id="msgErroTrocaSenha" style="color: red;"></p>
+    </div>
+</div>
+
+<div id="modalTour" class="modal">
+    <div class="modal-conteudo tour-passo-conteudo">
+        <h4 id="tourTitulo"></h4>
+        <p id="tourTexto"></p>
+        <div class="tour-botoes-navegacao">
+            <button id="btnTourVoltar">Voltar</button>
+            <button id="btnTour">Próximo</button>
+            <button id="btnTourPular">Pular Tour</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+  <img id="logoRodape" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2XPuXiJsszG17i6fxzPhgoDAuG379KNT0apLUvOM8fwKUvMcmkFsdfpv-FknrSvU00AoTPLL7VwhAYsEYSb_4c7DvQQyopmugO3S8SKlDNS9j8YflH2YGCBfxkW19M40w5ULl1HthIvBXLwWgj1swjvxkMdQbxR71jQLDOhEFGTb625N_koVX6PMbg9-0/s716/Clipped_image_20250916_133639.png" alt="Logo" style="max-width:80px; border-radius:8px;" />
+  <h4 id="nomeRodape">MimoGame</h4>
+  <p id="sloganRodape">Jogue e ganhe prêmios!</p>
+  <div id="contatoRodape" style="margin-top:10px;">Pix@xmail.net</div>
+  <a id="whatsappBtn" href="#" target="_blank">📲 Fale Conosco no WhatsApp</a>
+</footer>
+
+<script>
+  let jogadorConfig = { tipo: 'anonimo', nickname: '', tourCompleto: false };
+  let lojaConfig = {};
+  let devConfig = {};
+  let clientesPagantes = [
+      { nome: 'Loja Exemplo', senha: 'abc123xyz', senhaTrocada: false }
+  ];
+  let tourPassoAtual = -1;
+
+  const tourSteps = [
+    { id: 'nomeLoja', titulo: '1. Nome do Negócio', texto: 'Aqui você define o nome do seu negócio. Ele aparecerá na tela inicial e no rodapé do jogo.' },
+    { id: 'tipoLoja', titulo: '2. Estilo do Negócio', texto: 'Escolha um tema. As cores e a frase padrão serão ajustadas para combinar com seu negócio.' },
+    { id: 'premioTexto', titulo: '3. O seu Prêmio', texto: 'Escreva a mensagem que aparecerá quando o jogador vencer. Ex: "Um café grátis!"' },
+    { id: 'btnGerarArquivo', titulo: '4. Gerar Arquivo', texto: 'Após configurar tudo, clique aqui para salvar e baixar o arquivo HTML que você deve enviar ao seu cliente.' },
+  ];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof PRELOADED_CONFIG === 'undefined') {
+        carregarDados();
+    } else {
+        lojaConfig = PRELOADED_CONFIG.loja || {};
+        devConfig = PRELOADED_CONFIG.dev || {};
+        jogadorConfig.tipo = 'Jogador';
+    }
+    preencherFormularios();
+    aplicarConfiguracoesVisuais();
+    setTimeout(() => {
+      document.getElementById('splash').style.display = 'none';
+      abrirAba('jogos');
+      document.getElementById('botaoMarcador').style.display = 'block';
+    }, 3000);
+  });
+  
+  function mostrarMarcador() { document.getElementById('marcadorPop').style.display = 'block'; document.getElementById('botaoMarcador').style.display = 'none'; }
+  function fecharMarcador() { document.getElementById('marcadorPop').style.display = 'none'; document.getElementById('botaoMarcador').style.display = 'block'; }
+  function abrirAba(nome) { document.querySelectorAll('.aba').forEach(el => el.classList.remove('active')); document.getElementById(nome).classList.add('active'); if (nome !== 'login') fecharMarcador(); }
+
+  function validarLogin() {
+    const nome = document.getElementById('nome').value.trim();
+    const senha = document.getElementById('senha').value.trim();
+    document.getElementById('msgErroTrocaSenha').textContent = '';
+
+    if (nome === 'DEVGUI' && senha === 'dev') {
+        jogadorConfig.tipo = 'DEVGUI';
+        jogadorConfig.nickname = 'Desenvolvedor';
+        abrirAba('painelDev');
+        exibirAvisoDemo(false);
+        return;
+    }
+    
+    if (nome === 'demo' && senha === 'demo') {
+        jogadorConfig.tipo = 'DEMO';
+        jogadorConfig.nickname = 'Demonstração';
+        abrirAba('config2');
+        exibirAvisoDemo(true);
+        document.getElementById('btnGerarArquivo').onclick = function() {
+            alert('A geração de arquivos está desabilitada na versão de demonstração. Por favor, adquira a versão completa para usar este recurso.');
+        };
+        return;
+    }
+
+    if (senha === 'loja') {
+        alert('Modo de teste! O botão "Gerar Arquivo" irá direcionar para a página de compra.');
+        jogadorConfig.tipo = 'Comerciante Teste';
+        jogadorConfig.nickname = nome;
+        document.getElementById('btnGerarArquivo').onclick = function() {
+            window.location.href = 'manual.html';
+        };
+        abrirAba('config2');
+        exibirAvisoDemo(true);
+        return;
+    }
+
+    const clienteEncontrado = clientesPagantes.find(cliente => 
+        cliente.nome.toLowerCase() === nome.toLowerCase() && cliente.senha === senha
+    );
+
+    if (clienteEncontrado) {
+        jogadorConfig.tipo = 'Comerciante Pagante';
+        jogadorConfig.nickname = nome;
+        exibirAvisoDemo(false);
+        document.getElementById('btnGerarArquivo').onclick = gerarArquivoConfigurado;
+
+        if (!clienteEncontrado.senhaTrocada) {
+            document.getElementById('btnFecharTrocaSenha').style.display = 'none';
+            mostrarModal('trocaSenha');
+            return;
+        }
+        
+        abrirAba('config2');
+        // Inicia o tour se for a primeira vez do cliente
+        if (!jogadorConfig.tourCompleto) {
+            iniciarTour();
+        }
+        return;
+    }
+    
+    if (nome) {
+        jogadorConfig.tipo = 'Jogador';
+        jogadorConfig.nickname = nome;
+        abrirAba('jogos');
+        exibirAvisoDemo(false);
+        return;
+    }
+
+    alert('Usuário ou senha inválidos.');
+  }
+
+  function mostrarModal(modalId) {
+    document.getElementById('modal' + modalId.charAt(0).toUpperCase() + modalId.slice(1)).style.display = 'flex';
+  }
+
+  function fecharModal(modalId) {
+    document.getElementById('modal' + modalId.charAt(0).toUpperCase() + modalId.slice(1)).style.display = 'none';
+    if(modalId === 'trocaSenha') {
+        document.getElementById('senhaAtual').value = '';
+        document.getElementById('novaSenha').value = '';
+        document.getElementById('confirmaNovaSenha').value = '';
+        document.getElementById('msgErroTrocaSenha').textContent = '';
+    }
+  }
+
+  function mostrarModalTrocaSenha() {
+      const clienteLogado = clientesPagantes.find(c => c.nome.toLowerCase() === jogadorConfig.nickname.toLowerCase());
+      if (clienteLogado) {
+          document.getElementById('senhaAtual').value = clienteLogado.senha;
+          document.getElementById('btnFecharTrocaSenha').style.display = 'block';
+          mostrarModal('trocaSenha');
+      } else {
+          alert("Não é possível trocar a senha. Por favor, faça o login novamente.");
+          abrirAba('login');
+      }
+  }
+
+  function trocarSenha() {
+    const senhaAtual = document.getElementById('senhaAtual').value;
+    const novaSenha = document.getElementById('novaSenha').value;
+    const confirmaNovaSenha = document.getElementById('confirmaNovaSenha').value;
+    const msgErro = document.getElementById('msgErroTrocaSenha');
+    
+    msgErro.textContent = '';
+    
+    const clienteLogado = clientesPagantes.find(c => c.nome.toLowerCase() === jogadorConfig.nickname.toLowerCase());
+
+    if (!clienteLogado || senhaAtual !== clienteLogado.senha) {
+        msgErro.textContent = 'A senha atual está incorreta.';
+        return;
+    }
+    
+    if (novaSenha.length < 4) {
+        msgErro.textContent = 'A nova senha deve ter no mínimo 4 caracteres.';
+        return;
+    }
+
+    if (novaSenha !== confirmaNovaSenha) {
+        msgErro.textContent = 'A nova senha e a confirmação não coincidem.';
+        return;
+    }
+
+    if (novaSenha === senhaAtual) {
+        msgErro.textContent = 'A nova senha não pode ser igual à senha atual.';
+        return;
+    }
+    
+    clienteLogado.senha = novaSenha;
+    clienteLogado.senhaTrocada = true;
+    salvarDados();
+    fecharModal('trocaSenha');
+    alert('Senha alterada com sucesso! Você já pode usar a nova senha para entrar.');
+    abrirAba('config2');
+  }
+
+  function exibirAvisoDemo(exibir) {
+    if (exibir) {
+      document.getElementById('avisoDemo').style.display = 'block';
+    } else {
+      document.getElementById('avisoDemo').style.display = 'none';
+    }
+  }
+
+  function atualizarPerfilVisual() {
+    const perfil = document.getElementById('perfilVisual');
+    if (jogadorConfig.tipo === 'Jogador' && jogadorConfig.nickname) { perfil.textContent = `🎮 Jogando como: ${jogadorConfig.nickname}`; perfil.style.display = 'block'; } 
+    else if (jogadorConfig.tipo !== 'anonimo' && jogadorConfig.tipo !== 'Jogador') { perfil.textContent = `🔑 Logado como: ${jogadorConfig.tipo}`; perfil.style.display = 'block'; } 
+    else { perfil.style.display = 'none'; }
+  }
+
+  function aplicarConfiguracoesVisuais() {
+    const defaultLogo = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2XPuXiJsszG17i6fxzPhgoDAuG379KNT0apLUvOM8fwKUvMcmkFsdfpv-FknrSvU00AoTPLL7VwhAYsEYSb_4c7DvQQyopmugO3S8SKlDNS9j8YflH2YGCBfxkW19M40w5ULl1HthIvBXLwWgj1swjvxkMdQbxR71jQLDOhEFGTb625N_koVX6PMbg9-0/s716/Clipped_image_20250916_133639.png";
+    document.getElementById('splashLogo').src = devConfig.splashLogo || lojaConfig.logo || defaultLogo;
+    document.getElementById('splashTitulo').textContent = devConfig.splashTitulo || lojaConfig.nome || 'MimoGame';
+    document.getElementById('splashSubtitulo').textContent = devConfig.splashSubtitulo || 'LABRIOLAG';
+    document.getElementById('contatoRodape').textContent = devConfig.contato || 'Pix@xmail.net';
+    document.getElementById('nomeRodape').textContent = lojaConfig.nome || devConfig.splashTitulo || 'MimoGame';
+    document.getElementById('logoRodape').src = lojaConfig.logo || devConfig.splashLogo || defaultLogo;
+    const temaAtivo = lojaConfig.tipo || devConfig.tema || 'game';
+    atualizarVisualLoja(temaAtivo);
+    atualizarBotaoWhatsapp();
+  }
+  
+  function atualizarBotaoWhatsapp() {
+      const whatsappBtn = document.getElementById('whatsappBtn');
+      if (lojaConfig.whatsapp) { const numeroLimpo = lojaConfig.whatsapp.replace(/\D/g, ''); whatsappBtn.href = `https://wa.me/55${numeroLimpo}`; whatsappBtn.style.display = 'inline-block'; } 
+      else { whatsappBtn.style.display = 'none'; }
+  }
+
+  function atualizarVisualLoja(tipo) {
+    const estilos = {
+      game: { cor: '#8A2BE2', slogan: "Sua diversão vale prêmios!" },
+      posto_gasolina: { cor: '#FFD700', slogan: "Abasteça e ganhe na hora!" },
+      dentista: { cor: '#00CED1', slogan: "Um sorriso perfeito é o seu prêmio!" },
+      marceneiro: { cor: '#8B4513', slogan: "Trabalho bem feito merece recompensa!" },
+      advocacia: { cor: '#000080', slogan: "Sua confiança tem valor!" },
+      saude: { cor: '#3CB371', slogan: "Cuidar de você é o nosso prêmio!" },
+      seguranca: { cor: '#2F4F4F', slogan: "Sua proteção é a nossa vitória!" },
+      balada: { cor: '#FF00FF', slogan: "A noite é uma criança e tem prêmios!" },
+      lanchonete: { cor: '#DC143C', slogan: "Seu lanche ficou mais divertido!" },
+      restaurante: { cor: '#A52A2A', slogan: "Saboreie sua vitória!" },
+      hotel: { cor: '#B8860B', slogan: "Sua estadia pode ser premiada!" },
+      pizzaria: { cor: '#b22222', slogan: "Jogue e ganhe pizza quentinha!" },
+      padaria: { cor: '#d2691e', slogan: "Jogue e leve pão fresco pra casa!" },
+      hamburgueria: { cor: '#8b4513', slogan: "Ganhe hambúrguer com diversão!" },
+      doceira: { cor: '#ff69b4', slogan: "Doces e jogos, a combinação perfeita!" },
+      acaitaria: { cor: '#800080', slogan: "Açaí gelado como prêmio!" },
+      sorveteria: { cor: '#4682b4', slogan: "Sorvete grátis pra quem vence!" }
+    };
+    const estilo = estilos[tipo] || estilos.game;
+    document.documentElement.style.setProperty('--cor-tema', estilo.cor);
+    document.getElementById('sloganRodape').textContent = lojaConfig.slogan || devConfig.slogan || estilo.slogan;
+  }
+
+  let cartaVirada = null;
+  function iniciarMemoria() {
+    const emojis = ['🍕','🍔','🍟','🌭','🍣','🍪','🍰','🍩'];
+    const cartas = [...emojis, ...emojis].sort(() => 0.5 - Math.random());
+    const tela = document.getElementById('telaJogo');
+    tela.innerHTML = '';
+    cartaVirada = null;
+    cartas.forEach(emoji => {
+      const div = document.createElement('div');
+      div.className = 'carta'; div.dataset.valor = emoji; div.textContent = '❓';
+      div.onclick = () => virarCarta(div);
+      tela.appendChild(div);
+    });
+  }
+  function virarCarta(carta) {
+    if (carta.classList.contains('virada') || carta.classList.contains('par')) return;
+    carta.textContent = carta.dataset.valor;
+    carta.classList.add('virada');
+    if (!cartaVirada) { cartaVirada = carta; } 
+    else {
+      if (cartaVirada.dataset.valor === carta.dataset.valor) { carta.classList.add('par'); cartaVirada.classList.add('par'); cartaVirada = null; verificarVitoria(); } 
+      else { setTimeout(() => { carta.textContent = '❓'; cartaVirada.textContent = '❓'; carta.classList.remove('virada'); cartaVirada.classList.remove('virada'); cartaVirada = null; }, 1000); }
+    }
+  }
+  function verificarVitoria() { if (document.querySelectorAll('.carta.par').length === 16) { mostrarRecompensa(); } }
+  function mostrarRecompensa() { mostrarModal('recompensa'); document.getElementById('textoRecompensa').textContent = lojaConfig.recompensa?.texto || "🎁 Parabéns! Você ganhou!"; }
+  
+  // --- FUNÇÕES QUE SÓ EXISTEM NA VERSÃO MASTER ---
+  if (typeof PRELOADED_CONFIG === 'undefined') {
+    function salvarConfig2(redirecionar = false) {
+        lojaConfig.nome = document.getElementById('nomeLoja').value;
+        lojaConfig.logo = document.getElementById('logoLoja').value;
+        lojaConfig.slogan = document.getElementById('sloganLoja').value;
+        lojaConfig.whatsapp = document.getElementById('whatsappLoja').value;
+        lojaConfig.tipo = document.getElementById('tipoLoja').value;
+        lojaConfig.recompensa = { texto: document.getElementById('premioTexto').value };
+        aplicarConfiguracoesVisuais();
+        salvarDados();
+        if(redirecionar) { alert('Configurações salvas para você!'); abrirAba('jogos'); }
+    }
+
+    function salvarConfigDev() {
+        devConfig.splashLogo = document.getElementById('devSplashLogo').value;
+        devConfig.splashTitulo = document.getElementById('devSplashTitulo').value;
+        devConfig.splashSubtitulo = document.getElementById('devSplashSubtitulo').value;
+        devConfig.slogan = document.getElementById('devSlogan').value;
+        devConfig.contato = document.getElementById('devContato').value;
+        devConfig.tema = document.getElementById('devTema').value;
+        aplicarConfiguracoesVisuais();
+        salvarDados();
+        alert('Configurações de DEV salvas!');
+        abrirAba('jogos'); 
+    }
+    
+    function visualizarConfiguracoes(tipo) {
+      let config = {};
+      if (tipo === 'comerciante') {
+        config = {
+          nome: document.getElementById('nomeLoja').value,
+          logo: document.getElementById('logoLoja').value,
+          slogan: document.getElementById('sloganLoja').value,
+          whatsapp: document.getElementById('whatsappLoja').value,
+          tipo: document.getElementById('tipoLoja').value,
+          recompensa: { texto: document.getElementById('premioTexto').value }
+        };
+      } else if (tipo === 'dev') {
+        config = {
+          splashLogo: document.getElementById('devSplashLogo').value,
+          splashTitulo: document.getElementById('devSplashTitulo').value,
+          splashSubtitulo: document.getElementById('devSplashSubtitulo').value,
+          slogan: document.getElementById('devSlogan').value,
+          contato: document.getElementById('devContato').value,
+          tema: document.getElementById('devTema').value
+        };
+      }
+      document.getElementById('textoVisualizacao').textContent = JSON.stringify(config, null, 2);
+      mostrarModal('visualizacao');
+    }
+    
+    function gerarArquivoConfigurado() {
+        if (jogadorConfig.tipo !== 'Comerciante Pagante') {
+            alert('A geração de arquivos está habilitada apenas para clientes pagantes. Por favor, acesse com sua chave de acesso.');
+            return;
+        }
+
+        salvarConfig2(false); 
+        const configParaInjetar = { loja: lojaConfig, dev: devConfig };
+        const scriptInjetado = `<script>const PRELOADED_CONFIG = ${JSON.stringify(configParaInjetar, null, 2)};<\/script>`;
+        
+        let htmlAtual = document.documentElement.outerHTML;
+        
+        htmlAtual = htmlAtual.replace(/<section id="config2".*?<\/section>/s, '');
+        htmlAtual = htmlAtual.replace(/<section id="painelDev".*?<\/section>/s, '');
+        htmlAtual = htmlAtual.replace(/<button id="botaoMarcador".*?<\/button>/s, '');
+        htmlAtual = htmlAtual.replace(/<div id="marcadorPop".*?<\/div>/s, '');
+        htmlAtual = htmlAtual.replace(/<div id="avisoDemo".*?<\/div>/s, '');
+        htmlAtual = htmlAtual.replace(/<div id="modalTour".*?<\/div>/s, '');
+        
+        let loginSectionRegex = /<section id="login"[\s\S]*?<\/section>/;
+        let loginSectionMatch = htmlAtual.match(loginSectionRegex);
+        if (loginSectionMatch) {
+            let loginHtml = loginSectionMatch[0];
+            loginHtml = loginHtml.replace(/<input type="password".*?>/s, '');
+            loginHtml = loginHtml.replace('Identifique-se para jogar', 'Qual é o seu nome?');
+            loginHtml = loginHtml.replace('Senha (para administradores)', '');
+            htmlAtual = htmlAtual.replace(loginSectionRegex, loginHtml);
+        }
+        
+        const novoHtml = htmlAtual.replace('</head>', `${scriptInjetado}</head>`);
+        
+        const blob = new Blob([novoHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const nomeDoArquivo = (lojaConfig.nome || 'MimoGame').replace(/[\s\/\\?%*:|"<>]/g, '_');
+        a.download = `MimoGame-${nomeDoArquivo}.html`;
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert(`Arquivo "${a.download}" gerado com sucesso! Compartilhe ESTE NOVO ARQUIVO com seus clientes.`);
+        // Redireciona o usuário de volta para a aba de configurações
+        abrirAba('config2');
+    }
+
+    function preencherFormularios() {
+        document.getElementById('nomeLoja').value = lojaConfig.nome || '';
+        document.getElementById('logoLoja').value = lojaConfig.logo || '';
+        document.getElementById('sloganLoja').value = lojaConfig.slogan || '';
+        document.getElementById('whatsappLoja').value = lojaConfig.whatsapp || '';
+        document.getElementById('tipoLoja').value = lojaConfig.tipo || '';
+        document.getElementById('premioTexto').value = lojaConfig.recompensa?.texto || '';
+        document.getElementById('devSplashLogo').value = devConfig.splashLogo || '';
+        document.getElementById('devSplashTitulo').value = devConfig.splashTitulo || '';
+        document.getElementById('devSplashSubtitulo').value = devConfig.splashSubtitulo || '';
+        document.getElementById('devSlogan').value = devConfig.slogan || '';
+        document.getElementById('devContato').value = devConfig.contato || '';
+        document.getElementById('devTema').value = devConfig.tema || 'game';
+    }
+    
+    function salvarDados() { 
+        if (jogadorConfig.tipo === 'DEMO' || jogadorConfig.tipo === 'Comerciante Teste') {
+            return;
+        }
+        localStorage.setItem('multiNegocio_jogador', JSON.stringify(jogadorConfig)); 
+        localStorage.setItem('multiNegocio_loja', JSON.stringify(lojaConfig)); 
+        localStorage.setItem('multiNegocio_dev', JSON.stringify(devConfig)); 
+        localStorage.setItem('multiNegocio_clientes', JSON.stringify(clientesPagantes));
+    }
+
+    function carregarDados() {
+        jogadorConfig = JSON.parse(localStorage.getItem('multiNegocio_jogador')) || { tipo: 'anonimo', tourCompleto: false };
+        lojaConfig = JSON.parse(localStorage.getItem('multiNegocio_loja')) || {};
+        devConfig = JSON.parse(localStorage.getItem('multiNegocio_dev')) || {};
+        const clientesSalvos = JSON.parse(localStorage.getItem('multiNegocio_clientes'));
+        if (clientesSalvos) {
+            clientesPagantes = clientesSalvos;
+        }
+        atualizarPerfilVisual();
+    }
+    
+    function resetarDados() { localStorage.clear(); window.location.reload(); }
+
+    function iniciarTour() {
+      tourPassoAtual = -1; // -1 indica o estado de boas-vindas
+      document.getElementById('tourTitulo').textContent = 'Bem-vindo(a) ao seu Painel!';
+      document.getElementById('tourTexto').innerHTML = 'Vamos fazer um tour rápido para você aprender a personalizar seu jogo.<br><br>Clique em **Iniciar Tour** para continuar.';
+      
+      document.getElementById('btnTour').textContent = 'Iniciar Tour';
+      document.getElementById('btnTourVoltar').style.display = 'none';
+      document.getElementById('btnTourPular').style.display = 'none';
+      
+      mostrarModal('tour');
+    }
+
+    function proximoTourPasso() {
+        // Remove o destaque do passo anterior
+        document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+        
+        // Finaliza se for o último passo
+        if (tourPassoAtual >= tourSteps.length) {
+            finalizarTour();
+            return;
+        }
+        
+        const passo = tourSteps[tourPassoAtual];
+        const elemento = document.getElementById(passo.id);
+        if (elemento) {
+            elemento.classList.add('tour-highlight');
+            elemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            document.getElementById('tourTitulo').textContent = passo.titulo;
+            document.getElementById('tourTexto').innerHTML = passo.texto + '<br><br>' +
+                                                              '**Próximo:** Avança para a próxima etapa.<br>' +
+                                                              '**Voltar:** Retorna para a etapa anterior.<br>' +
+                                                              '**Pular Tour:** Encerra o tour a qualquer momento.';
+            
+            document.getElementById('btnTourPular').style.display = 'block';
+
+            // Controla a visibilidade dos botões
+            if (tourPassoAtual > 0) {
+                document.getElementById('btnTourVoltar').style.display = 'block';
+            } else {
+                document.getElementById('btnTourVoltar').style.display = 'none';
+            }
+            if (tourPassoAtual === tourSteps.length - 1) {
+                document.getElementById('btnTour').textContent = 'Finalizar';
+            } else {
+                document.getElementById('btnTour').textContent = 'Próximo';
+            }
+        }
+    }
+
+    function voltarTourPasso() {
+      if (tourPassoAtual > 0) {
+        tourPassoAtual--;
+        proximoTourPasso();
+      }
+    }
+    
+    document.getElementById('btnTour').addEventListener('click', () => {
+      tourPassoAtual++;
+      if (tourPassoAtual >= tourSteps.length) {
+          finalizarTour();
+      } else {
+          proximoTourPasso();
+      }
+    });
+
+    document.getElementById('btnTourVoltar').addEventListener('click', voltarTourPasso);
+    document.getElementById('btnTourPular').addEventListener('click', finalizarTour);
+
+    function finalizarTour() {
+      document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+      fecharModal('tour');
+      jogadorConfig.tourCompleto = true;
+      salvarDados();
+    }
+
+  } else {
+      function preencherFormularios() {}
+      function salvarDados() {}
+      function carregarDados() {}
+      function resetarDados() { window.location.reload(); }
+      function visualizarConfiguracoes() {}
+      function gerarArquivoConfigurado() {}
+      function salvarConfig2() {}
+      function salvarConfigDev() {}
+  }
+</script>
+</body>
+</html>
