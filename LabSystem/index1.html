@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem HUB: A Gestão Serverless que Vende Mais</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Cores Definidas pelo Usuário */
+        :root {
+            --color-primary: #1f298f; /* Azul Escuro (Tema Principal) */
+            --color-secondary: #ffcf69; /* Amarelo/Ouro (Destaques/Botões) */
+            --color-text-light: #ffffff;
+        }
+
+        /* Classes de Estilo Personalizadas usando as Variáveis */
+        .bg-primary-custom { background-color: var(--color-primary); }
+        .text-secondary-custom { color: var(--color-secondary); }
+        .bg-secondary-custom { background-color: var(--color-secondary); }
+        .border-primary-custom { border-color: var(--color-primary); }
+        .text-primary-custom { color: var(--color-primary); }
+        .hover-bg-primary:hover { background-color: #1a2278; } /* Variação do Primary para Hover */
+        .hover-bg-secondary:hover { background-color: #e5b75f; } /* Variação do Secondary para Hover */
+
+        /* Estilo para a Tela de Splash (Preloader) */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loading-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-top: 20px;
+        }
+
+        /* Animação simples de pulso */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .splash-logo {
+             width: 150px; /* Tamanho ajustado para o splash */
+             height: auto;
+             animation: pulse 1.5s infinite;
+        }
+
+        /* Modal de Contato (Para o formulário WhatsApp) */
+        .modal {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        /* Oculta o conteúdo principal até que o splash acabe */
+        #main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            display: none;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fb;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splash-screen');
+            const mainContent = document.getElementById('main-content');
+            
+            // Define a duração em 2.3 segundos (2300ms)
+            const SPLASH_DURATION = 2300; 
+            
+            setTimeout(() => {
+                // 1. Inicia o Fade-out do splash
+                splashScreen.style.opacity = '0';
+                
+                // 2. Após o fade (500ms), esconde o splash e mostra o conteúdo principal
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    mainContent.style.display = 'block'; 
+                    setTimeout(() => {
+                        mainContent.style.opacity = '1';
+                    }, 10);
+                }, 500); 
+            }, SPLASH_DURATION);
+        });
+    </script>
+</head>
+<body class="bg-gray-50">
+
+    <div id="splash-screen">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+             alt="LabSystem Logo" class="splash-logo mb-6">
+        <div class="loading-text">Carregando...</div>
+    </div>
+    
+    <div id="main-content">
+        
+        <header class="sticky-header bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+                        alt="Logo Pequena" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-extrabold text-primary-custom">LabSystem <span class="text-secondary-custom">HUB</span></h1>
+                </div>
+                
+                <div class="hidden md:flex space-x-4">
+                    <a href="demo/index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                        Ver Demos
+                    </a>
+                    <a href="Shop/planos.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                        Planos
+                    </a>
+                    <a href="Shop/index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                        Revenda (Shop)
+                    </a>
+                    <a href="contato.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover-bg-secondary transition shadow-md">
+                        Contato
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <section class="text-center mb-16 p-8 rounded-xl bg-primary-custom text-white shadow-2xl">
+                <h2 class="text-5xl font-extrabold mb-4 leading-tight">
+                    LabSystem: O Fim da Hospedagem Cara.
+                </h2>
+                <p class="text-xl font-light mb-8 max-w-3xl mx-auto">
+                    Gerencie, publique e exiba seu cardápio em tempo real com nossa solução digital **Serverless**. Autonomia máxima e custo operacional zero!
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <button onclick="openModal('teste')" class="px-8 py-4 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover-bg-secondary transition transform hover:scale-105">
+                        ✅ Teste Grátis por 30 Dias
+                    </button>
+                    <button onclick="openModal('chave')" class="px-8 py-4 text-xl font-black rounded-full border-2 border-secondary-custom text-secondary-custom hover:bg-white hover:text-primary-custom transition transform hover:scale-105">
+                        🔑 Solicite Sua Chave
+                    </button>
+                </div>
+            </section>
+
+            <section class="grid md:grid-cols-2 gap-10 mb-16">
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom">
+                    <h3 class="text-3xl font-bold text-primary-custom mb-3">Painel CMS de Gerenciamento</h3>
+                    <p class="text-gray-600">Interface administrativa focada em **UI/UX avançado**, responsável por controlar toda a sua operação: **Status da Loja**, **Cardápio**, **Customização Visual** e **Publicação**. Seus dados de rascunho são salvos localmente e protegidos.</p>
+                    <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                        <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Dados Operacionais e Checkout WhatsApp.</li>
+                        <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Controle de Estoque e Alertas.</li>
+                        <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Publicação Instantânea via JSONBin.</li>
+                    </ul>
+                    <a href="demo/index.html" class="mt-4 inline-block text-primary-custom font-bold text-sm hover:underline">
+                        Ver Tour Guiado e Demo &rarr;
+                    </a>
+                </div>
+                
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-secondary-custom">
+                    <h3 class="text-3xl font-bold text-primary-custom mb-3">Totem / Loja Digital (Cliente)</h3>
+                    <p class="text-gray-600">A interface exibida ao seu cliente (em tela, tablet ou TV) que lê os dados publicados e apresenta o cardápio, cores e status da loja em **tempo real**. Com checkout simplificado para **WhatsApp**.</p>
+                    <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                        <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Cardápio Dinâmico e Customizável.</li>
+                        <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Customização de Tema e Música Ambiente.</li>
+                        <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Checkout para Pedidos (Entrega ou Retirada).</li>
+                    </ul>
+                    <a href="demo/index.html" class="mt-4 inline-block text-primary-custom font-bold text-sm hover:underline">
+                        Ver Tour Guiado e Demo &rarr;
+                    </a>
+                </div>
+            </section>
+
+            <section class="mb-16">
+                <h2 class="text-4xl font-extrabold text-primary-custom mb-8 border-b-2 border-secondary-custom pb-2">
+                    Vantagens Irresistíveis do LabSystem
+                </h2>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    
+                    <div class="p-6 bg-white rounded-xl shadow-xl border-b-4 border-secondary-custom">
+                        <div class="text-5xl text-secondary-custom mb-3">💰</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Custo Zero de Hospedagem</h3>
+                        <p class="text-sm text-gray-600">Não há servidores, aluguéis mensais ou bancos de dados caros. Apenas arquivos estáticos e um simples banco em nuvem (JSONBin).</p>
+                    </div>
+                    
+                    <div class="p-6 bg-white rounded-xl shadow-xl border-b-4 border-secondary-custom">
+                        <div class="text-5xl text-secondary-custom mb-3">⚡</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Atualização Instantânea</h3>
+                        <p class="text-sm text-gray-600">Sincronização direta entre CMS e Totem via API. Publique uma mudança e ela aparece imediatamente na loja.</p>
+                    </div>
+
+                    <div class="p-6 bg-white rounded-xl shadow-xl border-b-4 border-secondary-custom">
+                        <div class="text-5xl text-secondary-custom mb-3">💬</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Vendas Fáceis (WhatsApp)</h3>
+                        <p class="text-sm text-gray-600">Seu cliente finaliza o pedido no Totem e envia a comanda estruturada diretamente para o seu WhatsApp, sem apps intermediários.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-primary-custom p-10 rounded-xl text-center text-white">
+                 <h3 class="text-3xl font-extrabold mb-4">Pronto para Modernizar Seu Negócio?</h3>
+                 <p class="text-lg font-light mb-6">Fale com um consultor e inicie seu Teste Grátis de 30 dias.</p>
+                 <button onclick="openModal('teste')" class="inline-block px-10 py-3 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover-bg-secondary transition transform hover:scale-105">
+                    INICIAR TESTE GRÁTIS!
+                 </button>
+            </section>
+
+        </main>
+
+        <footer class="mt-16 bg-primary-custom text-white p-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+                <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
+                <p class="mt-2 text-xs text-gray-400">
+                    <a href="termos.html" class="underline hover:text-secondary-custom">Termos de Uso</a> | 
+                    <a href="contato.html" class="underline hover:text-secondary-custom">Fale Conosco</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+
+    <div id="contact-modal" class="modal fixed inset-0 hidden items-center justify-center p-4" onclick="closeModal(event)">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 md:p-8" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 id="modal-title" class="text-2xl font-black text-primary-custom"></h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-900 text-3xl leading-none">&times;</button>
+            </div>
+            
+            <p id="modal-subtitle" class="text-gray-600 mb-6"></p>
+
+            <form id="whatsapp-form" onsubmit="generateWhatsAppMessage(event)">
+                <input type="hidden" id="form-type" name="form-type">
+
+                <div class="mb-4">
+                    <label for="client-name" class="block text-sm font-medium text-gray-700 mb-1">Seu Nome *</label>
+                    <input type="text" id="client-name" name="nome" required class="w-full border-gray-300 rounded-lg p-3 focus:ring-primary-custom focus:border-primary-custom border">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="client-whatsapp" class="block text-sm font-medium text-gray-700 mb-1">Seu WhatsApp (com DDD) *</label>
+                    <input type="tel" id="client-whatsapp" name="telefone" required class="w-full border-gray-300 rounded-lg p-3 focus:ring-primary-custom focus:border-primary-custom border" placeholder="Ex: 5511987654321">
+                </div>
+
+                <div class="mb-6">
+                    <label for="store-name" class="block text-sm font-medium text-gray-700 mb-1">Nome do Seu Comércio *</label>
+                    <input type="text" id="store-name" name="loja" required class="w-full border-gray-300 rounded-lg p-3 focus:ring-primary-custom focus:border-primary-custom border">
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-primary-custom text-white font-extrabold rounded-xl shadow-md transition duration-300 hover-bg-primary">
+                    Gerar Mensagem e Iniciar Conversa
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        const WHATSAPP_NUMBER = '5511943198316';
+        const modal = document.getElementById('contact-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalSubtitle = document.getElementById('modal-subtitle');
+        const formType = document.getElementById('form-type');
+
+        function openModal(type) {
+            if (type === 'teste') {
+                modalTitle.textContent = 'Teste Grátis por 30
