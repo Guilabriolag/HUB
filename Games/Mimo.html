@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MimoGames - Jogue, Ganhe e Resgate!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos e Animações */
+    :root {
+      --cor-principal: #30475E;
+      --cor-secundaria: #F05454;
+      --cor-destaque: #F5E8C7;
+      --cor-fundo: #F5F5F5;
+      --cor-texto: #121212;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--cor-fundo);
+      color: var(--cor-texto);
+      margin: 0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Animações de Entrada */
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-in {
+      animation: slideInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      opacity: 0;
+    }
+    .animate-delay-1 { animation-delay: 0.2s; }
+    .animate-delay-2 { animation-delay: 0.4s; }
+    .animate-delay-3 { animation-delay: 0.6s; }
+    .animate-delay-4 { animation-delay: 0.8s; }
+
+    /* Seção Principal (Hero) */
+    .hero-section {
+      text-align: center;
+      padding: 150px 0;
+      background: linear-gradient(135deg, var(--cor-principal) 0%, #3a5169 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    .hero-section h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 4.5rem;
+      margin: 0;
+      color: var(--cor-destaque);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .hero-section p {
+      font-size: 1.5rem;
+      max-width: 700px;
+      margin: 20px auto 40px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    /* Seções de Conteúdo */
+    .content-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+    .content-section h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3rem;
+      color: var(--cor-principal);
+      margin-bottom: 30px;
+    }
+    .content-section .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+    .feature-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border: 1px solid #eee;
+    }
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    }
+    .feature-card h3 {
+      color: var(--cor-secundaria);
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+    .feature-card p {
+      color: #666;
+    }
+
+    /* Rodapé */
+    footer {
+      background: var(--cor-principal);
+      color: var(--cor-destaque);
+      text-align: center;
+      padding: 30px;
+    }
+    
+    /* Botões */
+    .btn {
+      display: inline-block;
+      padding: 16px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      transition: width 0.4s ease, height 0.4s ease, top 0.4s ease, left 0.4s ease;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+    .btn:hover::before {
+      width: 300%;
+      height: 300%;
+      top: 0;
+      left: 0;
+    }
+
+    /* Estilos do Pop-up */
+    .modal {
+      display: none; /* Inicia oculto */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+      animation: slideInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .modal-content .close-btn {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .modal-content .close-btn:hover,
+    .modal-content .close-btn:focus {
+      color: var(--cor-secundaria);
+    }
+    
+    .modal-content h3 {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--cor-principal);
+        font-size: 2rem;
+        margin-top: 0;
+    }
+
+    .modal-content p {
+        font-size: 1.1rem;
+        color: #555;
+    }
+
+    .modal-content .oferta {
+        font-weight: bold;
+        color: var(--cor-secundaria);
+        font-size: 1.5rem;
+        margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero-section">
+    <div class="container">
+      <h1 class="animate-in">MimoGames</h1>
+      <p class="animate-in animate-delay-1">Jogue um divertido jogo da memória e ganhe mimos de estabelecimentos reais! Personalize o jogo para o seu negócio e ofereça prêmios incríveis.</p>
+      <a href="https://guilabriolag.github.io/MimoGames/MimoGames_beta.html" class="btn animate-in animate-delay-2" style="background: var(--cor-secundaria); color: white;">Jogar Agora!</a>
+    </div>
+  </header>
+
+  <section class="content-section">
+    <div class="container">
+      <h2 class="animate-in animate-delay-3">Como Funciona?</h2>
+      <div class="grid">
+        <div class="feature-card animate-in animate-delay-4">
+          <h3>🎮 Jogue</h3>
+          <p>O objetivo é encontrar todos os pares de cartas para vencer o jogo da memória.</p>
+        </div>
+        <div class="feature-card animate-in animate-delay-4" style="animation-delay: 1s;">
+          <h3>🎁 Ganhe</h3>
+          <p>Ao vencer, você desbloqueia um mimo exclusivo do estabelecimento parceiro.</p>
+        </div>
+        <div class="feature-card animate-in animate-delay-4" style="animation-delay: 1.2s;">
+          <h3>🏆 Resgate</h3>
+          <p>Apresente o prêmio no local e resgate seu mimo! É simples e rápido.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background-color: #fafafa;">
+    <div class="container">
+      <h2 class="animate-in">Para Comerciantes</h2>
+      <p class="animate-in animate-delay-1">O MimoGames é uma ferramenta de marketing poderosa. Crie um jogo de memória personalizado para a sua loja com o seu tema, logo e prêmios.</p>
+      <p class="animate-in animate-delay-2">Você decide o que o cliente ganha! Perfeito para fidelizar clientes e atrair novos.</p>
+      <a href="https://guilabriolag.github.io/MimoGames/MimoGames_demo.html" class="btn animate-in animate-delay-3" style="background: var(--cor-principal); color: var(--cor-destaque);">⚙️ Configurar Meu Negócio</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 MimoGames. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <div id="promoModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fecharModal()">&times;</span>
+      <h3>Atenção Comerciante!</h3>
+      <p>Teste a versão DEMO ou adquira agora a versão completa e profissional para seu negócio:</p>
+      <p class="oferta">De R$ 49,00 por apenas R$ 4,90!</p>
+      <a href="https://mpago.la/1V72ZPM" target="_blank" class="btn" style="background: var(--cor-secundaria); color: white;">Comprar Versão PRO</a>
+    </div>
+  </div>
+
+  <script>
+    // Lógica para exibir e fechar o modal
+    function abrirModal() {
+        document.getElementById('promoModal').style.display = 'flex';
+    }
+
+    function fecharModal() {
+        document.getElementById('promoModal').style.display = 'none';
+    }
+
+    // Exibir o modal após 3 segundos
+    window.addEventListener('load', () => {
+        setTimeout(abrirModal, 3000);
+    });
+  </script>
+
+</body>
+</html>
