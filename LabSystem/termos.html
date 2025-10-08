@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso e Política de Privacidade - LabSystem</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Cores Definidas pelo Usuário */
+        :root {
+            --color-primary: #1f298f; /* Azul Escuro (Tema Principal) */
+            --color-secondary: #ffcf69; /* Amarelo/Ouro (Destaques/Botões) */
+        }
+
+        /* Classes de Estilo Personalizadas */
+        .bg-primary-custom { background-color: var(--color-primary); }
+        .text-secondary-custom { color: var(--color-secondary); }
+        .text-primary-custom { color: var(--color-primary); }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fb;
+        }
+        
+        /* Estilo para o cabeçalho fixo */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="sticky-header bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+                        alt="Logo Pequena" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-extrabold text-primary-custom">LabSystem <span class="text-secondary-custom">HUB</span></h1>
+                </a>
+            </div>
+            
+            <div class="hidden md:flex space-x-4">
+                <a href="demo/index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                    Demonstrações
+                </a>
+                <a href="contato.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover:bg-yellow-400 transition shadow-md">
+                    Contato
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <section class="text-center mb-12 p-8 rounded-xl bg-primary-custom text-white shadow-xl">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-3">
+                Termos de Uso e Políticas
+            </h2>
+            <p class="text-lg font-light max-w-2xl mx-auto">
+                Informações importantes sobre a arquitetura Serverless, segurança de dados e responsabilidades.
+            </p>
+        </section>
+
+        <div class="bg-white p-8 rounded-xl shadow-2xl space-y-8">
+
+            <h3 class="text-3xl font-bold text-primary-custom border-b-2 border-secondary-custom pb-2">1. Aceitação dos Termos</h3>
+            <p class="text-gray-700">Ao acessar e utilizar o LabSystem CMS e o Totem Digital, você concorda em cumprir e estar sujeito a estes Termos de Uso e à nossa Política de Privacidade. Estes termos se aplicam a todos os usuários da plataforma.</p>
+
+            <h3 class="text-3xl font-bold text-primary-custom border-b-2 border-secondary-custom pb-2">2. Sobre a Arquitetura Serverless</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-3 pl-4">
+                <li>O LabSystem opera com uma arquitetura **Serverless (Sem Servidor)**, utilizando arquivos estáticos (HTML, CSS, JS) hospedados publicamente (ex: GitHub Pages).</li>
+                <li>O **Banco de Dados (JSONBin)** é utilizado exclusivamente para a sincronização em tempo real do Cardápio entre o CMS e o Totem Digital.</li>
+                <li>**Custos de Hospedagem:** A natureza Serverless do sistema significa que os custos de hospedagem e banco de dados são inerentemente baixos ou nulos, sendo de total responsabilidade do usuário a manutenção de suas contas de serviços externos (como JSONBin).</li>
+            </ul>
+
+            <h3 class="text-3xl font-bold text-primary-custom border-b-2 border-secondary-custom pb-2">3. Privacidade e Segurança de Dados</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-3 pl-4">
+                <li>**Rascunho Local:** O CMS utiliza o **LocalStorage** do seu navegador para salvar rascunhos de edição. Estes dados são privados e não são enviados para a nuvem sem a sua permissão explícita de Publicação.</li>
+                <li>**Master Key:** A segurança do seu ambiente de publicação é protegida por uma **Master Key (Chave Mestra)**. O usuário é o único responsável pela custódia e sigilo desta chave. A LabSystem não armazena cópias das Master Keys dos clientes.</li>
+                <li>**Dados do Cliente Final:** A Plataforma LabSystem não coleta, armazena ou processa dados pessoais de clientes finais (pedidos, endereços, etc.). Toda a transação e checkout é feita diretamente via **WhatsApp** do usuário final para o WhatsApp do Comércio.</li>
+            </ul>
+
+            <h3 class="text-3xl font-bold text-primary-custom border-b-2 border-secondary-custom pb-2">4. Uso da Licença e Responsabilidades</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-3 pl-4">
+                <li>O LabSystem é fornecido como uma ferramenta. O usuário é responsável por todas as informações, preços, imagens e conteúdo publicado em seu Cardápio.</li>
+                <li>**Suporte:** O suporte é focado no uso da plataforma e na solução de bugs. Problemas relacionados à Master Key perdida ou falhas em serviços de terceiros (como JSONBin) não são responsabilidade da LabSystem.</li>
+                <li>**Interrupções de Serviço:** Embora o sistema seja Serverless, interrupções podem ocorrer devido a falhas nos provedores de serviços externos (ex: falha no GitHub Pages ou no JSONBin). A LabSystem fará o possível para garantir a estabilidade.</li>
+            </ul>
+            
+            <p class="text-sm text-gray-500 pt-4 border-t">
+                Última Atualização: Outubro de 2025.
+            </p>
+        </div>
+
+    </main>
+
+    <footer class="mt-16 bg-primary-custom text-white p-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
+            <p class="mt-2 text-xs text-gray-400">
+                <a href="contato.html" class="underline hover:text-secondary-custom">Fale Conosco</a> | 
+                <a href="demo/index.html" class="underline hover:text-secondary-custom">Demonstrações</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
