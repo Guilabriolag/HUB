@@ -3,334 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABRIOLAG | Acesso Principal</title>
-    <meta name="description" content="LABRIOLAG: Acesso ao Laboratório de Ideias Influentes. Plataforma de Soluções Digitais e Estratégicas.">
+    <title>LABRIOLAG.SHOP | PLATAFORMA CORE</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
-        /* PALETA SÓLIDA E PROFISSIONAL */
+        /* Paleta de Cores e Estilos Base */
         :root {
-            --cor-primaria: #0077B6; /* Azul Escuro Elegante */
-            --cor-secundaria: #FFCC00; /* Amarelo (Acento) */
-            --cor-fundo-escuro: #0D0D0D; /* Fundo Blackout */
-            --cor-painel: rgba(25, 25, 25, 0.9); /* Painel semi-transparente */
-            --cor-texto-claro: #F5F5F5;
-            --cor-texto-suave: #AAAAAA;
-            --font-display: 'Cinzel', serif;
-            --font-corpo: 'Inter', sans-serif;
+            --azul-eletrico: #0077B6; /* Modificado para o azul LABRIOLAG */
+            --amarelo: #FFCC00;
+            --preto: #000000;
+            --branco: #FFFFFF;
+            --cinza-escuro: #1a1a1a;
+            --font-principal: 'Poppins', sans-serif;
+            --font-secundaria: 'Montserrat', sans-serif;
         }
 
-        /* ESTRUTURA BASE */
-        * { box-sizing: border-box; }
-        body {
-            font-family: var(--font-corpo);
-            background-color: var(--cor-fundo-escuro);
-            color: var(--cor-texto-claro);
-            margin: 0; padding: 0; min-height: 100vh;
-            display: flex; flex-direction: column; position: relative;
-            overflow: hidden; /* Garante que o fundo é o foco */
-        }
-        
-        /* Efeito de Fundo: Subtle Grid (Profissional, não Rave) */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: 1;
-        }
-
-        /* SPLASH SCREEN: Transição de Status Elegante */
+        /* Estilos do Splash Screen */
         .splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--cor-fundo-escuro);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 1000; transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
-        }
-        .splash-title {
-            font-family: var(--font-display); font-size: 3rem; color: var(--cor-texto-claro);
-            animation: fadeIn 1.5s ease-in-out;
-            text-shadow: 0 0 10px rgba(0, 119, 182, 0.5); /* Sombra suave azul */
-        }
-        .splash-screen.fade-out { opacity: 0; visibility: hidden; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* CONTEÚDO PRINCIPAL */
-        #content { z-index: 10; flex: 1; display: none; position: relative; }
-        #content.show { display: block; }
-        .full-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 50;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--preto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
         }
         
-        /* BOTÃO CENTRAL (CTA) */
-        .acessar-btn button {
-            background: none;
-            border: 2px solid var(--cor-secundaria);
-            color: var(--cor-secundaria);
-            font-size: 20px;
-            padding: 15px 35px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
-            text-transform: uppercase;
-        }
-        .acessar-btn button:hover { 
-            background-color: var(--cor-secundaria); 
-            color: var(--cor-fundo-escuro); 
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+        .splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
         }
 
-        /* PAINEL DE MÓDULOS (O 'Menu' Profissional) */
-        .module-panel {
-            display: none;
-            width: 90%;
-            max-width: 1000px;
-            background-color: var(--cor-painel); 
-            backdrop-filter: blur(8px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Borda Sutil */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
-            padding: 30px;
-            border-radius: 6px;
-            text-align: center;
-            animation: fadeIn 0.6s ease-out;
+        .splash-logo {
+            animation: bounceIn 1s ease-in-out;
         }
 
-        .module-panel h2 {
-            font-family: var(--font-display);
-            color: var(--cor-primaria);
-            font-size: 1.6rem;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(0, 119, 182, 0.3);
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
         }
 
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 25px;
-        }
-
-        /* ESTILO DO BOTÃO/CARD DO MÓDULO */
-        .module-item {
+        /* Estilos Gerais */
+        body {
+            font-family: var(--font-principal);
+            background-color: var(--branco);
+            color: var(--preto);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 150px;
-            background-color: rgba(255, 255, 255, 0.03); /* Fundo muito escuro */
-            border: 1px solid rgba(0, 119, 182, 0.3);
-            padding: 20px;
-            color: var(--cor-texto-claro);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
+            min-height: 100vh;
+            position: relative;
         }
-        .module-item:hover {
-            background-color: rgba(0, 119, 182, 0.15); /* Fundo sutil azul */
-            border-color: var(--cor-secundaria);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-        .module-item i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--cor-secundaria);
-        }
-        .module-item strong {
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            color: var(--cor-primaria);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .module-item p {
-            font-size: 0.8rem;
-            color: var(--cor-texto-suave);
-            margin: 0;
-            margin-top: 5px;
+        
+        #content {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
-        /* LOGIN FORM (Limpo e Focado) */
+        #content.show {
+            opacity: 1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--preto);
+            transition: color 0.3s ease;
+        }
+        
+        button {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0052cc;
+            transform: translateY(-2px);
+        }
+
+        /* Cabeçalho */
+        header {
+            padding: 20px 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 99;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        /* Botão Acessar central */
+        .acessar-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+        }
+        
+        .acessar-btn button {
+            background-color: var(--amarelo);
+            color: var(--preto);
+            font-size: 24px;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .acessar-btn button:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Menu de Opções (Modal) */
+        .options-menu {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 60;
+            animation: fadeIn 0.5s ease-in-out;
+            min-width: 250px; /* Garante que o menu não fique muito estreito */
+        }
+
+        .options-menu a {
+            display: block;
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            font-weight: 600;
+            padding: 15px 30px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .options-menu a:hover {
+            background-color: #0052cc;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Formulário de Login (Inicialmente oculto) */
         .login-form-container {
             display: none;
-            background-color: var(--cor-painel);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--cor-secundaria);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 70;
+            background-color: var(--branco);
             padding: 40px;
-            border-radius: 6px;
-            max-width: 380px;
-            width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
+            min-width: 300px;
         }
+        
         .login-form-container h2 {
-            font-family: var(--font-display);
-            color: var(--cor-secundaria);
-            margin-bottom: 25px;
-            font-size: 1.4rem;
-        }
-        .login-form-container input {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--cor-texto-claro);
-            padding: 12px;
-            margin-bottom: 15px;
-            width: 100%;
-            font-family: var(--font-corpo);
-        }
-        .login-form-container button {
-            background-color: var(--cor-primaria);
-            color: var(--cor-texto-claro);
-            width: 100%;
-            padding: 12px;
-            font-weight: 600;
-            border: none;
-        }
-        .login-form-container .back-link {
-            color: var(--cor-primaria); margin-top: 20px; display: block; text-decoration: none; font-size: 0.9rem;
+            font-family: var(--font-secundaria);
+            margin-bottom: 20px;
         }
 
-        /* RODAPÉ E CONTATO */
-        footer {
-            position: fixed; bottom: 0; width: 100%; z-index: 10;
-            padding: 10px 0; text-align: center; font-size: 0.75rem;
-            background-color: rgba(0, 0, 0, 0.7); 
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--cor-texto-suave);
+        .login-form-container input {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
+        
+        .login-form-container button {
+            width: 100%;
+        }
+
+        /* Botões Flutuantes */
         .floating-btn {
-            position: fixed; bottom: 30px; right: 30px; 
-            width: 55px; height: 55px; font-size: 22px; z-index: 100;
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            background-color: var(--cor-secundaria); color: var(--cor-fundo-escuro);
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5); cursor: pointer;
-            transition: transform 0.3s;
+            position: fixed;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-plus {
+            left: 30px;
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+        }
+        
+        .floating-contact {
+            right: 30px;
+            background-color: #25D366; /* Cor oficial do WhatsApp */
+            color: var(--branco);
+        }
+
+        /* Rodapé */
+        footer {
+            background-color: var(--cinza-escuro);
+            color: #888;
+            padding: 20px 0;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-    <div class="splash-screen" id="splash-screen">
-        <h1 class="splash-title">LABRIOLAG</h1>
-        <p style="color: var(--cor-texto-suave); font-family: var(--font-corpo); animation: fadeIn 1.5s ease-in-out 0.5s both;">Loading Access Protocol...</p>
+    <div class="splash-screen">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Logo LABRIOLAG" class="splash-logo" style="width: 150px;">
     </div>
 
     <div id="content">
-        
-        <div class="full-center acessar-btn" id="initial-cta">
-            <button id="main-acess-btn">INICIAR DIAGNÓSTICO E ACESSO</button>
-        </div>
-
-        <div class="full-center module-panel" id="options-menu">
-            <h2>PORTAL DE SOLUÇÕES :: LABRIOLAG</h2>
-            
-            <div class="modules-grid">
-                
-                <a href="LabSystem/index.html" class="module-item">
-                    <i class="fas fa-chart-line"></i>
-                    <strong>SOLUÇÕES E ESTRATÉGIAS</strong>
-                    <p>Mapeamento e Construção de Produtos Digitais.</p>
-                </a>
-                
-                <a href="vitrine-clientes.html" class="module-item">
-                    <i class="fas fa-code-branch"></i>
-                    <strong>VITRINE DE PROJETOS</strong>
-                    <p>Apresentação e Estudos de Caso de Clientes.</p>
-                </a>
-                
-                <a href="LabSystem/Shop/revenda.html" class="module-item">
-                    <i class="fas fa-handshake"></i>
-                    <strong>MASTER KEY PARTNERSHIP</strong>
-                    <p>Programa Exclusivo de Revenda e Colaboração.</p>
-                </a>
-                
-                <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" class="module-item">
-                    <i class="fas fa-rocket"></i>
-                    <strong>LABS E PROTÓTIPOS</strong>
-                    <p>Ambiente de Teste e Validação de Conceitos Interativos.</p>
-                </a>
+        <header>
+            <div class="container">
+                <div class="logo">
+                    <a href="#">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Logo LABRIOLAG">
+                    </a>
+                </div>
             </div>
-            
-            <a href="#" id="login-link-module" style="color: var(--cor-primaria); margin-top: 30px; display: block; font-weight: 600;">
-                <i class="fas fa-user-lock"></i> ACESSO RESTRITO (Master Login)
-            </a>
-            
-            <p style="margin-top: 15px;"><a href="#" id="back-to-main-btn" style="color: var(--cor-texto-suave); font-size: 0.9rem;">[ Retornar à Tela Inicial ]</a></p>
-        </div>
-        
-        <div class="full-center login-form-container" id="login-form-container">
-            <h2>MASTER LOGIN</h2>
-            <input type="email" placeholder="Usuário ou E-mail" required>
-            <input type="password" placeholder="Senha de Acesso" required>
-            <button>VALIDAR ACESSO</button>
-            <a href="#" class="back-link" id="back-from-login-btn">&larr; Retornar ao Portal</a>
+        </header>
+
+        <div class="acessar-btn">
+            <button id="main-acess-btn">ACESSAR MÓDULOS</button>
         </div>
 
-        <div class="floating-btn floating-contact" title="Fale com a LABRIOLAG">
+        <div class="options-menu" id="options-menu">
+            <a href="LabSystem/index.html"><i class="fas fa-sitemap"></i> LAB SYSTEM</a>
+            <a href="https://guilabriolag.github.io/MimoGames/" target="_blank"><i class="fas fa-gamepad"></i> LAB GAMES</a>
+            <a href="vitrine-clientes.html"><i class="fas fa-chart-line"></i> PORTFÓLIO & PERFORMANCE</a>
+            <a href="#" id="login-link"><i class="fas fa-user-lock"></i> LOGIN MASTER KEY</a>
+        </div>
+        
+        <div class="login-form-container" id="login-form-container">
+            <h2>Acesse seu Laboratório</h2>
+            <input type="email" placeholder="E-mail" required>
+            <input type="password" placeholder="Senha" required>
+            <button>Entrar no Sistema</button>
+            <p style="margin-top: 15px;"><a href="#" style="color: var(--preto);">Esqueci minha chave (senha)</a></p>
+        </div>
+
+        <div class="floating-btn floating-plus" id="modules-btn" title="Ver Módulos">
+            <i class="fas fa-plus"></i>
+        </div>
+        <div class="floating-btn floating-contact" title="Contato Imediato via WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </div>
 
         <footer>
-            <p>&copy; 2025 LABRIOLAG | Laboratório de Ideias Influentes. Todos os Direitos Reservados.</p>
+            <div class="container">
+                <p>&copy; 2025 LABRIOLAG | Laboratório de Ideias Influentes. Todos os direitos reservados.</p>
+            </div>
         </footer>
     </div>
     
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const splash = document.getElementById('splash-screen');
+            const splash = document.querySelector('.splash-screen');
             const content = document.getElementById('content');
             const mainAcessBtn = document.getElementById('main-acess-btn');
-            const modulePanel = document.getElementById('options-menu');
-            const loginLinkModule = document.getElementById('login-link-module');
+            const optionsMenu = document.getElementById('options-menu');
+            const loginLink = document.getElementById('login-link');
             const loginFormContainer = document.getElementById('login-form-container');
-            const backToMainBtn = document.getElementById('back-to-main-btn');
-            const backFromLoginBtn = document.getElementById('back-from-login-btn');
-            const initialCta = document.getElementById('initial-cta');
+            const floatingContactBtn = document.querySelector('.floating-contact');
+            const floatingModulesBtn = document.getElementById('modules-btn');
             
-            // 1. Splash Screen (Transição)
+            // 1. Lógica do Splash Screen
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 setTimeout(() => {
                     splash.style.display = 'none';
                     content.classList.add('show');
                 }, 1000);
-            }, 1800); 
+            }, 2000);
 
-            // 2. INICIAR DIAGNÓSTICO -> Abre Painel
+            // 2. Lógica do botão ACESSAR central: mostra o menu de opções
             mainAcessBtn.addEventListener('click', () => {
-                initialCta.style.display = 'none';
-                modulePanel.style.display = 'block';
+                mainAcessBtn.style.display = 'none';
+                loginFormContainer.style.display = 'none'; // Garante que o login esteja oculto
+                optionsMenu.style.display = 'block';
             });
             
-            // 3. ACESSO RESTRITO -> Abre Formulário
-            loginLinkModule.addEventListener('click', (e) => {
+            // 3. Lógica para o botão LOGIN: esconde o menu e mostra o formulário
+            loginLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                modulePanel.style.display = 'none';
+                optionsMenu.style.display = 'none';
                 loginFormContainer.style.display = 'block';
             });
             
-            // 4. RETORNAR À TELA INICIAL (Do Painel)
-            backToMainBtn.addEventListener('click', (e) => {
-                 e.preventDefault();
-                 modulePanel.style.display = 'none';
-                 initialCta.style.display = 'block';
+            // 4. Lógica do botão flutuante '+' (módulos): re-abre o menu de opções
+            floatingModulesBtn.addEventListener('click', () => {
+                mainAcessBtn.style.display = 'none'; // Oculta o botão central, se estiver visível
+                loginFormContainer.style.display = 'none'; // Oculta o login
+                optionsMenu.style.display = 'block'; // Mostra o menu
             });
             
-            // 5. VOLTAR AO PORTAL (Do Login)
-            backFromLoginBtn.addEventListener('click', (e) => {
-                 e.preventDefault();
-                 loginFormContainer.style.display = 'none';
-                 modulePanel.style.display = 'block';
-            });
-
-            // 6. Contato Flutuante (WhatsApp)
-            document.querySelector('.floating-contact').addEventListener('click', () => {
+            // 5. Lógica do botão flutuante de contato (WhatsApp)
+            floatingContactBtn.addEventListener('click', () => {
+                // Abre o link do WhatsApp em uma nova aba
                 window.open("https://wa.me/5511943198316", '_blank');
             });
         });
