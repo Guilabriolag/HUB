@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalize seu MimoGame</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        h1, h2 { color: #b22222; text-align: center; }
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="text"], input[type="url"], input[type="tel"], input[type="email"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #3CB371;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Parabéns pela sua compra!</h1>
+    <p>Para que possamos criar seu jogo personalizado, por favor, preencha os dados abaixo. Assim que recebermos, enviaremos a chave de acesso do seu painel e as instruções de uso!</p>
+    
+    <form action="https://api.staticforms.xyz/submit" method="post">
+        <input type="hidden" name="accessKey" value="sf_j2jjanbi0jci6074ab00jk6l">
+
+        <label for="emailCliente">E-mail do Cliente:</label>
+        <input type="email" id="emailCliente" name="E-mail do Cliente" required>
+
+        <label for="nomeLoja">Nome da Loja:</label>
+        <input type="text" id="nomeLoja" name="Nome da Loja" required>
+
+        <label for="logoLoja">URL da Logo:</label>
+        <input type="url" id="logoLoja" name="URL da Logo" placeholder="https://..." required>
+
+        <label for="sloganLoja">Slogan (mensagem):</label>
+        <input type="text" id="sloganLoja" name="Slogan">
+
+        <label for="whatsappLoja">WhatsApp (DDD)NÚMERO:</label>
+        <input type="tel" id="whatsappLoja" name="WhatsApp" placeholder="Ex: 11987654321" required>
+        
+        <label for="tipoLoja">Ramo da Loja:</label>
+        <select id="tipoLoja" name="Ramo da Loja">
+            <option value="game">🕹️ Game</option>
+            <option value="pizzaria">🍕 Pizzaria</option>
+            <option value="lanchonete">🥤 Lanchonete</option>
+            <option value="restaurante">🍽️ Restaurante</option>
+            <option value="hamburgueria">🍔 Hamburgueria</option>
+            <option value="padaria">🍞 Padaria</option>
+            <option value="doceira">🍬 Doceira</option>
+            <option value="acaitaria">🍧 Açaitaria</option>
+            <option value="sorveteria">🍨 Sorveteria</option>
+            <option value="posto_gasolina">⛽ Posto de Gasolina</option>
+            <option value="dentista">🦷 Dentista</option>
+            <option value="saude">🩺 Saúde</option>
+            <option value="marceneiro">🪚 Marceneiro</option>
+            <option value="advocacia">⚖️ Advocacia</option>
+            <option value="seguranca">🛡️ Segurança</option>
+            <option value="balada">🕺 Balada</option>
+            <option value="hotel">🏨 Hotel</option>
+        </select>
+
+        <label for="recompensaTexto">Texto do Prêmio:</label>
+        <input type="text" id="recompensaTexto" name="Texto do Premio" required>
+
+        <label for="obs">Alguma observação?</label>
+        <textarea id="obs" name="Observacoes" rows="4"></textarea>
+
+        <button type="submit">Enviar Dados para Criação do Jogo</button>
+    </form>
+</body>
+</html>
