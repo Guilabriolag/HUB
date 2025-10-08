@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem Serverless: A Gestão Digital Completa para Seu Comércio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Cores Personalizadas (Primária: Indigo Escuro, Secundária: Dourado) */
+        :root {
+            --color-primary: #1f298f; 
+            --color-secondary: #ffcf69;
+        }
+
+        /* Classes CSS personalizadas usando variáveis */
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .bg-secondary { background-color: var(--color-secondary); }
+        .text-secondary { color: var(--color-secondary); }
+        .border-primary { border-color: var(--color-primary); }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            background-color: #f7f9fb;
+        }
+
+        /* SPLASH SCREEN */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+            opacity: 1;
+        }
+        .splash-logo {
+            width: 150px;
+            height: auto;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Efeito de hover vibrante nos botões */
+        .btn-hover-primary:hover {
+            background-color: #1a2278;
+        }
+        .btn-hover-secondary:hover {
+            background-color: #e5b75f;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" alt="Logo LabSystem" class="splash-logo mb-4">
+        <p class="text-white text-xl font-bold">Carregando...</p>
+    </div>
+
+    <header class="bg-white shadow-lg sticky top-0 z-20">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-7xl">
+            <div class="flex items-center space-x-3">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" alt="Logo LabSystem" class="h-8 w-auto">
+                <span class="text-2xl font-black text-primary hidden sm:block">LabSystem</span>
+            </div>
+            
+            <nav class="flex space-x-4">
+                <a href="#funcionalidades" class="text-gray-600 hover:text-primary font-medium transition hidden sm:block">Recursos</a>
+                <a href="./demo/index.html" class="text-gray-600 hover:text-primary font-medium transition hidden sm:block">Demo</a>
+                <a href="./contato.html" class="px-4 py-1.5 bg-secondary text-primary font-bold rounded-lg shadow-md transition duration-300 btn-hover-secondary">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 pt-10 pb-16 max-w-7xl">
+        <section class="text-center mb-16 bg-white p-8 md:p-16 rounded-3xl shadow-2xl border-t-8 border-secondary">
+            <span class="text-secondary font-extrabold text-xl block mb-3 uppercase">✅ Custo Zero de Infraestrutura ✅</span>
+            <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black text-primary mb-4 leading-tight">
+                LabSystem: A Gestão Serverless que Vende Mais.
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-700 max-w-4xl mx-auto mb-10 font-light">
+                O ecossistema digital completo (CMS + Totem) que **elimina servidores caros**, oferecendo autonomia, velocidade e design profissional para qualquer tipo de comércio.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="https://wa.me/5511943198316" target="_blank" class="px-8 py-4 bg-primary text-white font-extrabold rounded-xl shadow-2xl transition duration-300 text-xl flex items-center justify-center space-x-2 btn-hover-primary">
+                    <span>Teste Grátis por 30 Dias ✅</span>
+                </a>
+                <a href="https://wa.me/5511943198316" target="_blank" class="px-8 py-4 bg-secondary text-primary font-extrabold rounded-xl shadow-2xl transition duration-300 text-xl flex items-center justify-center space-x-2 border-2 border-primary btn-hover-secondary">
+                    <span>Solicite Sua Chave 🔑</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-black text-primary text-center mb-10">
+                O Conceito Serverless: Autonomia e Custo Zero
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-primary text-center">
+                    <div class="text-4xl mb-3 text-primary">💰</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Adeus, Mensalidade Físicas</h3>
+                    <p class="text-gray-600">Eliminamos a necessidade de servidores (VPS) e banco de dados complexos. **Custo operacional mínimo**.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-primary text-center">
+                    <div class="text-4xl mb-3 text-primary">⚡</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Atualização Instantânea</h3>
+                    <p class="text-gray-600">Publique no CMS e a atualização é enviada via JSONBin (Nuvem) para o Totem **em tempo real**.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-primary text-center">
+                    <div class="text-4xl mb-3 text-primary">💻</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Pura Tecnologia Web</h3>
+                    <p class="text-gray-600">Desenvolvido puramente com HTML, CSS e JavaScript, garantindo **velocidade, leveza e flexibilidade**.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-16 bg-primary text-white p-8 md:p-12 rounded-3xl shadow-2xl" id="funcionalidades">
+            <h2 class="text-3xl font-black text-secondary text-center mb-10">
+                Recursos Chave do LabSystem
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <div class="text-center">
+                    <div class="text-secondary text-5xl mb-2">📦</div>
+                    <h3 class="text-xl font-bold mb-1">Estoque Integrado</h3>
+                    <p class="text-gray-200 text-sm">Controle o estoque e evite vender o que acabou. Evite frustrações do cliente.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-secondary text-5xl mb-2">🎨</div>
+                    <h3 class="text-xl font-bold mb-1">Customização Total</h3>
+                    <p class="text-gray-200 text-sm">Cores, logo, fundo e música ambiente definidos por você, a qualquer momento.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-secondary text-5xl mb-2">💬</div>
+                    <h3 class="text-xl font-bold mb-1">Pedido Pronto no Zap</h3>
+                    <p class="text-gray-200 text-sm">O cliente finaliza e o pedido chega **estruturado** no seu WhatsApp.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-secondary text-5xl mb-2">📱</div>
+                    <h3 class="text-xl font-bold mb-1">Auto Adaptável (100% Responsivo)</h3>
+                    <p class="text-gray-200 text-sm">Funciona perfeitamente em Totens, tablets, celulares ou computadores.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16 text-center p-8 bg-secondary rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-black text-primary mb-6">
+                Quer Ver o CMS e o Totem em Ação?
+            </h2>
+            <p class="text-xl text-gray-800 mb-8">
+                Explore a interface de gestão e simule um pedido de cliente em nossa área de demonstração.
+            </p>
+
+            <a href="./demo/index.html" class="px-8 py-3 bg-primary text-white font-extrabold rounded-xl shadow-lg transition duration-300 text-xl flex items-center justify-center mx-auto max-w-sm btn-hover-primary">
+                Acessar Área de Demonstração
+            </a>
+        </section>
+        
+    </main>
+
+    <footer class="bg-gray-800 text-white p-6 mt-10">
+        <div class="container mx-auto px-4 text-center text-sm max-w-7xl">
+            <p>&copy; 2025 LabSystem. Todos os direitos reservados. | Arquitetura Serverless.</p>
+            <nav class="mt-2 space-x-4 text-xs">
+                <a href="./termos.html" class="underline hover:text-secondary">Termos de Uso</a>
+                <a href="./contato.html" class="underline hover:text-secondary">Fale Conosco</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splash-screen');
+            const body = document.body;
+            
+            const SPLASH_DURATION = 2900; 
+            
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    body.style.opacity = '1'; 
+                }, 500); 
+            }, SPLASH_DURATION);
+        });
+    </script>
+</body>
+  </html>
