@@ -10,26 +10,53 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* APLICANDO A NOVA PALETA DE CORES LABRIOLAG (ShowHome) */
+        /* PALETA DE CORES LABRIOLAG */
         :root {
             --azul-eletrico: #0066FF; /* Cor Principal Vibrante */
             --amarelo: #FFCC00; /* Cor de Destaque e Interação */
             --preto: #000000;
             --branco: #FFFFFF;
             --cinza-escuro: #1a1a1a;
-            --font-principal: 'Montserrat', sans-serif; /* Mais elegante para o ShowHome */
-            --font-secundaria: 'Poppins', sans-serif;
+            --color-danger: #ef4444; /* Vermelho Revenda */
+            --font-principal: 'Montserrat', sans-serif;
         }
-        
-        /* Estilos do Splash Screen (Recebimento) */
+
+        /* RESET e ESTRUTURA BÁSICA */
+        body {
+            font-family: var(--font-principal);
+            background-color: var(--branco);
+            color: var(--preto);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden; /* Evita scroll horizontal em mobile */
+        }
+        #content {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        #content.show { opacity: 1; }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* SPLASH SCREEN (UX: Transição Suave) */
         .splash-screen {
-            background-color: var(--cinza-escuro); /* Fundo sóbrio para destacar o logo */
-            /* ... (Manter o restante da animação) ... */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background-color: var(--cinza-escuro);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -38,58 +65,23 @@
             visibility: visible;
             transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
         }
-
+        .splash-screen.fade-out { opacity: 0; visibility: hidden; }
         .splash-logo-text {
             color: var(--branco);
-            font-family: var(--font-principal);
             font-size: 32px;
             font-weight: 900;
             animation: bounceIn 1s ease-in-out;
         }
-        .splash-logo-text span {
-            color: var(--azul-eletrico);
-        }
+        .splash-logo-text span { color: var(--amarelo); }
+        @keyframes bounceIn { /* ... (Manter animação) ... */ }
 
-        /* Estilos Gerais */
-        body {
-            font-family: var(--font-principal);
-            background-color: var(--branco);
-            color: var(--preto);
-            /* ... (Manter o restante do layout) ... */
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            position: relative;
-        }
+        /* CABEÇALHO E LOGO */
+        header { padding: 20px 0; position: absolute; top: 0; width: 100%; z-index: 99; }
+        header .container { display: flex; justify-content: center; align-items: center; }
+        .logo a { font-size: 24px; font-weight: 700; color: var(--preto); }
+        .logo a span { color: var(--azul-eletrico); }
 
-        /* Cabeçalho (Minimalista, para não desviar o foco) */
-        header {
-            padding: 30px 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 99;
-        }
-        header .container {
-             display: flex;
-             justify-content: center; /* Centralizar logo */
-             align-items: center;
-        }
-        .logo a {
-            font-family: var(--font-principal);
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--preto);
-        }
-        .logo a span {
-            color: var(--azul-eletrico);
-        }
-
-        /* Botão ACESSAR (Coração da Interação) */
+        /* BOTÃO ACESSAR (Desktop e Mobile) */
         .acessar-btn {
             position: absolute;
             top: 50%;
@@ -97,18 +89,17 @@
             transform: translate(-50%, -50%);
             z-index: 50;
         }
-        
         .acessar-btn button {
-            background-color: var(--amarelo); /* Amarelo Destaque */
+            background-color: var(--amarelo);
             color: var(--preto);
-            font-size: 28px;
-            padding: 25px 50px;
+            font-size: 22px; /* Reduzido levemente para mobile */
+            padding: 20px 40px;
             border-radius: 50px;
             font-weight: 900;
-            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.4);
+            transition: all 0.3s ease;
         }
 
-        /* Menu de Opções (Modal - O Eixo Central) */
+        /* MENU DE OPÇÕES (MODAL) */
         .options-menu {
             display: none;
             position: absolute;
@@ -116,69 +107,80 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: rgba(255, 255, 255, 0.98);
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             text-align: center;
             z-index: 60;
-            max-width: 400px;
-            width: 90%;
+            width: 90%; /* Ocupa 90% da largura em mobile */
+            max-width: 450px; /* Limite em desktop */
             border-top: 5px solid var(--amarelo);
+            box-sizing: border-box; /* Garante que o padding não estoure a largura */
         }
         .options-menu h2 {
-            font-family: var(--font-principal);
             font-weight: 700;
             color: var(--azul-eletrico);
-            margin-bottom: 10px;
+            font-size: 24px;
         }
-        .options-menu p.slogan {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 30px;
-        }
-
         .options-menu a {
+            display: block;
             background-color: var(--azul-eletrico);
             color: var(--branco);
-            font-weight: 600;
-            padding: 15px 30px;
+            padding: 15px 15px;
             margin-bottom: 15px;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
+            text-align: left; /* Melhor UX para botões em mobile */
         }
-        
-        .options-menu a:hover {
-            background-color: #0052cc;
-        }
-        
-        /* Formulário de Login (Manter o estilo) */
-        .login-form-container {
-            /* ... (Manter estilos originais) ... */
-            border-top: 5px solid var(--amarelo);
-            background-color: var(--branco);
-        }
+        .options-menu a i { margin-right: 10px; }
 
-        /* Botões Flutuantes (Rodapé - Até logo) */
+        /* RODAPÉ E BOTÕES FLUTUANTES (UX: Acessibilidade) */
         .floating-btn {
-            bottom: 30px;
-            width: 65px;
-            height: 65px;
+            position: fixed;
+            bottom: 20px; /* Mais perto da borda em mobile */
+            width: 55px; /* Menor em mobile */
+            height: 55px;
+            font-size: 22px;
+            z-index: 100;
         }
-        .floating-contact {
-            right: 30px;
-            background-color: var(--amarelo);
-            color: var(--preto);
-        }
-        
-        /* Rodapé */
+        .floating-contact { right: 20px; }
+
         footer {
             background-color: var(--cinza-escuro);
             color: #ccc;
-            padding: 25px 0;
-            font-size: 14px;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 13px;
         }
-        footer a {
-            color: var(--amarelo);
+        footer p { margin: 5px 0; }
+        footer .container { padding: 0 20px; }
+
+        /* ======================================= */
+        /* RESPONSIVIDADE (PARA TELAS GRANDES) */
+        /* ======================================= */
+        @media (min-width: 768px) {
+            .logo a { font-size: 32px; } /* Logo maior no desktop */
+            
+            .acessar-btn button {
+                font-size: 28px;
+                padding: 25px 50px;
+            }
+
+            .options-menu {
+                padding: 40px;
+                max-width: 500px; /* Mais espaço no desktop */
+            }
+            .options-menu h2 { font-size: 28px; }
+
+            .floating-btn {
+                bottom: 30px;
+                width: 65px;
+                height: 65px;
+                font-size: 24px;
+            }
+            .floating-contact { right: 30px; }
+
+            footer { font-size: 14px; }
         }
     </style>
 </head>
@@ -193,7 +195,7 @@
             <div class="container">
                 <div class="logo">
                     <a href="index.html">
-                        LABRI<span style="color: var(--amarelo);">OLAG</span>
+                        LABRI<span style="color: var(--azul-eletrico);">OLAG</span>
                     </a>
                 </div>
             </div>
@@ -207,15 +209,13 @@
             <h2>LABORATÓRIO DE IDEIAS INFLUENTES</h2>
             <p class="slogan">O ecossistema de projetos que transformam sua presença digital.</p>
             
-            <a href="LabSystem/index.html"><i class="fas fa-magic mr-2"></i> Portal LabSystem (Soluções)</a>
+            <a href="LabSystem/index.html"><i class="fas fa-desktop"></i> Portal LabSystem (Soluções de Negócios)</a>
+            <a href="LabSystem/Shop/revenda.html" style="background-color: var(--color-danger);"><i class="fas fa-handshake"></i> Área de Parceria (Revenda Master)</a>
+            <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" style="background-color: #4CAF50;"><i class="fas fa-gamepad"></i> MimoGames / Projetos Interativos</a>
             
-            <a href="LabSystem/Shop/revenda.html" style="background-color: var(--color-danger);"><i class="fas fa-handshake mr-2"></i> Área de Parceria (Revenda)</a>
+            <a href="#" id="login-link" style="background-color: var(--cinza-escuro);"><i class="fas fa-user-lock"></i> Acesso Master / Gestão</a>
             
-            <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" style="background-color: #4CAF50;"><i class="fas fa-gamepad mr-2"></i> MimoGames / Projetos Interativos</a>
-            
-            <a href="#" id="login-link" style="background-color: #505050;"><i class="fas fa-user-lock mr-2"></i> Acesso Master / Gestão</a>
-            
-             <p style="margin-top: 15px; font-size: 14px;"><a href="#" id="back-to-menu-link" style="color: var(--azul-eletrico); font-weight: 600;">&larr; Voltar</a></p>
+            <p style="margin-top: 20px; font-size: 14px;"><a href="#" id="back-to-main-link" style="color: var(--azul-eletrico); font-weight: 600;">&larr; Voltar à tela inicial</a></p>
         </div>
         
         <div class="login-form-container" id="login-form-container">
@@ -250,43 +250,45 @@
                     splash.style.display = 'none';
                     content.classList.add('show');
                 }, 1000);
-            }, 2000); // 2 segundos de show
+            }, 1500); // 1.5s de show + 1s de fade
 
             // Referências de Elementos
             const mainAcessBtn = document.getElementById('main-acess-btn');
             const optionsMenu = document.getElementById('options-menu');
             const loginLink = document.getElementById('login-link');
             const loginFormContainer = document.getElementById('login-form-container');
-            const backToMenuLink = document.getElementById('back-to-menu-link');
-            const backToMenuLink2 = document.getElementById('back-to-menu-link-2'); // Novo link para voltar do login
+            const backToMainLink = document.getElementById('back-to-main-link'); // Novo link para voltar
+            const backToMenuLink2 = document.getElementById('back-to-menu-link-2'); 
             const floatingContactBtn = document.querySelector('.floating-contact');
 
-            // Lógica de Transição (Guestologia)
+            // 1. ACESSAR -> Abre o Menu
             mainAcessBtn.addEventListener('click', () => {
                 mainAcessBtn.style.display = 'none';
                 optionsMenu.style.display = 'block';
             });
             
+            // 2. LOGIN -> Abre o Formulário de Login
             loginLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 optionsMenu.style.display = 'none';
                 loginFormContainer.style.display = 'block';
             });
             
-            // Voltar ao Menu (tanto do link do menu, quanto do formulário de login)
-            backToMenuLink.addEventListener('click', (e) => {
+            // 3. Voltar do Menu de Opções
+            backToMainLink.addEventListener('click', (e) => {
                  e.preventDefault();
                  optionsMenu.style.display = 'none';
                  mainAcessBtn.style.display = 'block';
             });
+            
+            // 4. Voltar do Formulário de Login
             backToMenuLink2.addEventListener('click', (e) => {
                  e.preventDefault();
                  loginFormContainer.style.display = 'none';
                  optionsMenu.style.display = 'block';
             });
 
-
-            // Redirecionamento de Contato Flutuante (WhatsApp)
+            // 5. Redirecionamento de Contato Flutuante (WhatsApp)
             floatingContactBtn.addEventListener('click', () => {
                 window.open("https://wa.me/5511943198316", '_blank');
             });
