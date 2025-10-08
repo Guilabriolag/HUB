@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem: Solução Digital Completa para Comércios e Serviços</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Cores Definidas pelo Usuário */
+        :root {
+            --color-primary: #1f298f; /* Azul Escuro (Tema Principal) */
+            --color-secondary: #ffcf69; /* Amarelo/Ouro (Destaques/Botões) */
+        }
+
+        /* Classes de Estilo Personalizadas */
+        .bg-primary-custom { background-color: var(--color-primary); }
+        .text-secondary-custom { color: var(--color-secondary); }
+        .bg-secondary-custom { background-color: var(--color-secondary); }
+        .border-primary-custom { border-color: var(--color-primary); }
+        .text-primary-custom { color: var(--color-primary); }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fb;
+        }
+        
+        /* Estilo para o cabeçalho fixo */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        /* Efeito de Destaque nas Abas */
+        .tab-button {
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            border-bottom: 3px solid var(--color-secondary);
+            color: var(--color-primary);
+            font-weight: 700;
+            background-color: #ffffff;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            transform: translateY(2px);
+        }
+
+        /* Modal para Vídeo */
+        .modal-video {
+            background-color: rgba(0, 0, 0, 0.85);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Container do iframe para proporção 16:9 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Lista de Segmentos */
+        .segment-list li {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+        }
+        .segment-list li::before {
+            content: "•";
+            color: var(--color-secondary);
+            font-weight: 900;
+            display: inline-block; 
+            width: 1em;
+            margin-left: -1em;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="sticky-header bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="flex items-center space-x-3">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+                        alt="Logo Pequena" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-extrabold text-primary-custom">LabSystem <span class="text-secondary-custom">HUB</span></h1>
+                </a>
+            </div>
+            
+            <div class="hidden md:flex space-x-4 items-center">
+                <a href="revenda.html" class="px-4 py-2 text-sm font-bold rounded-full bg-red-600 text-white hover:bg-red-700 transition shadow-md">
+                    <i class="fas fa-handshake mr-1"></i> Seja Revendedor
+                </a>
+                <a href="planos.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                    Ver Planos &rarr;
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <section class="text-center mb-16 p-10 rounded-xl bg-primary-custom text-white shadow-2xl">
+            <h2 class="text-5xl sm:text-6xl font-black mb-4 leading-tight">
+                Vendas & Atendimento 24h
+            </h2>
+            <p class="text-xl font-light max-w-4xl mx-auto mb-8">
+                Deixe seu cardápio, catálogo ou portfólio digital fazer o trabalho por você, enviando pedidos organizados direto para o **seu WhatsApp**.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="planos.html" class="inline-block px-10 py-4 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover:bg-yellow-400 transition transform hover:scale-105">
+                    Começar Agora! (Planos Anuais) &rarr;
+                </a>
+                <button onclick="openVideoModal()" class="inline-flex items-center justify-center px-10 py-4 text-xl font-black rounded-full border-2 border-white text-white shadow-xl hover:bg-white hover:text-primary-custom transition transform hover:scale-105">
+                    <i class="fas fa-video mr-2"></i> Ver Tour Curto
+                </button>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h3 class="text-3xl font-black text-primary-custom mb-8 text-center">Por que 80+ Segmentos Escolhem o LabSystem?</h3>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom transform hover:scale-[1.02] transition duration-300">
+                    <div class="text-5xl mb-3 text-secondary-custom"><i class="fas fa-bolt"></i></div>
+                    <h4 class="text-xl font-bold text-primary-custom mb-2">Publicação Instantânea</h4>
+                    <p class="text-gray-600">Altere preços ou status no CMS e publique instantaneamente para todos os seus canais (Link, Totem, etc.).</p>
+                </div>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom transform hover:scale-[1.02] transition duration-300">
+                    <div class="text-5xl mb-3 text-secondary-custom"><i class="fab fa-whatsapp"></i></div>
+                    <h4 class="text-xl font-bold text-primary-custom mb-2">Comunicação Direta</h4>
+                    <p class="text-gray-600">O cliente faz o pedido ou solicita o serviço e a mensagem chega formatada e clara no seu WhatsApp.</p>
+                </div>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom transform hover:scale-[1.02] transition duration-300">
+                    <div class="text-5xl mb-3 text-secondary-custom"><i class="fas fa-trophy"></i></div>
+                    <h4 class="text-xl font-bold text-primary-custom mb-2">Sem Taxas por Venda</h4>
+                    <p class="text-gray-600">Seu lucro é 100%. Pague a anuidade (preço fixo) e utilize o sistema quantas vezes quiser, sem surpresas.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="mb-16">
+            <h3 class="text-3xl font-black text-primary-custom mb-8 text-center">Sua Solução, Seja Qual For o Seu Negócio</h3>
+            
+            <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl">
+                <div class="flex flex-wrap justify-center border-b border-gray-200 p-4">
+                    <button id="tab-alimentacao-btn" class="tab-button active px-8 py-3 mx-2 text-lg font-medium text-primary-custom hover:bg-gray-50 transition" onclick="showTab('alimentacao')">
+                        🍔 Alimentação / Bebidas
+                    </button>
+                    <button id="tab-comercio-btn" class="tab-button px-8 py-3 mx-2 text-lg font-medium text-primary-custom hover:bg-gray-50 transition" onclick="showTab('comercio')">
+                        🛒 Comércio em Geral
+                    </button>
+                    <button id="tab-servicos-btn" class="tab-button px-8 py-3 mx-2 text-lg font-medium text-primary-custom hover:bg-gray-50 transition" onclick="showTab('servicos')">
+                        ⚙️ Prestação de Serviços
+                    </button>
+                </div>
+
+                <div class="p-8">
+                    
+                    <div id="alimentacao" class="tab-content-item">
+                        <p class="text-lg text-gray-700 mb-6">Seja um pequeno quiosque ou uma grande pizzaria. O LabSystem é a ferramenta ideal para cardápios e gestão de delivery.</p>
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-12">
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Lanchonete, Pizzaria, Hamburgueria, Restaurante</li>
+                                <li>Marmitaria / Prato Feito, Pastelaria, Sorveteria</li>
+                                <li>Doceria / Confeitaria, Padaria / Panificadora</li>
+                                <li>Churrascaria, Espetaria / Porções, Cafeteria</li>
+                            </ul>
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Bar / Boteco, Quiosque / Food Truck</li>
+                                <li>Distribuidora de Bebidas, Adega, Casa de Sucos</li>
+                                <li>Vendas de Lanches Naturais / Fit</li>
+                                <li>Cantina Escolar, <span class="font-bold text-primary-custom">E todos os outros!</span></li>
+                            </ul>
+                            <div class="p-4 bg-gray-100 rounded-lg hidden md:block">
+                                <h5 class="font-bold text-primary-custom mb-2">Exemplo de Uso:</h5>
+                                <p class="text-sm text-gray-700">Um restaurante usa o Totem Digital nas mesas e o link para delivery, centralizando os pedidos no CMS.</p>
+                                <a href="../demo/index.html" target="_blank" class="text-sm text-secondary-custom font-bold underline mt-2 inline-block">Ver Demo &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="comercio" class="tab-content-item hidden">
+                        <p class="text-lg text-gray-700 mb-6">Transforme seu estoque em um catálogo de vendas 24h. O cliente navega, escolhe e manda o pedido direto.</p>
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-12">
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Mercearia / Minimercado, Açougue, Hortifruti</li>
+                                <li>Loja de Roupas (M/F/I), Calçados, Acessórios</li>
+                                <li>Loja de Cosméticos, Presentes, Brinquedos</li>
+                                <li>Papelaria, Utilidades Domésticas, Decoração</li>
+                                <li>Loja de Celulares, Eletrodomésticos, Móveis</li>
+                            </ul>
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Loja de Materiais de Construção, Ferragens</li>
+                                <li>Loja de Autopeças / Motos, Agropecuária, Pet Shop</li>
+                                <li>Farmácia / Drogaria, Produtos Naturais / Suplementos</li>
+                                <li>Floricultura, Distribuidora de Água e Gás</li>
+                                <li>Brechó / Sebo, Loja de Instrumentos Musicais</li>
+                            </ul>
+                             <div class="p-4 bg-gray-100 rounded-lg hidden md:block">
+                                <h5 class="font-bold text-primary-custom mb-2">Exemplo de Uso:</h5>
+                                <p class="text-sm text-gray-700">Uma loja de roupas usa a "vitrine digital" para lançar coleções e receber reservas direto do catálogo.</p>
+                                <a href="../demo/index.html" target="_blank" class="text-sm text-secondary-custom font-bold underline mt-2 inline-block">Ver Demo &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="servicos" class="tab-content-item hidden">
+                         <p class="text-lg text-gray-700 mb-6">O LabSystem funciona como um portfólio digital para solicitações de orçamento, agendamentos e propostas.</p>
+                         <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-12">
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Cabeleireiro, Barbearia, Manicure, Esteticista</li>
+                                <li>Técnico de Informática, Celulares, Eletricista</li>
+                                <li>Encanador, Pedreiro, Pintor, Marceneiro</li>
+                                <li>Mecânico (Carros/Motos), Funileiro, Borracheiro</li>
+                                <li>Arquiteto, Engenheiro, Paisagista, Decorador</li>
+                            </ul>
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Fisioterapia, Psicólogo, Nutricionista, Pilates</li>
+                                <li>Fotografia, Gráfica Rápida, Marketing Digital</li>
+                                <li>Contabilidade, Consultoria Financeira, Despachante</li>
+                                <li>Professor Particular, Autoescola, Cursos</li>
+                                <li>Motoboy / Delivery, Transporte Local, Guincho</li>
+                            </ul>
+                             <div class="p-4 bg-gray-100 rounded-lg hidden md:block">
+                                <h5 class="font-bold text-primary-custom mb-2">Exemplo de Uso:</h5>
+                                <p class="text-sm text-gray-700">Um barbeiro usa o link para mostrar seus serviços e receber pedidos de agendamento no WhatsApp.</p>
+                                <a href="../demo/index.html" target="_blank" class="text-sm text-secondary-custom font-bold underline mt-2 inline-block">Ver Demo &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fixed bottom-0 left-0 right-0 z-10 bg-secondary-custom shadow-2xl p-4 text-center">
+             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                <p class="text-lg font-bold text-primary-custom mb-2 md:mb-0">
+                    Comece Hoje e Receba Pedidos em Minutos.
+                </p>
+                <a href="planos.html" class="inline-block px-8 py-3 text-lg font-black rounded-full bg-primary-custom text-white shadow-lg hover:bg-indigo-700 transition">
+                    Planos Anuais (A Partir de R$ 99,00) &rarr;
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-28 bg-primary-custom text-white p-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
+            <p class="mt-2 text-xs text-gray-400">
+                <a href="../termos.html" class="underline hover:text-secondary-custom">Termos de Uso</a> | 
+                <a href="../contato.html" class="underline hover:text-secondary-custom">Fale Conosco</a>
+            </p>
+        </div>
+    </footer>
+
+    <div id="video-modal" class="modal-video fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="closeVideoModal(event)">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl" onclick="event.stopPropagation()">
+            <div class="p-4 flex justify-between items-center bg-primary-custom rounded-t-xl">
+                 <h3 class="text-xl font-bold text-white">🎬 Tour Rápido: Como Funciona</h3>
+                 <button onclick="closeVideoModal()" class="text-white hover:text-secondary-custom text-3xl leading-none">&times;</button>
+            </div>
+            
+            <div class="video-container">
+                <iframe id="video-player" width="100%" height="100%" src="https://www.youtube.com/embed/9rGbQizvwfk?rel=0&autoplay=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            
+            <div class="p-4 bg-gray-50 rounded-b-xl text-center">
+                <p class="text-sm font-semibold text-gray-700">
+                    O LabSystem funciona em 2 vídeos: Abertura/Fechamento e Publicação de Alterações.
+                </p>
+                 <a href="https://youtube.com/shorts/z1dWr5Limyg?si=hbb6UqSp9vw2B6bA" target="_blank" class="text-primary-custom underline font-bold hover:text-indigo-700 transition">
+                    Ver Vídeo 2 (Publicação) &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Função do MODAL DE VÍDEO
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('video-player');
+        const initialVideoSrc = videoPlayer.src.replace('autoplay=1', 'autoplay=0'); // Garante que começa sem autoplay
+
+        function openVideoModal() {
+            videoPlayer.src = initialVideoSrc.replace('autoplay=0', 'autoplay=1'); // Ativa o autoplay ao abrir
+            videoModal.classList.remove('hidden');
+            videoModal.classList.add('flex');
+        }
+
+        function closeVideoModal(event) {
+            // Fecha se clicar no botão X ou fora do modal (overlay)
+            if (event && event.target.id === 'video-modal' || !event) {
+                videoModal.classList.add('hidden');
+                // Para o vídeo, resetando o src para o estado sem autoplay
+                videoPlayer.src = initialVideoSrc.replace('autoplay=1', 'autoplay=0'); 
+                videoModal.classList.remove('flex');
+            }
+        }
+        
+        // Função de GESTÃO DE ABAS
+        function showTab(tabId) {
+            // Esconde todo o conteúdo
+            document.querySelectorAll('.tab-content-item').forEach(item => {
+                item.classList.add('hidden');
+            });
+
+            // Remove o estado ativo de todos os botões
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Mostra o conteúdo da aba selecionada
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Ativa o botão da aba selecionada
+            document.getElementById(`tab-${tabId}-btn`).classList.add('active');
+        }
+
+        // Inicializa a primeira aba
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('alimentacao');
+        });
+    </script>
+
+</body>
+</html>
