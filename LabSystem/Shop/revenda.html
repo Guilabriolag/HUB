@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem Revenda: Seu Lucro é 100%</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Cores Definidas pelo Usuário */
+        :root {
+            --color-primary: #1f298f; /* Azul Escuro (Tema Principal) */
+            --color-secondary: #ffcf69; /* Amarelo/Ouro (Destaques/Botões) */
+            --color-danger: #ef4444; /* Vermelho (Para destaque de Revenda) */
+        }
+
+        /* Classes de Estilo Personalizadas */
+        .bg-primary-custom { background-color: var(--color-primary); }
+        .text-secondary-custom { color: var(--color-secondary); }
+        .bg-secondary-custom { background-color: var(--color-secondary); }
+        .border-primary-custom { border-color: var(--color-primary); }
+        .text-primary-custom { color: var(--color-primary); }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fb;
+        }
+        
+        /* Estilo para o cabeçalho fixo */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Destaque para o Lote de 10 Licenças */
+        .best-value {
+            border: 3px solid var(--color-danger);
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="sticky-header bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="flex items-center space-x-3">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+                        alt="Logo Pequena" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-extrabold text-primary-custom">LabSystem <span class="text-secondary-custom">HUB</span></h1>
+                </a>
+            </div>
+            
+            <div class="hidden md:flex space-x-4">
+                <a href="index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                    <i class="fas fa-store mr-1"></i> Página Comerciante
+                </a>
+                <a href="../contato.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover:bg-yellow-400 transition shadow-md">
+                    Fale com a Revenda
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <section class="text-center mb-16 p-10 rounded-xl bg-red-600 text-white shadow-2xl">
+            <span class="text-secondary-custom font-extrabold text-2xl block mb-3 uppercase">Seu Negócio é Lucro</span>
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-4 leading-tight">
+                Portal do Revendedor Oficial: LabSystem
+            </h2>
+            <p class="text-xl font-light max-w-4xl mx-auto">
+                Adquira as chaves de acesso anuais e garanta **100% do lucro** na revenda. Zero mensalidade para você, máxima autonomia.
+            </p>
+        </section>
+
+        <section class="mb-16">
+             <div class="p-8 bg-white rounded-xl shadow-2xl border-b-8 border-primary-custom">
+                <h3 class="text-3xl font-black text-primary-custom mb-4 text-center">Inicie Sua Revenda em 3 Passos Simples</h3>
+                <div class="grid md:grid-cols-3 gap-6 text-center mt-6">
+                    <div class="p-4 rounded-lg bg-gray-50 border-t-4 border-secondary-custom">
+                        <span class="text-4xl block mb-2">1️⃣</span>
+                        <p class="font-bold text-primary-custom">Assine o Contrato</p>
+                        <p class="text-sm text-gray-600">Formalize a parceria para ter acesso às chaves Master Key.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-gray-50 border-t-4 border-secondary-custom">
+                        <span class="text-4xl block mb-2">2️⃣</span>
+                        <p class="font-bold text-primary-custom">Compre Seu Lote</p>
+                        <p class="text-sm text-gray-600">Adquira o pacote de 5, 10 ou mais licenças com nosso preço B2B.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-gray-50 border-t-4 border-secondary-custom">
+                        <span class="text-4xl block mb-2">3️⃣</span>
+                        <p class="font-bold text-primary-custom">Ative e Lucre</p>
+                        <p class="text-sm text-gray-600">Revenda a licença pelo preço que quiser e ative seu cliente na hora.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="mb-16 p-8 bg-white rounded-xl shadow-2xl border-b-8 border-red-600">
+            <h3 class="text-3xl font-black text-primary-custom mb-10 text-center">Pacotes de Chaves Anuais (Master Key)</h3>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-6 items-center text-center">
+                    
+                    <div class="p-6 bg-gray-50 rounded-xl shadow-lg border-t-4 border-primary-custom flex flex-col h-full">
+                        <h4 class="text-2xl font-black text-primary-custom mb-2">5 Licenças</h4>
+                        <p class="text-gray-600 mb-4 font-semibold">Lote Mínimo</p>
+                        <div class="my-4">
+                            <span class="text-4xl font-extrabold text-primary-custom">R$ 150,00</span>
+                            <span class="text-lg text-gray-600 block">por chave</span>
+                        </div>
+                        <div class="flex-grow">
+                             <p class="text-sm text-gray-600">Investimento Total: R$ 750,00</p>
+                             <p class="text-sm text-gray-600 font-bold mt-1">Lucro potencial (R$ 199/venda): R$ 245,00</p>
+                        </div>
+                        <a href="../contato.html" class="mt-auto block w-full px-4 py-3 bg-primary-custom text-white font-black rounded-full shadow-md hover:bg-indigo-700 transition">
+                            Solicitar Lote &rarr;
+                        </a>
+                    </div>
+
+                    <div class="p-8 bg-white rounded-xl shadow-xl best-value flex flex-col h-full">
+                         <h4 class="text-3xl font-black text-red-600 mb-2">10 Licenças</h4>
+                        <p class="text-gray-700 mb-4 font-semibold">MELHOR CUSTO-BENEFÍCIO</p>
+                        <div class="my-4">
+                            <span class="text-5xl font-extrabold text-red-600">R$ 120,00</span>
+                            <span class="text-lg text-gray-700 block">por chave</span>
+                        </div>
+                         <div class="flex-grow">
+                             <p class="text-sm text-gray-600">Investimento Total: R$ 1.200,00</p>
+                             <p class="text-sm text-gray-600 font-bold mt-1">Lucro potencial (R$ 199/venda): R$ 790,00</p>
+                        </div>
+                        <a href="../contato.html" class="mt-auto block w-full px-6 py-4 bg-secondary-custom text-primary-custom font-black text-lg rounded-full shadow-xl hover:bg-yellow-400 transition transform hover:scale-[1.02]">
+                            Comprar Agora &rarr;
+                        </a>
+                    </div>
+
+                    <div class="p-6 bg-gray-50 rounded-xl shadow-lg border-t-4 border-primary-custom flex flex-col h-full">
+                        <h4 class="text-2xl font-black text-primary-custom mb-2">20+ Licenças</h4>
+                        <p class="text-gray-600 mb-4 font-semibold">Parceria Exclusiva</p>
+                        <div class="my-4">
+                            <span class="text-4xl font-extrabold text-primary-custom">Sob Consulta</span>
+                            <span class="text-lg text-gray-600 block">negociação direta</span>
+                        </div>
+                        <div class="flex-grow">
+                             <p class="text-sm text-gray-600">Descontos progressivos de até 50%</p>
+                             <p class="text-sm text-gray-600 font-bold mt-1">Benefícios de Master-Revenda</p>
+                        </div>
+                        <a href="../contato.html" class="mt-auto block w-full px-4 py-3 bg-primary-custom text-white font-black rounded-full shadow-md hover:bg-indigo-700 transition">
+                            Falar com Gerente &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-500 mt-8 text-center">
+                    *Preço de revenda sugerido para o cliente final é de R$ 199,00/ano (Plano Anual). Você define o preço de venda.
+                    <a href="planos.html" class="underline font-bold text-primary-custom hover:text-indigo-700 ml-2">Ver Planos do Cliente &rarr;</a>
+                </p>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h3 class="text-3xl font-black text-primary-custom mb-8 text-center">Suas Vantagens como Revendedor Oficial</h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-600">
+                    <h4 class="text-xl font-bold text-primary-custom mb-2"><i class="fas fa-percent mr-2 text-secondary-custom"></i> Margem de 100%</h4>
+                    <p class="text-gray-600">Você adquire a chave de uso e vende pelo preço final que desejar. Todo o valor de venda fica com você, sem comissões ou taxas LabSystem.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-600">
+                    <h4 class="text-xl font-bold text-primary-custom mb-2"><i class="fas fa-rocket mr-2 text-secondary-custom"></i> Ativação Imediata</h4>
+                    <p class="text-gray-600">Com a Master Key, você ativa o CMS do seu cliente em segundos. Não há espera, garantindo a satisfação e a agilidade na implantação.</p>
+                </div>
+
+                 <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-600">
+                    <h4 class="text-xl font-bold text-primary-custom mb-2"><i class="fas fa-lock mr-2 text-secondary-custom"></i> Produto Serverless</h4>
+                    <p class="text-gray-600">Venda um sistema que não tem quedas, não precisa de hospedagem e tem manutenção zero. Foco total nas vendas, sem dores de cabeça técnicas.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-600">
+                    <h4 class="text-xl font-bold text-primary-custom mb-2"><i class="fas fa-headset mr-2 text-secondary-custom"></i> Suporte B2B</h4>
+                    <p class="text-gray-600">Você terá um canal de suporte dedicado e prioritário para auxiliar nas dúvidas mais complexas ou na contratação de novos lotes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-primary-custom text-white p-10 rounded-xl shadow-2xl text-center">
+             <h3 class="text-3xl font-extrabold mb-4">Pronto para Mudar de Nível e Lucrar de Verdade?</h3>
+             <p class="text-lg font-light mb-6">Fale com nosso gerente de contas e solicite o contrato. Seja um Revendedor Oficial LabSystem.</p>
+             <a href="../contato.html" class="inline-block px-10 py-3 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover:bg-yellow-400 transition transform hover:scale-105">
+                Falar com a Equipe de Revenda &rarr;
+             </a>
+        </section>
+
+    </main>
+
+    <footer class="mt-16 bg-primary-custom text-white p-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
+            <p class="mt-2 text-xs text-gray-400">
+                <a href="../termos.html" class="underline hover:text-secondary-custom">Termos de Uso</a> | 
+                <a href="../contato.html" class="underline hover:text-secondary-custom">Fale Conosco</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
