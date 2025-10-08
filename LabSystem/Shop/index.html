@@ -7,6 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <style>
         /* Cores Definidas pelo Usuário */
@@ -31,31 +32,61 @@
         .sticky-header {
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 20;
         }
 
-        /* Estilo das Abas */
+        /* Efeito de Destaque nas Abas */
         .tab-button {
             border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-            padding-bottom: 0.75rem;
-        }
-        .tab-button:hover {
-             background-color: #f3f4f6;
+            transition: all 0.3s ease;
         }
         .tab-button.active {
-            border-color: var(--color-secondary);
+            border-bottom: 3px solid var(--color-secondary);
             color: var(--color-primary);
             font-weight: 700;
-            background-color: white;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            transform: translateY(2px);
         }
-        .tab-content-item {
-            animation: fadeIn 0.5s ease-out;
+
+        /* Modal para Vídeo */
+        .modal-video {
+            background-color: rgba(0, 0, 0, 0.85);
+            transition: opacity 0.3s ease-in-out;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* Container do iframe para proporção 16:9 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Lista de Segmentos */
+        .segment-list li {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+        }
+        .segment-list li::before {
+            content: "•";
+            color: var(--color-secondary);
+            font-weight: 900;
+            display: inline-block; 
+            width: 1em;
+            margin-left: -1em;
         }
     </style>
 </head>
@@ -72,14 +103,11 @@
             </div>
             
             <div class="hidden md:flex space-x-4 items-center">
-                <a href="revenda.html" class="text-sm font-bold text-red-600 hover:text-red-800 transition py-2 px-3 border border-red-300 rounded-full">
-                    &bull; Seja Revendedor
+                <a href="revenda.html" class="px-4 py-2 text-sm font-bold rounded-full bg-red-600 text-white hover:bg-red-700 transition shadow-md">
+                    <i class="fas fa-handshake mr-1"></i> Seja Revendedor
                 </a>
                 <a href="planos.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
                     Ver Planos &rarr;
-                </a>
-                <a href="../contato.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover:bg-yellow-400 transition shadow-md">
-                    Fale Conosco
                 </a>
             </div>
         </div>
@@ -87,129 +115,136 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        <section class="text-center mb-16 p-12 rounded-2xl bg-primary-custom text-white shadow-3xl">
-            <span class="text-secondary-custom font-extrabold text-2xl block mb-3 uppercase">Solução Completa e Sem Taxas por Venda</span>
-            <h2 class="text-5xl sm:text-6xl lg:text-7xl font-black mb-4 leading-snug">
-                Pare de Gerenciar 5 Apps. <br class="hidden lg:inline">Centralize Tudo no WhatsApp.
+        <section class="text-center mb-16 p-10 rounded-xl bg-primary-custom text-white shadow-2xl">
+            <h2 class="text-5xl sm:text-6xl font-black mb-4 leading-tight">
+                Vendas & Atendimento 24h
             </h2>
-            <p class="text-xl font-light max-w-4xl mx-auto mb-10">
-                Cardápio, Catálogo, Portfólio, Totem Digital e o envio de pedidos mais rápido do mercado.
+            <p class="text-xl font-light max-w-4xl mx-auto mb-8">
+                Deixe seu cardápio, catálogo ou portfólio digital fazer o trabalho por você, enviando pedidos organizados direto para o **seu WhatsApp**.
             </p>
-            <a href="planos.html" class="inline-block px-12 py-4 text-2xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-2xl hover:bg-yellow-400 transition transform hover:scale-105">
-                Quero Centralizar Minhas Vendas &rarr;
-            </a>
+            
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="planos.html" class="inline-block px-10 py-4 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover:bg-yellow-400 transition transform hover:scale-105">
+                    Começar Agora! (Planos Anuais) &rarr;
+                </a>
+                <button onclick="openVideoModal()" class="inline-flex items-center justify-center px-10 py-4 text-xl font-black rounded-full border-2 border-white text-white shadow-xl hover:bg-white hover:text-primary-custom transition transform hover:scale-105">
+                    <i class="fas fa-video mr-2"></i> Ver Tour Curto
+                </button>
+            </div>
         </section>
 
         <section class="mb-16">
-            <h3 class="text-3xl font-black text-primary-custom mb-10 text-center">De Qual Lado Você Está?</h3>
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="p-8 bg-red-50 rounded-xl shadow-lg border-l-4 border-red-500">
-                    <div class="text-4xl mb-3 text-red-600 font-black">❌ O Modelo Atual</div>
-                    <ul class="space-y-3 text-gray-700">
-                        <li class="flex items-start"><span class="mr-3 text-red-500 text-xl font-bold">&bull;</span> **Perda de Tempo:** Gerenciar pedidos por telefone, DM, WhatsApp e Apps de Delivery separados.</li>
-                        <li class="flex items-start"><span class="mr-3 text-red-500 text-xl font-bold">&bull;</span> **Altas Taxas:** Pagar comissões de 12% a 30% por cada pedido recebido.</li>
-                        <li class="flex items-start"><span class="mr-3 text-red-500 text-xl font-bold">&bull;</span> **Descontrole:** Dificuldade em atualizar preços ou estoque em todos os canais ao mesmo tempo.</li>
-                    </ul>
+            <h3 class="text-3xl font-black text-primary-custom mb-8 text-center">Por que 80+ Segmentos Escolhem o LabSystem?</h3>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom transform hover:scale-[1.02] transition duration-300">
+                    <div class="text-5xl mb-3 text-secondary-custom"><i class="fas fa-bolt"></i></div>
+                    <h4 class="text-xl font-bold text-primary-custom mb-2">Publicação Instantânea</h4>
+                    <p class="text-gray-600">Altere preços ou status no CMS e publique instantaneamente para todos os seus canais (Link, Totem, etc.).</p>
                 </div>
-                <div class="p-8 bg-green-50 rounded-xl shadow-lg border-l-4 border-green-500">
-                    <div class="text-4xl mb-3 text-green-600 font-black">✅ LabSystem</div>
-                    <ul class="space-y-3 text-gray-700">
-                        <li class="flex items-start"><span class="mr-3 text-green-500 text-xl font-bold">&bull;</span> **Eficiência Total:** Um único link (ou QR Code) para todos os pedidos, direto no seu WhatsApp.</li>
-                        <li class="flex items-start"><span class="mr-3 text-green-500 text-xl font-bold">&bull;</span> **Lucro 100%:** Pague uma única anuidade e fique com todo o dinheiro de suas vendas. **ZERO TAXAS.**</li>
-                        <li class="flex items-start"><span class="mr-3 text-green-500 text-xl font-bold">&bull;</span> **Sincronização:** Altere e publique (Totem, Catálogo e Link) em tempo real via CMS.</li>
-                    </ul>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom transform hover:scale-[1.02] transition duration-300">
+                    <div class="text-5xl mb-3 text-secondary-custom"><i class="fab fa-whatsapp"></i></div>
+                    <h4 class="text-xl font-bold text-primary-custom mb-2">Comunicação Direta</h4>
+                    <p class="text-gray-600">O cliente faz o pedido ou solicita o serviço e a mensagem chega formatada e clara no seu WhatsApp.</p>
+                </div>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-custom transform hover:scale-[1.02] transition duration-300">
+                    <div class="text-5xl mb-3 text-secondary-custom"><i class="fas fa-trophy"></i></div>
+                    <h4 class="text-xl font-bold text-primary-custom mb-2">Sem Taxas por Venda</h4>
+                    <p class="text-gray-600">Seu lucro é 100%. Pague a anuidade (preço fixo) e utilize o sistema quantas vezes quiser, sem surpresas.</p>
                 </div>
             </div>
         </section>
 
-        <section class="mb-16 bg-white p-6 rounded-xl shadow-2xl">
-            <h3 class="text-3xl font-black text-primary-custom mb-6 text-center">LabSystem Serve Para Qual Negócio?</h3>
-            <p class="text-center text-lg text-gray-700 mb-8">Nossa flexibilidade permite atender de lanchonetes a lojas de material de construção e prestadores de serviço.</p>
+
+        <section class="mb-16">
+            <h3 class="text-3xl font-black text-primary-custom mb-8 text-center">Sua Solução, Seja Qual For o Seu Negócio</h3>
             
-            <div class="max-w-6xl mx-auto">
-                <div class="flex flex-wrap justify-center border-b border-gray-300 bg-gray-50 rounded-t-lg shadow-inner">
-                    <button id="tab-alimentacao-btn" class="tab-button active px-8 py-3 font-semibold text-primary-custom" onclick="showTab('alimentacao')">
-                        <span class="text-2xl mr-2">🍔</span> Alimentação / Bebidas
+            <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl">
+                <div class="flex flex-wrap justify-center border-b border-gray-200 p-4">
+                    <button id="tab-alimentacao-btn" class="tab-button active px-8 py-3 mx-2 text-lg font-medium text-primary-custom hover:bg-gray-50 transition" onclick="showTab('alimentacao')">
+                        🍔 Alimentação / Bebidas
                     </button>
-                    <button id="tab-comercio-btn" class="tab-button px-8 py-3 font-semibold text-primary-custom" onclick="showTab('comercio')">
-                        <span class="text-2xl mr-2">🛒</span> Comércio em Geral
+                    <button id="tab-comercio-btn" class="tab-button px-8 py-3 mx-2 text-lg font-medium text-primary-custom hover:bg-gray-50 transition" onclick="showTab('comercio')">
+                        🛒 Comércio em Geral
                     </button>
-                    <button id="tab-servicos-btn" class="tab-button px-8 py-3 font-semibold text-primary-custom" onclick="showTab('servicos')">
-                        <span class="text-2xl mr-2">⚙️</span> Prestação de Serviços
+                    <button id="tab-servicos-btn" class="tab-button px-8 py-3 mx-2 text-lg font-medium text-primary-custom hover:bg-gray-50 transition" onclick="showTab('servicos')">
+                        ⚙️ Prestação de Serviços
                     </button>
                 </div>
 
-                <div class="p-8 bg-white shadow-xl rounded-b-lg border border-t-0 border-gray-300">
+                <div class="p-8">
                     
                     <div id="alimentacao" class="tab-content-item">
-                        <h4 class="text-2xl font-bold text-secondary-custom mb-4">CARDÁPIOS E DELIVERY VIA WHATSAPP</h4>
-                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-8">
-                            <ul class="text-gray-700 space-y-1">
-                                <li class="font-bold text-primary-custom">Lanchonete, Pizzaria, Hamburgueria, Restaurante</li>
-                                <li>Marmitaria / Prato Feito</li>
-                                <li>Pastelaria, Sorveteria / Açaíteria, Doceria</li>
-                                <li>Padaria / Panificadora</li>
-                                <li>Churrascaria, Espetaria / Porções</li>
+                        <p class="text-lg text-gray-700 mb-6">Seja um pequeno quiosque ou uma grande pizzaria. O LabSystem é a ferramenta ideal para cardápios e gestão de delivery.</p>
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-12">
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Lanchonete, Pizzaria, Hamburgueria, Restaurante</li>
+                                <li>Marmitaria / Prato Feito, Pastelaria, Sorveteria</li>
+                                <li>Doceria / Confeitaria, Padaria / Panificadora</li>
+                                <li>Churrascaria, Espetaria / Porções, Cafeteria</li>
                             </ul>
-                            <ul class="text-gray-700 space-y-1">
-                                <li class="font-bold text-primary-custom">Cafeteria, Bar / Boteco</li>
-                                <li>Quiosque / Food Truck</li>
-                                <li>Distribuidora de Bebidas, Adega</li>
-                                <li>Lanches Naturais / Fit</li>
-                                <li>Casa de Sucos, Cantina Escolar</li>
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Bar / Boteco, Quiosque / Food Truck</li>
+                                <li>Distribuidora de Bebidas, Adega, Casa de Sucos</li>
+                                <li>Vendas de Lanches Naturais / Fit</li>
+                                <li>Cantina Escolar, <span class="font-bold text-primary-custom">E todos os outros!</span></li>
                             </ul>
-                            <div class="mt-4 md:mt-0">
-                                <img src="https://i.imgur.com/s4p6n0Q.png" alt="Cardápio Digital" class="rounded-lg shadow-md border border-gray-200">
-                                <p class="text-sm mt-2 text-center text-gray-500">Exponha seu menu com fotos e descrições ricas.</p>
+                            <div class="p-4 bg-gray-100 rounded-lg hidden md:block">
+                                <h5 class="font-bold text-primary-custom mb-2">Exemplo de Uso:</h5>
+                                <p class="text-sm text-gray-700">Um restaurante usa o Totem Digital nas mesas e o link para delivery, centralizando os pedidos no CMS.</p>
+                                <a href="../demo/index.html" target="_blank" class="text-sm text-secondary-custom font-bold underline mt-2 inline-block">Ver Demo &rarr;</a>
                             </div>
                         </div>
                     </div>
 
                     <div id="comercio" class="tab-content-item hidden">
-                        <h4 class="text-2xl font-bold text-secondary-custom mb-4">CATÁLOGO DE PRODUTOS PARA LOJAS E VAREJO</h4>
-                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-8">
-                            <ul class="text-gray-700 space-y-1">
-                                <li class="font-bold text-primary-custom">Lojas de Roupas, Calçados e Acessórios</li>
-                                <li>Loja de Cosméticos e Perfumaria</li>
-                                <li>Loja de Presentes / Variedades, Brinquedos</li>
-                                <li>Papelaria, Loja de Utilidades Domésticas</li>
-                                <li>Loja de Móveis / Eletrodomésticos</li>
-                                <li>Loja de Celulares e Eletrônicos</li>
+                        <p class="text-lg text-gray-700 mb-6">Transforme seu estoque em um catálogo de vendas 24h. O cliente navega, escolhe e manda o pedido direto.</p>
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-12">
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Mercearia / Minimercado, Açougue, Hortifruti</li>
+                                <li>Loja de Roupas (M/F/I), Calçados, Acessórios</li>
+                                <li>Loja de Cosméticos, Presentes, Brinquedos</li>
+                                <li>Papelaria, Utilidades Domésticas, Decoração</li>
+                                <li>Loja de Celulares, Eletrodomésticos, Móveis</li>
                             </ul>
-                            <ul class="text-gray-700 space-y-1">
-                                <li class="font-bold text-primary-custom">Mercearia / Mercado, Açougue, Hortifruti</li>
-                                <li>Loja de Materiais de Construção / Autopeças</li>
-                                <li>Pet Shop / Agropecuária / Farmácia</li>
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Loja de Materiais de Construção, Ferragens</li>
+                                <li>Loja de Autopeças / Motos, Agropecuária, Pet Shop</li>
+                                <li>Farmácia / Drogaria, Produtos Naturais / Suplementos</li>
                                 <li>Floricultura, Distribuidora de Água e Gás</li>
-                                <li>Loja de Materiais Elétricos / Hidráulicos</li>
+                                <li>Brechó / Sebo, Loja de Instrumentos Musicais</li>
                             </ul>
-                             <div class="mt-4 md:mt-0">
-                                <img src="https://i.imgur.com/vH9j21Z.png" alt="Catálogo Digital" class="rounded-lg shadow-md border border-gray-200">
-                                <p class="text-sm mt-2 text-center text-gray-500">Permita que o cliente faça a lista de compras online.</p>
+                             <div class="p-4 bg-gray-100 rounded-lg hidden md:block">
+                                <h5 class="font-bold text-primary-custom mb-2">Exemplo de Uso:</h5>
+                                <p class="text-sm text-gray-700">Uma loja de roupas usa a "vitrine digital" para lançar coleções e receber reservas direto do catálogo.</p>
+                                <a href="../demo/index.html" target="_blank" class="text-sm text-secondary-custom font-bold underline mt-2 inline-block">Ver Demo &rarr;</a>
                             </div>
                         </div>
                     </div>
 
                     <div id="servicos" class="tab-content-item hidden">
-                         <h4 class="text-2xl font-bold text-secondary-custom mb-4">PORTFÓLIO E ORÇAMENTOS VIA WHATSAPP</h4>
-                         <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-8">
-                            <ul class="text-gray-700 space-y-1">
-                                <li class="font-bold text-primary-custom">Cabeleireiro, Barbearia, Manicure, Maquiadora</li>
-                                <li>Esteticista, Massagista, Tatuador, Depiladora</li>
-                                <li>Técnico de Informática, Celulares, Eletricista, Encanador</li>
-                                <li>Mecânico de Carros / Motos, Funileiro, Auto Elétrica</li>
-                                <li>Contabilidade, Consultoria Financeira, Gráfica Rápida</li>
+                         <p class="text-lg text-gray-700 mb-6">O LabSystem funciona como um portfólio digital para solicitações de orçamento, agendamentos e propostas.</p>
+                         <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-12">
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Cabeleireiro, Barbearia, Manicure, Esteticista</li>
+                                <li>Técnico de Informática, Celulares, Eletricista</li>
+                                <li>Encanador, Pedreiro, Pintor, Marceneiro</li>
+                                <li>Mecânico (Carros/Motos), Funileiro, Borracheiro</li>
+                                <li>Arquiteto, Engenheiro, Paisagista, Decorador</li>
                             </ul>
-                            <ul class="text-gray-700 space-y-1">
-                                <li class="font-bold text-primary-custom">Arquiteto, Engenheiro, Mestre de Obras, Pintor</li>
-                                <li>Fisioterapia, Psicólogo, Nutricionista, Clínicas</li>
-                                <li>Academia, Personal Trainer, Estúdio de Pilates</li>
-                                <li>Fotografia / Filmagem, Criação de Sites</li>
-                                <li>Escolas, Professor Particular, Autoescola</li>
+                            <ul class="text-gray-700 space-y-1 segment-list">
+                                <li>Fisioterapia, Psicólogo, Nutricionista, Pilates</li>
+                                <li>Fotografia, Gráfica Rápida, Marketing Digital</li>
+                                <li>Contabilidade, Consultoria Financeira, Despachante</li>
+                                <li>Professor Particular, Autoescola, Cursos</li>
+                                <li>Motoboy / Delivery, Transporte Local, Guincho</li>
                             </ul>
-                             <div class="mt-4 md:mt-0">
-                                <img src="https://i.imgur.com/kH1B8h1.png" alt="Serviços por WhatsApp" class="rounded-lg shadow-md border border-gray-200">
-                                <p class="text-sm mt-2 text-center text-gray-500">Exiba seus serviços e portfólio para receber orçamentos.</p>
+                             <div class="p-4 bg-gray-100 rounded-lg hidden md:block">
+                                <h5 class="font-bold text-primary-custom mb-2">Exemplo de Uso:</h5>
+                                <p class="text-sm text-gray-700">Um barbeiro usa o link para mostrar seus serviços e receber pedidos de agendamento no WhatsApp.</p>
+                                <a href="../demo/index.html" target="_blank" class="text-sm text-secondary-custom font-bold underline mt-2 inline-block">Ver Demo &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -217,25 +252,20 @@
             </div>
         </section>
 
-        <section class="mb-16 bg-white p-10 rounded-xl shadow-2xl text-center border-t-8 border-primary-custom">
-             <h3 class="text-3xl font-extrabold text-primary-custom mb-4">O Fim das Taxas Abusivas por Pedido.</h3>
-             <p class="text-lg font-light text-gray-700 mb-6">Tenha total controle sobre suas vendas e comece a lucrar mais com a sua operação digital.</p>
-             <a href="planos.html" class="inline-block px-12 py-4 text-2xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover:bg-yellow-400 transition transform hover:scale-105">
-                Ver Planos e Mudar de Jogo &rarr;
-             </a>
-        </section>
-        
-        <section class="bg-gray-100 p-8 rounded-xl shadow-inner text-center">
-             <h3 class="text-2xl font-bold text-primary-custom mb-3">Conhece Alguém que Precisa Disso?</h3>
-             <p class="text-lg text-gray-700 mb-4">Você também pode adquirir as chaves Master Key e lucrar 100% na revenda do LabSystem.</p>
-             <a href="revenda.html" class="inline-block px-8 py-3 text-lg font-black rounded-full bg-primary-custom text-white shadow-lg hover:bg-indigo-700 transition">
-                Saiba Mais sobre Revenda &rarr;
-             </a>
+        <section class="fixed bottom-0 left-0 right-0 z-10 bg-secondary-custom shadow-2xl p-4 text-center">
+             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                <p class="text-lg font-bold text-primary-custom mb-2 md:mb-0">
+                    Comece Hoje e Receba Pedidos em Minutos.
+                </p>
+                <a href="planos.html" class="inline-block px-8 py-3 text-lg font-black rounded-full bg-primary-custom text-white shadow-lg hover:bg-indigo-700 transition">
+                    Planos Anuais (A Partir de R$ 99,00) &rarr;
+                </a>
+            </div>
         </section>
 
     </main>
 
-    <footer class="mt-16 bg-primary-custom text-white p-6">
+    <footer class="mt-28 bg-primary-custom text-white p-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
             <p class="mt-2 text-xs text-gray-400">
@@ -245,7 +275,52 @@
         </div>
     </footer>
 
+    <div id="video-modal" class="modal-video fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="closeVideoModal(event)">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl" onclick="event.stopPropagation()">
+            <div class="p-4 flex justify-between items-center bg-primary-custom rounded-t-xl">
+                 <h3 class="text-xl font-bold text-white">🎬 Tour Rápido: Como Funciona</h3>
+                 <button onclick="closeVideoModal()" class="text-white hover:text-secondary-custom text-3xl leading-none">&times;</button>
+            </div>
+            
+            <div class="video-container">
+                <iframe id="video-player" width="100%" height="100%" src="https://www.youtube.com/embed/9rGbQizvwfk?rel=0&autoplay=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            
+            <div class="p-4 bg-gray-50 rounded-b-xl text-center">
+                <p class="text-sm font-semibold text-gray-700">
+                    O LabSystem funciona em 2 vídeos: Abertura/Fechamento e Publicação de Alterações.
+                </p>
+                 <a href="https://youtube.com/shorts/z1dWr5Limyg?si=hbb6UqSp9vw2B6bA" target="_blank" class="text-primary-custom underline font-bold hover:text-indigo-700 transition">
+                    Ver Vídeo 2 (Publicação) &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+
     <script>
+        // Função do MODAL DE VÍDEO
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('video-player');
+        const initialVideoSrc = videoPlayer.src.replace('autoplay=1', 'autoplay=0'); // Garante que começa sem autoplay
+
+        function openVideoModal() {
+            videoPlayer.src = initialVideoSrc.replace('autoplay=0', 'autoplay=1'); // Ativa o autoplay ao abrir
+            videoModal.classList.remove('hidden');
+            videoModal.classList.add('flex');
+        }
+
+        function closeVideoModal(event) {
+            // Fecha se clicar no botão X ou fora do modal (overlay)
+            if (event && event.target.id === 'video-modal' || !event) {
+                videoModal.classList.add('hidden');
+                // Para o vídeo, resetando o src para o estado sem autoplay
+                videoPlayer.src = initialVideoSrc.replace('autoplay=1', 'autoplay=0'); 
+                videoModal.classList.remove('flex');
+            }
+        }
+        
+        // Função de GESTÃO DE ABAS
         function showTab(tabId) {
             // Esconde todo o conteúdo
             document.querySelectorAll('.tab-content-item').forEach(item => {
@@ -255,15 +330,13 @@
             // Remove o estado ativo de todos os botões
             document.querySelectorAll('.tab-button').forEach(button => {
                 button.classList.remove('active');
-                button.classList.add('text-primary-custom');
             });
 
             // Mostra o conteúdo da aba selecionada
             document.getElementById(tabId).classList.remove('hidden');
 
             // Ativa o botão da aba selecionada
-            const activeBtn = document.getElementById(`tab-${tabId}-btn`);
-            activeBtn.classList.add('active');
+            document.getElementById(`tab-${tabId}-btn`).classList.add('active');
         }
 
         // Inicializa a primeira aba
