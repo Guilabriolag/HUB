@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - LabSystem: Fale com um Consultor</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Cores Definidas pelo Usuário */
+        :root {
+            --color-primary: #1f298f; /* Azul Escuro (Tema Principal) */
+            --color-secondary: #ffcf69; /* Amarelo/Ouro (Destaques/Botões) */
+            --color-whatsapp: #25d366; /* Verde do WhatsApp */
+        }
+
+        /* Classes de Estilo Personalizadas */
+        .bg-primary-custom { background-color: var(--color-primary); }
+        .text-secondary-custom { color: var(--color-secondary); }
+        .bg-secondary-custom { background-color: var(--color-secondary); }
+        .border-primary-custom { border-color: var(--color-primary); }
+        .text-primary-custom { color: var(--color-primary); }
+        
+        /* Estilos específicos para Contato */
+        .bg-whatsapp { background-color: var(--color-whatsapp); }
+        .hover-bg-whatsapp:hover { background-color: #1eaf53; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fb;
+        }
+        
+        /* Estilo para o cabeçalho fixo */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="sticky-header bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+                        alt="Logo Pequena" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-extrabold text-primary-custom">LabSystem <span class="text-secondary-custom">HUB</span></h1>
+                </a>
+            </div>
+            
+            <div class="hidden md:flex space-x-4">
+                <a href="demo/index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                    Ver Demonstrações
+                </a>
+                <a href="index.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover:bg-yellow-400 transition shadow-md">
+                    Início
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <section class="text-center mb-12 p-8 rounded-xl bg-white shadow-xl border-t-8 border-primary-custom">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-primary-custom mb-3">
+                Fale Conosco
+            </h2>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto">
+                Tire suas dúvidas, solicite sua chave de acesso ou obtenha suporte técnico. Estamos prontos para te ajudar!
+            </p>
+        </section>
+
+        <section class="grid md:grid-cols-2 gap-8 mb-12">
+            
+            <div class="p-6 bg-white rounded-xl shadow-2xl border-l-4 border-whatsapp text-center">
+                <div class="text-6xl mb-4">💬</div>
+                <h3 class="text-2xl font-bold text-primary-custom mb-4">Atendimento Comercial</h3>
+                <p class="text-gray-600 mb-6">Para informações sobre planos, preços e Teste Grátis de 30 dias.</p>
+                <a href="https://wa.me/5511943198316?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20LabSystem%20e%20o%20Teste%20Gr%C3%A1tis." target="_blank" class="w-full inline-flex items-center justify-center px-6 py-3 bg-whatsapp text-white font-extrabold rounded-full shadow-lg transition duration-300 hover-bg-whatsapp">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.45 0-9.91 4.46-9.91 9.91 0 1.62.43 3.19 1.25 4.59L2 22l5.77-1.5c1.37.77 2.97 1.18 4.27 1.18 5.45 0 9.91-4.46 9.91-9.91.01-5.45-4.45-9.91-9.9-9.91zm4.7 13.93l-.43.25c-1.37.76-3.13.43-4.57-.96-1.53-1.55-2.22-3.48-2.22-5.46l.01-.27c.48-.48.97-.96 1.45-1.45.19-.19.46-.3.73-.3.26 0 .54.11.73.3l1.17 1.17c.19.19.28.46.28.73s-.09.54-.28.73l-.43.43c-.2.2-.26.54-.11.78.11.2.33.43.6.65.25.2.53.37.82.5.28.12.57.25.86.37l.45.18c.28.11.57.03.78-.14l1.17-1.17c.19-.19.46-.3.73-.3.26 0 .54.11.73.3l1.17 1.17c.19.19.28.46.28.73s-.09.54-.28.73l-.43.43c-.2.2-.26.54-.11.78.11.2.33.43.6.65.25.2.53.37.82.5.28.12.57.25.86.37l.45.18c.28.11.57.03.78-.14l1.17-1.17c.19-.19.46-.3.73-.3.26 0 .54.11.73.3l1.17 1.17c.19.19.28.46.28.73s-.09.54-.28.73l-.43.43z"/></svg>
+                    Falar via WhatsApp
+                </a>
+            </div>
+
+            <div class="p-6 bg-white rounded-xl shadow-2xl border-l-4 border-secondary-custom text-center">
+                <div class="text-6xl mb-4">📧</div>
+                <h3 class="text-2xl font-bold text-primary-custom mb-4">E-mail de Suporte</h3>
+                <p class="text-gray-600 mb-6">Para dúvidas técnicas, feedback ou questões administrativas.</p>
+                <a href="mailto:contato.labsystem@gmail.com" class="w-full inline-flex items-center justify-center px-6 py-3 bg-primary-custom text-white font-extrabold rounded-full shadow-lg transition duration-300 hover:bg-indigo-700">
+                    Enviar um E-mail
+                </a>
+                <p class="mt-4 text-sm text-primary-custom font-semibold">contato.labsystem@gmail.com</p>
+            </div>
+        </section>
+
+        <section class="mt-10 p-6 bg-gray-100 rounded-xl shadow-inner text-center">
+            <h3 class="text-2xl font-bold text-primary-custom mb-3">Horário de Atendimento</h3>
+            <p class="text-lg text-gray-700">Nosso time de consultores está disponível nos seguintes horários:</p>
+            <p class="text-xl font-extrabold text-primary-custom mt-4">
+                Segunda a Sexta: 09:00h às 18:00h
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                *O suporte técnico via e-mail pode ser respondido fora deste horário.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="mt-16 bg-primary-custom text-white p-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
+            <p class="mt-2 text-xs text-gray-400">
+                <a href="termos.html" class="underline hover:text-secondary-custom">Termos de Uso</a> | 
+                <a href="demo/index.html" class="underline hover:text-secondary-custom">Demonstrações</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
