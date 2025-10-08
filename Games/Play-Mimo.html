@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MimoGames</title>
+  <style>
+    :root { --cor-tema: #b22222; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+      background: #fdfaf6;
+      color: #333;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    input, select, button {
+      width: 100%; font-size: 16px;
+      margin: 10px 0; padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    button {
+      background-color: var(--cor-tema);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    section.aba { padding: 15px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h3 { color: var(--cor-tema); }
+
+    #telaJogo {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px; margin-top: 20px;
+    }
+
+    .carta {
+      font-size: 32px; background: #eee;
+      padding: 20px; text-align: center;
+      border-radius: 10px; user-select: none;
+      cursor: pointer;
+    }
+
+    #modalRecompensa {
+      display: none; position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #000000aa;
+      justify-content: center; align-items: center;
+      z-index: 999;
+    }
+
+    #modalRecompensa div {
+      background: white; padding: 20px;
+      border-radius: 12px; text-align: center;
+      max-width: 300px;
+    }
+
+    footer {
+      background: var(--cor-tema); color: white;
+      padding: 20px; text-align: center;
+      font-size: 14px; margin-top: 30px;
+      border-radius: 12px 12px 0 0;
+    }
+    #whatsappBtn {
+      display: none;
+      margin-top: 15px; padding: 10px 20px;
+      background-color: #25D366;
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+<section id="jogos" class="aba">
+  <h3>Jogo da Memória</h3>
+  <button onclick="iniciarMemoria()">Iniciar Jogo</button>
+  <div id="telaJogo"></div>
+</section>
+
+<div id="modalRecompensa" style="display:none;">
+  <div>
+    <h3>🎉 Você ganhou!</h3>
+    <p id="textoRecompensa"></p>
+    <button onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+<footer>
+  <img id="logoRodape" src="https://via.placeholder.com/80" alt="Logo" style="max-width:80px; border-radius:8px;" />
+  <h4 id="nomeRodape">Nome do Negócio</h4>
+  <p id="sloganRodape">Jogue e ganhe prêmios deliciosos!</p>
+  <div id="contatoRodape" style="margin-top:10px;">📍 Local • ☎️ (00) 00000-0000</div>
+  <a id="whatsappBtn" href="#" target="_blank">📲 Fale Conosco no WhatsApp</a>
+</footer>
+
+<script>
+  let lojaConfig = {};
+  let devConfig = {};
+  
+  let cartaVirada = null;
+  
+  function iniciarMemoria() {
+    const emojis = ['🍕','🍔','🍟','🌭','🍣','🍪','🍰','🍩'];
+    const cartas = [...emojis, ...emojis].sort(() => 0.5 - Math.random());
+    const tela = document.getElementById('telaJogo');
+    tela.innerHTML = '';
+    cartas.forEach(emoji => {
+      const div = document.createElement('div');
+      div.className = 'carta';
+      div.dataset.valor = emoji;
+      div.textContent = '❓';
+      div.onclick = () => virarCarta(div);
+      tela.appendChild(div);
+    });
+  }
+
+  function virarCarta(carta) {
+    if (carta.classList.contains('virada') || carta.classList.contains('par')) return;
+    carta.textContent = carta.dataset.valor;
+    carta.classList.add('virada');
+    if (!cartaVirada) {
+      cartaVirada = carta;
+    } else {
+      if (cartaVirada.dataset.valor === carta.dataset.valor) {
+        carta.classList.add('par'); cartaVirada.classList.add('par');
+        cartaVirada = null;
+        verificarVitoria();
+      } else {
+        setTimeout(() => {
+          carta.textContent = '❓'; cartaVirada.textContent = '❓';
+          carta.classList.remove('virada'); cartaVirada.classList.remove('virada');
+          cartaVirada = null;
+        }, 1000);
+      }
+    }
+  }
+
+  function verificarVitoria() {
+    if (document.querySelectorAll('.carta.par').length === 16) { mostrarRecompensa(); }
+  }
+  
+  function mostrarRecompensa() {
+    document.getElementById('modalRecompensa').style.display = 'flex';
+    document.getElementById('textoRecompensa').textContent = lojaConfig.recompensa?.texto || "🎁 Parabéns! Você ganhou!";
+  }
+  function fecharModal() { document.getElementById('modalRecompensa').style.display = 'none'; }
+  
+  function aplicarConfiguracoesVisuais() {
+    document.getElementById('nomeRodape').textContent = lojaConfig.nome || 'Nome do Negócio';
+    document.getElementById('logoRodape').src = lojaConfig.logo || 'https://via.placeholder.com/80';
+    atualizarVisualLoja(lojaConfig.tipo || 'pizzaria');
+    atualizarBotaoWhatsapp();
+  }
+  
+  function atualizarBotaoWhatsapp() {
+      const whatsappBtn = document.getElementById('whatsappBtn');
+      if (lojaConfig.whatsapp) {
+          const numeroLimpo = lojaConfig.whatsapp.replace(/\D/g, '');
+          whatsappBtn.href = `https://wa.me/55${numeroLimpo}`;
+          whatsappBtn.style.display = 'inline-block';
+      } else {
+          whatsappBtn.style.display = 'none';
+      }
+  }
+
+  function atualizarVisualLoja(tipo) {
+    const estilos = {
+      pizzaria:    { cor: '#b22222', slogan: "Jogue e ganhe pizza quentinha!" },
+      padaria:     { cor: '#d2691e', slogan: "Jogue e leve pão fresco pra casa!" },
+      hamburgueria:{ cor: '#8b4513', slogan: "Ganhe hambúrguer com diversão!" },
+      doceira:     { cor: '#ff69b4', slogan: "Doces e jogos, a combinação perfeita!" },
+      acaitaria:   { cor: '#800080', slogan: "Açaí gelado como prêmio!" },
+      sorveteria:  { cor: '#4682b4', slogan: "Sorvete grátis pra quem vence!" },
+      japones:     { cor: '#ff4500', slogan: "Sua vitória vale um sushi!" },
+      cafeteria:   { cor: '#6f4e37', slogan: "Um café quentinho te espera!" }
+    };
+
+    const estilo = estilos[tipo] || estilos.pizzaria;
+    document.documentElement.style.setProperty('--cor-tema', estilo.cor);
+    document.getElementById('sloganRodape').textContent = lojaConfig.slogan || estilo.slogan;
+  }
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    aplicarConfiguracoesVisuais();
+  });
+</script>
+</body>
+</html>
