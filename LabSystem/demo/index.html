@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LabSystem Demo: CMS e Totem em Ação</title>
+    <title>Demonstrações - LabSystem CMS e Totem Digital</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -31,31 +31,30 @@
         .sticky-header {
             position: sticky;
             top: 0;
-            z-index: 20;
-        }
-        
-        /* Modal do Tutorial */
-        .modal-tutorial {
-            background-color: rgba(0, 0, 0, 0.85);
-            transition: opacity 0.3s ease-in-out;
-            z-index: 30;
+            z-index: 10;
         }
 
-        /* Container para responsividade do Short (3:4) */
+        /* Modal para Vídeo */
+        .modal-video {
+            background-color: rgba(0, 0, 0, 0.8);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Container do iframe para proporção 16:9 */
         .video-container {
             position: relative;
             width: 100%;
-            padding-top: 133.33%; /* Proporção 3:4 (altura/largura = 4/3 = 1.3333) */
-            max-width: 400px; /* Limite de largura para formato vertical */
-            margin: 0 auto;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
         }
+
         .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 8px;
         }
     </style>
 </head>
@@ -75,73 +74,69 @@
                 <a href="../index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
                     &larr; Voltar para Home
                 </a>
+                <a href="../contato.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover:bg-yellow-400 transition shadow-md">
+                    Falar com um Consultor
+                </a>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <section class="text-center mb-16 p-8 rounded-xl bg-primary-custom text-white shadow-2xl">
-            <span class="text-secondary-custom font-extrabold text-xl block mb-3 uppercase">Experiência Completa</span>
-            <h2 class="text-4xl sm:text-5xl font-extrabold mb-4 leading-tight">
-                Portal de Demonstrações LabSystem
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <section class="text-center mb-12 p-8 rounded-xl bg-white shadow-xl border-t-8 border-primary-custom">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-primary-custom mb-3">
+                Portal de Demonstrações
             </h2>
-            <p class="text-lg font-light max-w-4xl mx-auto">
-                Explore as duas pontas da sua operação digital: o poderoso Painel de Gestão (CMS) e a vitrine de vendas (Totem Digital).
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto">
+                Assista ao tour completo ou acesse o CMS e o Totem Digital para interagir com o sistema.
             </p>
         </section>
-        
-        <section class="mb-16">
-            <div class="bg-white p-8 rounded-xl shadow-2xl border-l-8 border-secondary-custom">
-                <div class="flex items-center justify-between flex-wrap mb-4">
-                    <h3 class="text-3xl font-black text-primary-custom">🎬 Tour Guiado: Fluxo Operacional</h3>
-                    <button onclick="openTourModal()" class="mt-4 md:mt-0 px-5 py-2 bg-secondary-custom text-primary-custom font-bold rounded-full shadow-md hover:bg-yellow-400 transition">
-                        Iniciar Tutorial (2 Vídeos) &rarr;
-                    </button>
-                </div>
-                <p class="text-gray-600 mb-4">Veja o fluxo completo em apenas 2 vídeos curtos: como abrir a loja e como publicar as alterações para o Totem Digital.</p>
-            </div>
+
+        <section class="mb-12 p-8 bg-primary-custom text-white rounded-xl shadow-2xl text-center">
+            <h3 class="text-3xl font-extrabold mb-3">🎬 Tour Guiado: Fluxo Operacional</h3>
+            <p class="text-lg font-light mb-6">
+                Veja o fluxo completo em apenas 2 vídeos curtos: como abrir a loja e como publicar as alterações para o Totem Digital.
+            </p>
+            <button onclick="openVideoModal()" class="px-8 py-4 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover:bg-yellow-400 transition transform hover:scale-105">
+                Iniciar Tutorial (2 Vídeos) &rarr;
+            </button>
         </section>
 
-        <section class="grid md:grid-cols-2 gap-10">
+        <section class="grid md:grid-cols-2 gap-8 mb-16">
             
-            <div class="bg-white p-8 rounded-xl shadow-2xl border-t-8 border-primary-custom text-center">
-                <div class="text-6xl mb-4">⚙️</div>
-                <h3 class="text-3xl font-bold text-primary-custom mb-3">Painel de Gerenciamento (CMS)</h3>
-                <p class="text-gray-600 mb-6">Esta é a sua área de controle. Gerencie o estoque, customize cores e imagens, altere o status da loja e publique as mudanças para o Totem Digital em tempo real via JSONBin.</p>
-                
-                <ul class="text-left text-sm text-gray-700 space-y-2 mb-8 inline-block">
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Edição Completa do Cardápio.</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Publicação e Sincronização Serverless.</li>
+            <div class="p-6 bg-white rounded-xl shadow-2xl border-l-4 border-primary-custom">
+                <div class="text-4xl mb-4">⚙️</div>
+                <h3 class="text-2xl font-bold text-primary-custom mb-2">Painel de Gerenciamento (CMS)</h3>
+                <p class="text-gray-600 mb-4">Esta é a sua área de controle. Gerencie o estoque, customize cores e imagens, altere o status da loja e publique as mudanças para o Totem Digital em tempo real via JSONBin.</p>
+                <ul class="text-sm text-gray-700 space-y-1 mb-6">
+                    <li><span class="text-primary-custom font-bold">&check;</span> Edição Completa do Cardápio.</li>
+                    <li><span class="text-primary-custom font-bold">&check;</span> Publicação e Sincronização Serverless.</li>
                 </ul>
-
-                <a href="https://guilabriolag.github.io/LabSystem/cms_admin/index" target="_blank" class="px-8 py-3 text-lg font-black rounded-full bg-primary-custom text-white shadow-xl transition transform hover:scale-105">
+                <a href="https://guilabriolag.github.io/LabSystem/cms_admin/index" target="_blank" class="w-full inline-flex items-center justify-center px-6 py-3 bg-primary-custom text-white font-extrabold rounded-full shadow-lg transition duration-300 hover:bg-indigo-700">
                     Acessar o Painel CMS &rarr;
                 </a>
             </div>
 
-            <div class="bg-white p-8 rounded-xl shadow-2xl border-t-8 border-secondary-custom text-center">
-                <div class="text-6xl mb-4">🖥️</div>
-                <h3 class="text-3xl font-bold text-primary-custom mb-3">Totem Digital (Loja/Cliente)</h3>
-                <p class="text-gray-600 mb-6">Veja o que seus clientes verão! Uma interface visualmente rica, perfeita para ser exibida em Totens, Tablets ou TVs, facilitando a escolha e o envio do pedido direto para o seu WhatsApp.</p>
-                
-                <ul class="text-left text-sm text-gray-700 space-y-2 mb-8 inline-block">
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Design de Alto Impacto e Totalmente Customizável.</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg> Fluxo de Pedido Otimizado para WhatsApp.</li>
+            <div class="p-6 bg-white rounded-xl shadow-2xl border-l-4 border-secondary-custom">
+                <div class="text-4xl mb-4">🖥️</div>
+                <h3 class="text-2xl font-bold text-primary-custom mb-2">Totem Digital (Loja/Cliente)</h3>
+                <p class="text-gray-600 mb-4">Veja o que seus clientes verão! Uma interface visualmente rica, perfeita para ser exibida em Totens, Tablets ou TVs, facilitando a escolha e o envio do pedido direto para o seu WhatsApp.</p>
+                <ul class="text-sm text-gray-700 space-y-1 mb-6">
+                    <li><span class="text-primary-custom font-bold">&check;</span> Design de Alto Impacto e Totalmente Customizável.</li>
+                    <li><span class="text-primary-custom font-bold">&check;</span> Fluxo de Pedido Otimizado para WhatsApp.</li>
                 </ul>
-
-                <a href="https://guilabriolag.github.io/LabSystem/totem/index1.html" target="_blank" class="px-8 py-3 text-lg font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl transition transform hover:scale-105">
+                <a href="https://guilabriolag.github.io/LabSystem/totem/index1.html" target="_blank" class="w-full inline-flex items-center justify-center px-6 py-3 bg-secondary-custom text-primary-custom font-extrabold rounded-full shadow-lg transition duration-300 hover:bg-yellow-400">
                     Ver o Totem Digital &rarr;
                 </a>
             </div>
-
         </section>
 
-        <section class="mt-16 bg-white p-10 rounded-xl shadow-2xl text-center border-b-4 border-primary-custom">
-             <h3 class="text-3xl font-extrabold text-primary-custom mb-4">Gostou do que Viu?</h3>
-             <p class="text-lg font-light text-gray-700 mb-6">Solicite sua chave de acesso e inicie seu teste grátis de 30 dias!</p>
-             <a href="../index.html" class="inline-block px-10 py-3 text-xl font-black rounded-full bg-primary-custom text-white shadow-xl hover:bg-indigo-700 transition transform hover:scale-105">
-                Voltar e Solicitar Chave 🔑
-             </a>
+        <section class="mt-10 p-8 bg-gray-100 rounded-xl shadow-inner text-center">
+            <h3 class="text-3xl font-bold text-primary-custom mb-3">Gostou das Demonstrações?</h3>
+            <p class="text-lg text-gray-700 mb-6">Comece agora mesmo a vender mais com a liberdade do LabSystem.</p>
+            <a href="../index.html" class="inline-block px-10 py-3 text-xl font-black rounded-full bg-primary-custom text-white shadow-xl hover:bg-indigo-700 transition transform hover:scale-105">
+                Voltar e Solicitar Sua Chave &rarr;
+            </a>
         </section>
 
     </main>
@@ -155,124 +150,59 @@
             </p>
         </div>
     </footer>
-    
-    
-    <div id="tour-modal" class="modal-tutorial fixed inset-0 hidden items-center justify-center p-4" onclick="closeTourModal(event)">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl p-6 md:p-8" onclick="event.stopPropagation()">
-            
-            <div class="flex justify-between items-center border-b pb-3 mb-6">
-                <h3 class="text-3xl font-black text-primary-custom">Tour Guiado: Fluxo Operacional</h3>
-                <button onclick="closeTourModal()" class="text-gray-500 hover:text-gray-900 text-3xl leading-none">&times;</button>
+
+    <div id="video-modal" class="modal-video fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="closeVideoModal(event)">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl" onclick="event.stopPropagation()">
+            <div class="p-4 flex justify-end">
+                 <button onclick="closeVideoModal()" class="text-gray-500 hover:text-gray-900 text-3xl leading-none">&times;</button>
             </div>
             
-            <div id="tour-content">
-                
-                <div class="tour-step" id="step-1">
-                    <h4 class="text-2xl font-bold text-primary-custom mb-3">Passo 1: Abertura e Dados Operacionais</h4>
-                    <p class="text-gray-700 mb-4">Aprenda a alterar o status da loja de "Fechado" para "Aberto" e a gerenciar os dados operacionais (nome da loja, etc.).</p>
-                    
-                    <div class="video-container shadow-xl">
-                        <iframe 
-                            src="https://www.youtube.com/embed/9rGbQizvwfk?controls=0" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                </div>
-                
-                <div class="tour-step hidden" id="step-2">
-                    <h4 class="text-2xl font-bold text-primary-custom mb-3">Passo 2: Publicar e Sincronizar (Chave Master)</h4>
-                    <p class="text-gray-700 mb-4">Veja como a segurança da **Master Key** funciona junto com o botão **Publicar e Sincronizar**, garantindo que as mudanças cheguem ao Totem Digital instantaneamente.</p>
-                    
-                    <div class="video-container shadow-xl">
-                        <iframe 
-                            src="https://www.youtube.com/embed/z1dWr5Limyg?controls=0" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                </div>
-                
-                <div class="tour-step hidden" id="step-3">
-                    <h4 class="text-2xl font-bold text-primary-custom mb-3">Tour Finalizado!</h4>
-                    <p class="text-gray-700 mb-6">Você viu como a gestão do LabSystem é rápida e segura. Está pronto para começar seu teste grátis?</p>
-                    <div class="text-center">
-                         <a href="../index.html" onclick="closeTourModal()" class="inline-block px-10 py-3 text-xl font-black rounded-full bg-secondary-custom text-primary-custom shadow-xl hover:bg-yellow-400 transition transform hover:scale-105">
-                            Quero o Teste Grátis 🔑
-                         </a>
-                    </div>
-                </div>
+            <div class="p-2 pt-0">
+                <h3 class="text-xl font-bold text-primary-custom px-4">Tour Guiado em Vídeo (1 de 2)</h3>
+                <p class="text-sm text-gray-600 px-4 mb-3">Veja o primeiro vídeo sobre como **abrir e fechar a loja**.</p>
+            </div>
+
+            <div class="video-container">
+                <iframe id="video-player" width="100%" height="100%" src="https://www.youtube.com/embed/9rGbQizvwfk?rel=0&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
             
-            <div class="flex justify-between items-center mt-6 pt-4 border-t">
-                <button id="prev-step" onclick="changeStep(-1)" class="px-5 py-2 bg-gray-200 text-gray-700 font-bold rounded-full hover:bg-gray-300" disabled>&larr; Anterior</button>
-                <span id="step-indicator" class="text-sm font-semibold text-gray-600">Passo 1 de 3</span>
-                <button id="next-step" onclick="changeStep(1)" class="px-5 py-2 bg-primary-custom text-white font-bold rounded-full hover:bg-indigo-700">Próximo &rarr;</button>
+            <div class="p-4 bg-gray-50 rounded-b-xl text-center">
+                <p class="text-sm font-semibold text-gray-700 mb-2">
+                    <span class="text-secondary-custom">PRÓXIMO PASSO:</span> Assista ao segundo vídeo sobre **Publicação Instantânea**.
+                </p>
+                <a href="https://youtube.com/shorts/z1dWr5Limyg?si=hbb6UqSp9vw2B6bA" target="_blank" class="text-primary-custom underline font-bold hover:text-indigo-700 transition">
+                    Ver Vídeo 2: Publicação de Alterações &rarr;
+                </a>
             </div>
+            
         </div>
     </div>
 
-
     <script>
-        let currentStep = 1;
-        const totalSteps = 3;
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('video-player');
+        const initialVideoSrc = videoPlayer.src; // Salva o src original sem autoplay
 
-        function updateTourDisplay() {
-            // Esconde todos os passos
-            document.querySelectorAll('.tour-step').forEach(step => {
-                step.classList.add('hidden');
-            });
-
-            // Mostra o passo atual
-            document.getElementById(`step-${currentStep}`).classList.remove('hidden');
-
-            // Atualiza o indicador
-            document.getElementById('step-indicator').textContent = `Passo ${currentStep} de ${totalSteps}`;
-
-            // Controla os botões
-            document.getElementById('prev-step').disabled = currentStep === 1;
-            
-            // Texto do botão "Próximo"
-            if (currentStep === totalSteps) {
-                 document.getElementById('next-step').textContent = 'Finalizar Tour';
-            } else {
-                 document.getElementById('next-step').textContent = 'Próximo →';
-            }
+        function openVideoModal() {
+            // Garante que o vídeo inicie automaticamente ao abrir (autoplay=1)
+            videoPlayer.src = initialVideoSrc; 
+            videoModal.classList.remove('hidden');
+            videoModal.classList.add('flex');
         }
 
-        function changeStep(direction) {
-            if (currentStep + direction >= 1 && currentStep + direction <= totalSteps) {
-                currentStep += direction;
-                updateTourDisplay();
-            } else if (currentStep + direction > totalSteps) {
-                closeTourModal(); // Se for o último passo e clicar em Próximo/Finalizar
-            }
-        }
-
-        function openTourModal() {
-            currentStep = 1;
-            updateTourDisplay();
-            document.getElementById('tour-modal').classList.remove('hidden');
-            document.getElementById('tour-modal').classList.add('flex');
-        }
-        
-        function closeTourModal(event) {
+        function closeVideoModal(event) {
             // Fecha se clicar no botão X ou fora do modal (overlay)
-            if (event && event.target.id === 'tour-modal') {
-                document.getElementById('tour-modal').classList.add('hidden');
-                document.getElementById('tour-modal').classList.remove('flex');
+            if (event && event.target.id === 'video-modal') {
+                videoModal.classList.add('hidden');
+                // Para o vídeo, resetando o src para o estado sem autoplay
+                videoPlayer.src = initialVideoSrc.replace('autoplay=1', 'autoplay=0'); 
+                videoModal.classList.remove('flex');
             } else if (!event) {
-                document.getElementById('tour-modal').classList.add('hidden');
-                document.getElementById('tour-modal').classList.remove('flex');
+                videoModal.classList.add('hidden');
+                videoPlayer.src = initialVideoSrc.replace('autoplay=1', 'autoplay=0'); 
+                videoModal.classList.remove('flex');
             }
         }
-        
-        // Inicializa a exibição ao carregar (necessário para o indicador)
-        document.addEventListener('DOMContentLoaded', updateTourDisplay);
-
     </script>
-
 </body>
 </html>
