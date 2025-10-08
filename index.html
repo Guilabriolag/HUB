@@ -3,341 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABRIOLAG | Laboratório de Ideias Influentes</title>
-    <meta name="description" content="LABRIOLAG: Criatividade que conecta ideias, pessoas e soluções. Experiências digitais acessíveis e personalizadas.">
+    <title>LABRIOLAG | Acesso Principal</title>
+    <meta name="description" content="LABRIOLAG: Acesso ao Laboratório de Ideias Influentes. Plataforma de Soluções Digitais e Estratégicas.">
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <style>
-        /* PALETA FUTURISTA (Baseada na sua Ficha Técnica) */
+        /* PALETA SÓLIDA E PROFISSIONAL */
         :root {
-            --azul-eletrico: #0066FF; /* Efeito Neon */
-            --amarelo: #FFCC00; /* Destaque CTA */
-            --preto: #0D0D0D; /* Fundo Ultra Escuro */
-            --branco: #F0F0F0;
-            --cinza-escuro: #1a1a1a;
-            --font-principal: 'Montserrat', sans-serif;
-            --font-secundaria: 'Poppins', sans-serif;
+            --cor-primaria: #0077B6; /* Azul Escuro Elegante */
+            --cor-secundaria: #FFCC00; /* Amarelo (Acento) */
+            --cor-fundo-escuro: #0D0D0D; /* Fundo Blackout */
+            --cor-painel: rgba(25, 25, 25, 0.9); /* Painel semi-transparente */
+            --cor-texto-claro: #F5F5F5;
+            --cor-texto-suave: #AAAAAA;
+            --font-display: 'Cinzel', serif;
+            --font-corpo: 'Inter', sans-serif;
         }
 
-        /* RESET E ESTRUTURA BÁSICA */
+        /* ESTRUTURA BASE */
         * { box-sizing: border-box; }
         body {
-            font-family: var(--font-secundaria);
-            background-color: var(--preto); /* Fundo Escuro */
-            color: var(--branco);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden; /* Evita que o fundo animado cause scroll */
-        }
-
-        /* ANIMAÇÃO DE FUNDO (POLÍGONOS FLUTUANTES) */
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background-color: var(--preto);
-            background-image: url('');
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: 50% 50%;
-            opacity: 0.8; /* Suaviza o efeito para o conteúdo brilhar */
+            font-family: var(--font-corpo);
+            background-color: var(--cor-fundo-escuro);
+            color: var(--cor-texto-claro);
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; flex-direction: column; position: relative;
+            overflow: hidden; /* Garante que o fundo é o foco */
         }
         
-        /* SPLASH SCREEN (Efeito de Carregamento do Sistema) */
-        .splash-screen {
-            background-color: var(--preto);
+        /* Efeito de Fundo: Subtle Grid (Profissional, não Rave) */
+        body::before {
+            content: '';
             position: fixed;
-            /* ... (manter transições e centralização) ... */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
         }
-        .splash-logo-text {
-            font-family: var(--font-principal);
-            font-size: 36px;
-            font-weight: 900;
-            color: var(--branco);
-            text-shadow: 0 0 10px var(--azul-eletrico); /* Efeito NEON */
-            animation: bounceIn 1s ease-in-out;
+
+        /* SPLASH SCREEN: Transição de Status Elegante */
+        .splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--cor-fundo-escuro);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
         }
-        .splash-logo-text span { color: var(--amarelo); }
+        .splash-title {
+            font-family: var(--font-display); font-size: 3rem; color: var(--cor-texto-claro);
+            animation: fadeIn 1.5s ease-in-out;
+            text-shadow: 0 0 10px rgba(0, 119, 182, 0.5); /* Sombra suave azul */
+        }
         .splash-screen.fade-out { opacity: 0; visibility: hidden; }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* CONTEÚDO PRINCIPAL */
-        #content {
-            flex: 1;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            position: relative;
-            z-index: 10; /* Garante que o conteúdo fique sobre a animação */
-        }
-        #content.show { opacity: 1; }
+        #content { z-index: 10; flex: 1; display: none; position: relative; }
+        #content.show { display: block; }
         .full-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-        }
-
-        /* 1. BOTÃO ACESSAR (CTA Primário) */
-        .acessar-btn button {
-            background-color: var(--amarelo); 
-            color: var(--preto);
-            font-size: 24px;
-            padding: 20px 40px; 
-            border: none;
-            border-radius: 50px;
-            font-weight: 900;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.7); /* Efeito BRILHO */
-            transition: all 0.3s ease;
-        }
-        .acessar-btn button:hover {
-            background-color: #ffc44e;
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 204, 0, 1);
-        }
-
-        /* 2. PAINEL DE SETUP (O "MENU FUTURISTA") */
-        .setup-panel {
-            display: none;
-            /* ... posição full-center ... */
-            background-color: rgba(30, 30, 30, 0.95); /* Semi-transparente escuro */
-            backdrop-filter: blur(8px); /* Efeito de Vidro */
-            border: 2px solid var(--azul-eletrico); /* Borda Neon */
-            box-shadow: 0 0 30px rgba(0, 102, 255, 0.5); 
-            padding: 40px 30px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            animation: panelIn 0.7s ease-out;
-        }
-
-        @keyframes panelIn {
-            from { opacity: 0; transform: translate(-50%, -40%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .setup-panel h2 {
-            font-family: var(--font-principal);
-            font-weight: 900;
-            color: var(--azul-eletrico);
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            border-bottom: 2px dashed rgba(0, 102, 255, 0.3);
-            padding-bottom: 10px;
-        }
-
-        .setup-panel a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(0, 102, 255, 0.1); 
-            color: var(--branco);
-            font-weight: 600;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 5px;
-            border-left: 5px solid var(--azul-eletrico);
-            transition: all 0.3s ease;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 50;
         }
         
-        .setup-panel a:hover {
-            background-color: rgba(0, 102, 255, 0.3); 
-            transform: translateY(-2px);
-            border-left: 5px solid var(--amarelo);
-        }
-
-        .panel-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        /* ÍCONE DE LOGIN DENTRO DO PAINEL */
-        #login-icon-link {
-            position: absolute;
-            top: 15px;
-            right: 15px;
+        /* BOTÃO CENTRAL (CTA) */
+        .acessar-btn button {
+            background: none;
+            border: 2px solid var(--cor-secundaria);
+            color: var(--cor-secundaria);
             font-size: 20px;
-            color: var(--amarelo);
-            cursor: pointer;
-            transition: color 0.3s;
+            padding: 15px 35px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+            text-transform: uppercase;
         }
-        #login-icon-link:hover {
-            color: var(--branco);
+        .acessar-btn button:hover { 
+            background-color: var(--cor-secundaria); 
+            color: var(--cor-fundo-escuro); 
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
         }
 
+        /* PAINEL DE MÓDULOS (O 'Menu' Profissional) */
+        .module-panel {
+            display: none;
+            width: 90%;
+            max-width: 1000px;
+            background-color: var(--cor-painel); 
+            backdrop-filter: blur(8px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Borda Sutil */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+            padding: 30px;
+            border-radius: 6px;
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
 
-        /* 3. FORMULÁRIO DE LOGIN (Estilo Painel) */
+        .module-panel h2 {
+            font-family: var(--font-display);
+            color: var(--cor-primaria);
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 119, 182, 0.3);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        /* ESTILO DO BOTÃO/CARD DO MÓDULO */
+        .module-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.03); /* Fundo muito escuro */
+            border: 1px solid rgba(0, 119, 182, 0.3);
+            padding: 20px;
+            color: var(--cor-texto-claro);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .module-item:hover {
+            background-color: rgba(0, 119, 182, 0.15); /* Fundo sutil azul */
+            border-color: var(--cor-secundaria);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        .module-item i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--cor-secundaria);
+        }
+        .module-item strong {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            color: var(--cor-primaria);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .module-item p {
+            font-size: 0.8rem;
+            color: var(--cor-texto-suave);
+            margin: 0;
+            margin-top: 5px;
+        }
+
+        /* LOGIN FORM (Limpo e Focado) */
         .login-form-container {
             display: none;
-            /* ... posição full-center ... */
-            background-color: rgba(30, 30, 30, 0.95);
+            background-color: var(--cor-painel);
             backdrop-filter: blur(8px);
-            border: 2px solid var(--amarelo);
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
-            padding: 40px 30px;
-            border-radius: 12px;
-            max-width: 350px;
+            border: 1px solid var(--cor-secundaria);
+            padding: 40px;
+            border-radius: 6px;
+            max-width: 380px;
             width: 90%;
-            animation: panelIn 0.7s ease-out;
+            text-align: center;
         }
         .login-form-container h2 {
-            color: var(--amarelo);
-            font-family: var(--font-principal);
+            font-family: var(--font-display);
+            color: var(--cor-secundaria);
             margin-bottom: 25px;
+            font-size: 1.4rem;
+        }
+        .login-form-container input {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--cor-texto-claro);
+            padding: 12px;
+            margin-bottom: 15px;
+            width: 100%;
+            font-family: var(--font-corpo);
+        }
+        .login-form-container button {
+            background-color: var(--cor-primaria);
+            color: var(--cor-texto-claro);
+            width: 100%;
+            padding: 12px;
+            font-weight: 600;
+            border: none;
+        }
+        .login-form-container .back-link {
+            color: var(--cor-primaria); margin-top: 20px; display: block; text-decoration: none; font-size: 0.9rem;
         }
 
-        /* 4. RODAPÉ E CONTATO */
+        /* RODAPÉ E CONTATO */
         footer {
-            background-color: transparent; /* Fundo Transparente */
-            border-top: 1px solid rgba(0, 102, 255, 0.2);
-            color: #888;
-            padding: 20px 0;
-            position: relative;
-            z-index: 10;
+            position: fixed; bottom: 0; width: 100%; z-index: 10;
+            padding: 10px 0; text-align: center; font-size: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.7); 
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--cor-texto-suave);
         }
-        footer a { color: var(--azul-eletrico); }
-
-        /* Botão Flutuante (Contato) */
         .floating-btn {
-            background-color: var(--azul-eletrico);
-            color: var(--branco);
-            box-shadow: 0 0 15px rgba(0, 102, 255, 0.7);
+            position: fixed; bottom: 30px; right: 30px; 
+            width: 55px; height: 55px; font-size: 22px; z-index: 100;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            background-color: var(--cor-secundaria); color: var(--cor-fundo-escuro);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5); cursor: pointer;
+            transition: transform 0.3s;
         }
-
-        /* RESPONSIVIDADE */
-        @media (min-width: 768px) {
-            .splash-logo-text { font-size: 56px; }
-            .acessar-btn button { font-size: 28px; padding: 25px 50px; }
-            .setup-panel { max-width: 550px; padding: 50px 40px; }
-            .setup-panel a { font-size: 17px; }
-            .login-form-container { max-width: 400px; }
-            .floating-btn { bottom: 30px; right: 30px; width: 65px; height: 65px; font-size: 24px; }
-            .panel-options { grid-template-columns: repeat(2, 1fr); gap: 15px; } /* 2 colunas no desktop */
-        }
-
     </style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
-
-    <div class="splash-screen">
-        <h1 class="splash-logo-text">LABRI<span style="color: var(--amarelo);">OLAG</span></h1>
+    <div class="splash-screen" id="splash-screen">
+        <h1 class="splash-title">LABRIOLAG</h1>
+        <p style="color: var(--cor-texto-suave); font-family: var(--font-corpo); animation: fadeIn 1.5s ease-in-out 0.5s both;">Loading Access Protocol...</p>
     </div>
 
     <div id="content">
-        <header>
-            <div class="container">
-                <h1 style="font-family: var(--font-principal); font-size: 24px; font-weight: 700; color: var(--branco); text-shadow: 0 0 5px var(--azul-eletrico);">
-                    LABRI<span style="color: var(--amarelo);">OLAG</span>
-                </h1>
-            </div>
-        </header>
-
-        <div class="full-center acessar-btn">
-            <button id="main-acess-btn">INICIAR DIAGNÓSTICO</button>
+        
+        <div class="full-center acessar-btn" id="initial-cta">
+            <button id="main-acess-btn">INICIAR DIAGNÓSTICO E ACESSO</button>
         </div>
 
-        <div class="full-center setup-panel" id="options-menu">
-            <a href="#" id="login-icon-link" title="Acesso Master"><i class="fas fa-user-lock"></i></a>
-            <h2>LABORATÓRIO DE IDEIAS INFLUENTES</h2>
-            <p style="color: #ccc; margin-bottom: 25px;">Selecione o Módulo de Interação:</p>
-
-            <div class="panel-options">
-                <a href="LabSystem/index.html"><i class="fas fa-magic"></i> MÓDULO: Soluções Digitais</a>
+        <div class="full-center module-panel" id="options-menu">
+            <h2>PORTAL DE SOLUÇÕES :: LABRIOLAG</h2>
+            
+            <div class="modules-grid">
                 
-                <a href="LabSystem/Shop/revenda.html" style="border-left: 5px solid #ef4444; background-color: rgba(239, 68, 68, 0.1);"><i class="fas fa-handshake"></i> MÓDULO: Parceria Master Key</a>
+                <a href="LabSystem/index.html" class="module-item">
+                    <i class="fas fa-chart-line"></i>
+                    <strong>SOLUÇÕES E ESTRATÉGIAS</strong>
+                    <p>Mapeamento e Construção de Produtos Digitais.</p>
+                </a>
                 
-                <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" style="border-left: 5px solid #4CAF50; background-color: rgba(76, 175, 80, 0.1);"><i class="fas fa-gamepad"></i> MÓDULO: Projetos Interativos</a>
+                <a href="vitrine-clientes.html" class="module-item">
+                    <i class="fas fa-code-branch"></i>
+                    <strong>VITRINE DE PROJETOS</strong>
+                    <p>Apresentação e Estudos de Caso de Clientes.</p>
+                </a>
                 
-                <a href="LabSystem/contato.html"><i class="fas fa-headset"></i> MÓDULO: Suporte Técnico</a>
+                <a href="LabSystem/Shop/revenda.html" class="module-item">
+                    <i class="fas fa-handshake"></i>
+                    <strong>MASTER KEY PARTNERSHIP</strong>
+                    <p>Programa Exclusivo de Revenda e Colaboração.</p>
+                </a>
+                
+                <a href="https://guilabriolag.github.io/MimoGames/" target="_blank" class="module-item">
+                    <i class="fas fa-rocket"></i>
+                    <strong>LABS E PROTÓTIPOS</strong>
+                    <p>Ambiente de Teste e Validação de Conceitos Interativos.</p>
+                </a>
             </div>
             
-            <p style="margin-top: 25px;"><a href="#" id="back-to-main-btn" style="color: var(--amarelo); font-weight: 700;">[ RETORNAR AO INÍCIO ]</a></p>
+            <a href="#" id="login-link-module" style="color: var(--cor-primaria); margin-top: 30px; display: block; font-weight: 600;">
+                <i class="fas fa-user-lock"></i> ACESSO RESTRITO (Master Login)
+            </a>
+            
+            <p style="margin-top: 15px;"><a href="#" id="back-to-main-btn" style="color: var(--cor-texto-suave); font-size: 0.9rem;">[ Retornar à Tela Inicial ]</a></p>
         </div>
         
         <div class="full-center login-form-container" id="login-form-container">
-            <h2>ACESSO RESTRITO MASTER</h2>
-            <input type="email" placeholder="CÓDIGO DE ACESSO (E-mail)" required>
-            <input type="password" placeholder="SENHA DE VALIDAÇÃO" required>
+            <h2>MASTER LOGIN</h2>
+            <input type="email" placeholder="Usuário ou E-mail" required>
+            <input type="password" placeholder="Senha de Acesso" required>
             <button>VALIDAR ACESSO</button>
-            <p style="margin-top: 15px;"><a href="#" style="color: var(--azul-eletrico); font-weight: 600;">[ ESQUECI O CÓDIGO ]</a></p>
-             <p style="margin-top: 15px;"><a href="#" id="back-from-login-btn" style="color: #666; font-size: 14px;">&larr; Voltar ao Painel</a></p>
+            <a href="#" class="back-link" id="back-from-login-btn">&larr; Retornar ao Portal</a>
         </div>
 
-        <div class="floating-btn floating-contact" title="Fale com a LABRIOLAG via WhatsApp">
+        <div class="floating-btn floating-contact" title="Fale com a LABRIOLAG">
             <i class="fab fa-whatsapp"></i>
         </div>
 
         <footer>
-            <div class="container text-center">
-                <p>&copy; 2025 LABRIOLAG | Laboratório de Ideias Influentes.</p>
-                <p class="mt-1">STATUS: <span style="color: var(--amarelo);">Sistema Operacional Online</span></p>
-            </div>
+            <p>&copy; 2025 LABRIOLAG | Laboratório de Ideias Influentes. Todos os Direitos Reservados.</p>
         </footer>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
     <script>
-        // Configuração da animação de fundo
-        particlesJS('particles-js', {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#0066FF" }, /* Azul Elétrico */
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": false, "anim": { "enable": false } },
-                "size": { "value": 3, "random": true, "anim": { "enable": false } },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#0066FF",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": { "enable": true, "speed": 4, "direction": "none", "random": false, "straight": false, "out_mode": "out" }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": "grab" }, /* Efeito de Conexão */
-                    "onclick": { "enable": true, "mode": "push" },
-                    "resize": true
-                }
-            },
-            "retina_detect": true
-        });
-
-        // LÓGICA DE TRANSIÇÃO (Mantendo a funcionalidade base)
         document.addEventListener("DOMContentLoaded", function() {
-            const splash = document.querySelector('.splash-screen');
+            const splash = document.getElementById('splash-screen');
             const content = document.getElementById('content');
             const mainAcessBtn = document.getElementById('main-acess-btn');
-            const setupPanel = document.getElementById('options-menu');
-            const loginIconLink = document.getElementById('login-icon-link');
+            const modulePanel = document.getElementById('options-menu');
+            const loginLinkModule = document.getElementById('login-link-module');
             const loginFormContainer = document.getElementById('login-form-container');
             const backToMainBtn = document.getElementById('back-to-main-btn');
             const backFromLoginBtn = document.getElementById('back-from-login-btn');
-            const floatingContactBtn = document.querySelector('.floating-contact');
-
-            // 1. Splash Screen
+            const initialCta = document.getElementById('initial-cta');
+            
+            // 1. Splash Screen (Transição)
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 setTimeout(() => {
@@ -348,33 +304,33 @@
 
             // 2. INICIAR DIAGNÓSTICO -> Abre Painel
             mainAcessBtn.addEventListener('click', () => {
-                mainAcessBtn.style.display = 'none';
-                setupPanel.style.display = 'block';
+                initialCta.style.display = 'none';
+                modulePanel.style.display = 'block';
             });
             
-            // 3. LOGIN (Ícone dentro do Painel) -> Abre Formulário
-            loginIconLink.addEventListener('click', (e) => {
+            // 3. ACESSO RESTRITO -> Abre Formulário
+            loginLinkModule.addEventListener('click', (e) => {
                 e.preventDefault();
-                setupPanel.style.display = 'none';
+                modulePanel.style.display = 'none';
                 loginFormContainer.style.display = 'block';
             });
             
-            // 4. VOLTAR AO INÍCIO (Do Painel)
+            // 4. RETORNAR À TELA INICIAL (Do Painel)
             backToMainBtn.addEventListener('click', (e) => {
                  e.preventDefault();
-                 setupPanel.style.display = 'none';
-                 mainAcessBtn.style.display = 'block';
+                 modulePanel.style.display = 'none';
+                 initialCta.style.display = 'block';
             });
             
-            // 5. VOLTAR AO PAINEL (Do Formulário de Login)
+            // 5. VOLTAR AO PORTAL (Do Login)
             backFromLoginBtn.addEventListener('click', (e) => {
                  e.preventDefault();
                  loginFormContainer.style.display = 'none';
-                 setupPanel.style.display = 'block';
+                 modulePanel.style.display = 'block';
             });
 
             // 6. Contato Flutuante (WhatsApp)
-            floatingContactBtn.addEventListener('click', () => {
+            document.querySelector('.floating-contact').addEventListener('click', () => {
                 window.open("https://wa.me/5511943198316", '_blank');
             });
         });
