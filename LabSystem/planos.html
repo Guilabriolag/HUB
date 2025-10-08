@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos LabSystem: Sem Mensalidade por Venda</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Cores Definidas pelo Usuário */
+        :root {
+            --color-primary: #1f298f; /* Azul Escuro (Tema Principal) */
+            --color-secondary: #ffcf69; /* Amarelo/Ouro (Destaques/Botões) */
+            --color-success: #10b981; /* Verde (Para destacar benefícios) */
+        }
+
+        /* Classes de Estilo Personalizadas */
+        .bg-primary-custom { background-color: var(--color-primary); }
+        .text-secondary-custom { color: var(--color-secondary); }
+        .bg-secondary-custom { background-color: var(--color-secondary); }
+        .border-primary-custom { border-color: var(--color-primary); }
+        .text-primary-custom { color: var(--color-primary); }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fb;
+        }
+        
+        /* Destaque para o Melhor Plano */
+        .best-value {
+            border: 4px solid var(--color-secondary);
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 5;
+        }
+        .best-value::before {
+            content: "MAIS VENDIDO";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <a href="../index.html" class="flex items-center space-x-3">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+                        alt="Logo Pequena" class="w-10 h-10 rounded-full">
+                    <h1 class="text-2xl font-extrabold text-primary-custom">LabSystem <span class="text-secondary-custom">HUB</span></h1>
+                </a>
+            </div>
+            
+            <div class="hidden md:flex space-x-4 items-center">
+                <a href="index.html" class="px-4 py-2 text-sm font-semibold rounded-full border border-primary-custom text-primary-custom hover:bg-gray-100 transition shadow-md">
+                    &larr; Voltar
+                </a>
+                <a href="../contato.html" class="px-4 py-2 text-sm font-semibold rounded-full bg-secondary-custom text-primary-custom hover:bg-yellow-400 transition shadow-md">
+                    Fale Conosco
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <section class="text-center mb-16 p-8 rounded-xl bg-white shadow-xl border-t-8 border-secondary-custom">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-primary-custom mb-3">
+                Planos de Assinatura LabSystem
+            </h2>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                Escolha o ciclo que melhor se encaixa no seu caixa. Seu sistema é pago apenas uma vez, sem taxas sobre pedidos!
+            </p>
+        </section>
+
+        <section class="grid lg:grid-cols-3 gap-10 items-center">
+            
+            <div class="p-8 bg-white rounded-xl shadow-xl text-center flex flex-col h-full hover:shadow-2xl transition">
+                <h3 class="text-2xl font-black text-primary-custom mb-4">Plano Mensal</h3>
+                <p class="text-gray-500 mb-6 font-semibold">Ideal para testar o sistema no curto prazo.</p>
+                
+                <div class="my-6">
+                    <span class="text-3xl font-extrabold text-primary-custom">R$ 29,90</span>
+                    <span class="text-xl text-gray-600"> / mês</span>
+                </div>
+                
+                <div class="flex-grow">
+                    <ul class="text-left space-y-3 mb-8 text-gray-700">
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Acesso Total ao CMS</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Link Digital Customizável</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Totem Digital Completo</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Pedidos via WhatsApp</li>
+                        <li class="flex items-center"><i class="fas fa-times text-gray-400 mr-3"></i> Sem desconto por ciclo</li>
+                        <li class="flex items-center"><i class="fas fa-times text-gray-400 mr-3"></i> Taxa de Ativação Única de R$ 99,00</li>
+                    </ul>
+                </div>
+
+                <a href="../contato.html" class="mt-auto block w-full px-6 py-3 bg-primary-custom text-white font-black rounded-full shadow-lg hover:bg-indigo-700 transition">
+                    Contratar Mensal &rarr;
+                </a>
+            </div>
+
+            <div class="p-10 bg-white rounded-xl shadow-2xl text-center flex flex-col h-full best-value transition duration-500">
+                <h3 class="text-3xl font-black text-primary-custom mb-4">Plano Anual</h3>
+                <p class="text-gray-700 mb-6 font-semibold">**Economize R$ 160,00** e garanta 1 ano de uso!</p>
+                
+                <div class="my-6">
+                    <span class="text-5xl font-extrabold text-primary-custom">R$ 199,00</span>
+                    <span class="text-xl text-gray-600"> / ano</span>
+                </div>
+                
+                <div class="flex-grow">
+                    <ul class="text-left space-y-3 mb-8 text-gray-700">
+                        <li class="flex items-center font-bold text-primary-custom"><i class="fas fa-check text-success mr-3"></i> Tudo do Plano Mensal</li>
+                        <li class="flex items-center font-bold text-primary-custom"><i class="fas fa-check text-success mr-3"></i> Desconto de 45% (Equivalente a R$ 16,58/mês)</li>
+                        <li class="flex items-center font-bold text-primary-custom"><i class="fas fa-check text-success mr-3"></i> Sem Taxa de Ativação (INCLUSO!)</li>
+                        <li class="flex items-center font-bold text-primary-custom"><i class="fas fa-check text-success mr-3"></i> Suporte Prioritário</li>
+                        <li class="flex items-center font-bold text-primary-custom"><i class="fas fa-check text-success mr-3"></i> Renovação com preço congelado</li>
+                        <li class="flex items-center font-bold text-primary-custom"><i class="fas fa-check text-success mr-3"></i> Certificado de Usuário Oficial</li>
+                    </ul>
+                </div>
+
+                <a href="../contato.html" class="mt-auto block w-full px-8 py-4 bg-secondary-custom text-primary-custom font-black text-lg rounded-full shadow-xl hover:bg-yellow-400 transition transform hover:scale-[1.02]">
+                    Contratar Anual (Recomendado) &rarr;
+                </a>
+            </div>
+
+            <div class="p-8 bg-white rounded-xl shadow-xl text-center flex flex-col h-full hover:shadow-2xl transition">
+                <h3 class="text-2xl font-black text-primary-custom mb-4">Múltiplas Lojas</h3>
+                <p class="text-gray-500 mb-6 font-semibold">Para redes, franquias e clientes corporativos.</p>
+                
+                <div class="my-6">
+                    <span class="text-3xl font-extrabold text-primary-custom">Sob Consulta</span>
+                </div>
+                
+                <div class="flex-grow">
+                    <ul class="text-left space-y-3 mb-8 text-gray-700">
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> 5 ou mais chaves de acesso</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Desconto Progressivo por volume</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Gestão centralizada (Opcional)</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Personalização de temas</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Consultoria de Implementação</li>
+                        <li class="flex items-center"><i class="fas fa-check text-success mr-3"></i> Faturamento PJ (CNPJ)</li>
+                    </ul>
+                </div>
+
+                <a href="../contato.html" class="mt-auto block w-full px-6 py-3 bg-primary-custom text-white font-black rounded-full shadow-lg hover:bg-indigo-700 transition">
+                    Falar com Consultor &rarr;
+                </a>
+            </div>
+        </section>
+        
+        <section class="mt-16 p-8 bg-gray-100 rounded-xl shadow-inner">
+            <h3 class="text-2xl font-bold text-primary-custom mb-4">Dúvidas Comuns</h3>
+            <div class="grid md:grid-cols-2 gap-6 text-gray-700">
+                <div>
+                    <p class="font-semibold mb-1">Como funciona a "Zero Taxa"?</p>
+                    <p class="text-sm">Você só paga a assinatura (Anual ou Mensal). Não cobramos porcentagem ou taxa fixa sobre o valor de cada pedido que você recebe via WhatsApp. Seu lucro é integral.</p>
+                </div>
+                <div>
+                    <p class="font-semibold mb-1">Onde eu recebo os pedidos?</p>
+                    <p class="text-sm">Os pedidos são enviados em formato pronto para o **seu número de WhatsApp**. Você confirma o pedido, calcula o frete e finaliza o pagamento diretamente com o cliente.</p>
+                </div>
+            </div>
+            <p class="text-center mt-6 text-lg">Ainda tem dúvidas? <a href="../contato.html" class="text-primary-custom font-bold underline hover:text-indigo-700">Fale com um consultor agora.</a></p>
+        </section>
+
+    </main>
+
+    <footer class="mt-16 bg-primary-custom text-white p-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 LabSystem. Todos os direitos reservados. Design Serverless.</p>
+            <p class="mt-2 text-xs text-gray-400">
+                <a href="../termos.html" class="underline hover:text-secondary-custom">Termos de Uso</a> | 
+                <a href="../contato.html" class="underline hover:text-secondary-custom">Fale Conosco</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
