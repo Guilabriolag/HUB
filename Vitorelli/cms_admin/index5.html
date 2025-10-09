@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Painel de Gerenciamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* Cores LabSystem */
+        :root {
+            --cor-principal: #ff3c3c; /* Vermelho LabSystem para destaques de conteúdo */
+            --clr-action: #007bff;    /* Azul Elétrico para o Menu Radial */
+            --clr-highlight: #ffc107; /* Amarelo Raio */
+        }
+        .text-primary { color: var(--cor-principal); }
+        .bg-primary { background-color: var(--cor-principal); }
+        .hover\:bg-primary-dark:hover { background-color: #d83434; }
+        
+        /* Estilos do Menu Radial */
+        .radial-menu {
+            position: fixed;
+            bottom: 30px;
+            /* Inicia no centro */
+            left: 50%;
+            transform: translateX(-50%); 
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            user-select: none; /* Não permite selecionar texto ao arrastar */
+        }
+
+        .radial-menu .toggle {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: var(--clr-action);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 2.2em;
+            transition: transform 0.5s, box-shadow 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .radial-menu.active .toggle {
+            transform: rotate(315deg);
+            background: var(--clr-highlight);
+            color: #333;
+            box-shadow: 0 0 10px var(--clr-highlight), 0 0 30px var(--clr-highlight);
+        }
+
+        .radial-menu li {
+            position: absolute;
+            list-style: none;
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border: 2px solid var(--clr-action);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: var(--clr-action);
+            /* Ângulo (45deg * var(--i)) e Distância (120px) */
+            transform: rotate(calc(45deg * var(--i))) translate(120px); 
+            transition: 0.5s;
+            opacity: 0;
+            pointer-events: none;
+            cursor: pointer;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        }
+        @media (max-width: 640px) {
+            /* Reduz o menu no celular */
+            .radial-menu { width: 60px; height: 60px; }
+            .radial-menu .toggle { width: 60px; height: 60px; font-size: 1.8em; }
+            .radial-menu li { 
+                width: 45px; 
+                height: 45px; 
+                font-size: 1em; 
+                transform: rotate(calc(45deg * var(--i))) translate(80px); 
+            }
+        }
+
+
+        .radial-menu.active li {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .radial-menu li:hover {
+            background: var(--clr-action);
+            color: #fff;
+            box-shadow: 0 0 10px var(--clr-action), 0 0 30px var(--clr-action);
+        }
+
+        /* Ocultar a sidebar original no mobile/tablet, pois o radial menu assume a navegação */
+        .sidebar-desktop {
+            display: none;
+        }
+        @media (min-width: 1024px) {
+            .sidebar-desktop {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+    
+    <div class="sidebar-desktop flex-col w-64 bg-gray-800 text-white shadow-xl h-screen sticky top-0" style="background-color: var(--cor-fundo-sidebar);">
+        <div class="flex items-center justify-center h-20 border-b border-gray-700">
+            <span class="text-2xl font-extrabold tracking-wider text-primary">LabSystem CMS</span>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-2">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase pb-2">Navegação Rápida</h3>
+            <a href="#" onclick="showTab('publicacao')" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out" id="desktop-nav-publicacao">
+                <i class="fas fa-rocket w-6 h-6 text-primary"></i>
+                <span>Publicação</span>
+            </a>
+            <a href="#" onclick="showTab('cardapio')" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out" id="desktop-nav-cardapio">
+                <i class="fas fa-pizza-slice w-6 h-6"></i>
+                <span>Cardápio / Itens</span>
+            </a>
+            <a href="#" onclick="showTab('customizar')" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out" id="desktop-nav-customizar">
+                <i class="fas fa-palette w-6 h-6"></i>
+                <span>Customizar Totem</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-md">
+            <h1 class="text-xl md:text-2xl font-semibold text-gray-800" id="current-title">Publicação</h1>
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <span class="text-sm font-medium text-gray-500 hidden sm:inline">Status: Rascunho</span>
+                <button class="px-3 py-1 md:px-4 md:py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-150 ease-in-out text-sm md:text-base font-medium" onclick="publicarDados()">
+                    🚀 Publicar (Desktop)
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-6 pb-20"> <div id="tab-publicacao" class="tab-content" style="display: block;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-primary">Status de Publicação Serverless</h2>
+                    <p class="text-gray-600 mb-6">Esta seção coordena o envio de todos os dados configurados para o seu **Bin ID** (JSONBin.io ou similar).</p>
+                    
+                    <div class="space-y-4 mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-300">
+                        <label class="block text-gray-700 font-bold">BIN ID (JSONBin)</label>
+                        <input type="text" id="binId" value="654321xyz" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        
+                        <label class="block text-gray-700 font-bold">Master Key (Escrita/Gravação)</label>
+                        <input type="password" id="masterKey" value="SUA_CHAVE_SECRETA_AQUI" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <button class="w-full py-3 bg-primary text-white text-lg font-bold rounded-md hover:bg-primary-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                        🚀 Publicar Tudo Agora
+                    </button>
+                    <p class="mt-4 text-sm text-center text-gray-500">A publicação é instantânea.</p>
+                </div>
+            </div>
+
+            <div id="tab-operacionais" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gerenciamento Operacional da Loja</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="statusLoja" class="block text-sm font-medium text-gray-700">Status de Abertura/Fechamento</label>
+                            <select id="statusLoja" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                                <option value="aberto">Aberto (Aceitando Pedidos)</option>
+                                <option value="fechado">Fechado (Fora do Horário)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="whatsapp" class="block text-sm font-medium text-gray-700">Contato WhatsApp</label>
+                            <input type="text" id="whatsapp" value="5511993407322" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Configuração de Taxas de Entrega</label>
+                            <textarea id="taxasEntrega" rows="5" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md font-mono text-xs p-2">
+// Formato usado na Versão 6.0
+{
+    "Centro": 3.00,
+    "Chácara Boa Vista": 3.00,
+    "Green Hills": 10.00,
+    "Vila Nova": 3.00
+}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('operacionais')">
+                            Salvar Rascunho Operacional
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-cardapio" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gestão de Itens e Estoque</h2>
+                    
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-700">Itens Atuais</h3>
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                            + Novo Item
+                        </button>
+                    </div>
+
+                    <div class="border p-4 rounded-lg bg-gray-50">
+                        <h4 class="font-bold mb-4 border-b pb-2 text-primary">Editar: Pizza 4 Queijos</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div><label class="block text-sm font-medium text-gray-700">Nome</label><input type="text" value="4 Queijos" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Preço Inteira (R$)</label><input type="number" step="0.01" value="47.00" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Preço Broto (R$)</label><input type="number" step="0.01" value="37.00" class="mt-1 w-full p-2 border rounded-md"></div>
+                        </div>
+                        <div class="mt-4"><label class="block text-sm font-medium text-gray-700">Ingredientes</label><textarea rows="2" class="mt-1 w-full p-2 border rounded-md">molho, mussarela, parmesão, provolone, gorgonzola...</textarea></div>
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Excluir</button>
+                            <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Salvar Item</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('cardapio')">
+                            Salvar Rascunho do Cardápio
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-customizar" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Configurações de Layout e Mídia</h2>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="corPrincipal" class="block text-sm font-medium text-gray-700">Cor Principal (Hex)</label>
+                                <input type="color" id="corPrincipal" value="#ff3c3c" class="mt-1 block w-full h-10 border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label for="logoUrl" class="block text-sm font-medium text-gray-700">URL do Logo</label>
+                                <input type="url" id="logoUrl" value="https://stock.adobe.com/es/search?k=da+logo" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="backgroundUrl" class="block text-sm font-medium text-gray-700">URL Imagem de Fundo</label>
+                                <input type="url" id="backgroundUrl" value="https://unsplash.com/pt-br/s/fotografias/plano-de-fundo-hd" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label for="musicaUrl" class="block text-sm font-medium text-gray-700">Música Ambiente (YouTube)</label>
+                                <input type="url" id="musicaUrl" value="https://www.youtube.com/watch?v=-lK0EKYrLGE" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('customizar')">
+                            Salvar Rascunho da Customização
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <ul class="radial-menu" id="radial-menu">
+        <div class="toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <li style="--i:0" onclick="publicarDados()">
+            <i class="fas fa-rocket"></i>
+        </li>
+        
+        <li style="--i:1" onclick="previewTotem()">
+            <i class="fas fa-eye"></i>
+        </li>
+        
+        <li style="--i:2" onclick="salvarRascunho('geral')">
+            <i class="fas fa-save"></i>
+        </li>
+
+        <li style="--i:3" onclick="showTab('cardapio')">
+            <i class="fas fa-pizza-slice"></i>
+        </li>
+        
+        <li style="--i:4" onclick="showTab('operacionais')">
+            <i class="fas fa-chart-bar"></i>
+        </li>
+        
+        <li style="--i:5" onclick="showTab('customizar')">
+            <i class="fas fa-palette"></i>
+        </li>
+
+        <li style="--i:6" onclick="alert('Funcionalidade: Adicionar Novo Item')">
+            <i class="fas fa-plus"></i>
+        </li>
+
+        <li style="--i:7" onclick="alert('Ajuda / Documentação LabSystem')">
+            <i class="fas fa-question-circle"></i>
+        </li>
+
+    </ul>
+
+    <script>
+        const navLinks = {
+            'publicacao': 'Publicação',
+            'operacionais': 'Dados Operacionais',
+            'cardapio': 'Cardápio / Itens',
+            'customizar': 'Configurações de Layout e Mídia'
+        };
+        const radialMenu = document.getElementById('radial-menu');
+        const headerTitle = document.getElementById('current-title');
+
+        // ===========================================
+        // 1. LÓGICA DO MENU RADIAL
+        // ===========================================
+
+        function toggleMenu() {
+            radialMenu.classList.toggle('active');
+        }
+
+        // -------------------------------------------
+        // 1.1 DRAG-AND-DROP (Arrastar o Menu)
+        // -------------------------------------------
+        let isDragging = false;
+        let offset = { x: 0, y: 0 };
+        
+        radialMenu.addEventListener('mousedown', startDrag);
+        radialMenu.addEventListener('touchstart', startDrag);
+
+        function startDrag(e) {
+            // Impedir arrastar se o menu estiver aberto
+            if (radialMenu.classList.contains('active')) return; 
+
+            isDragging = true;
+            
+            // Determina a posição inicial (touch ou mouse)
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // Calcula o offset entre o clique e o canto superior esquerdo do menu
+            const rect = radialMenu.getBoundingClientRect();
+            offset.x = clientX - rect.left;
+            offset.y = clientY - rect.top;
+
+            // Aplica o estilo de posicionamento absoluto necessário para arrastar
+            radialMenu.style.position = 'fixed';
+            radialMenu.style.removeProperty('left'); // Remove o left: 50%
+            radialMenu.style.removeProperty('transform'); // Remove o translateX(-50%)
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('touchmove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+
+            e.preventDefault(); // Previne seleção de texto ou scroll indesejado
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // Calcula a nova posição
+            let newX = clientX - offset.x;
+            let newY = clientY - offset.y;
+
+            // Limita a área de movimento (opcional, mas recomendado)
+            newX = Math.max(0, Math.min(newX, window.innerWidth - radialMenu.offsetWidth));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - radialMenu.offsetHeight));
+
+            radialMenu.style.left = `${newX}px`;
+            radialMenu.style.top = `${newY}px`;
+        }
+
+        function endDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('touchmove', onDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchend', endDrag);
+        }
+        
+        // -------------------------------------------
+        // 1.2 NAVEGAÇÃO E ATUALIZAÇÃO
+        // -------------------------------------------
+        function showTab(tabId) {
+            // 1. Esconder todos os conteúdos
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            
+            // 2. Mostrar o conteúdo
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+
+            // 3. Atualizar o título
+            headerTitle.textContent = navLinks[tabId];
+
+            // 4. Fechar o menu radial
+            radialMenu.classList.remove('active');
+        }
+
+        // ===========================================
+        // 2. AÇÕES DO PAINEL (PREVIEW, SALVAR, PUBLICAR)
+        // ===========================================
+
+        function previewTotem() {
+            toggleMenu();
+            window.open('../totem/index1.html', '_blank');
+        }
+
+        function salvarRascunho(secao) {
+            toggleMenu();
+            if (secao === 'geral') {
+                 alert('✅ Rascunho Geral Salvo. Todos os dados (Operacional, Cardápio, Config) foram salvos localmente.');
+            } else {
+                alert(`✅ Rascunho de ${navLinks[secao]} Salvo. Clique em "Publicar" para atualizar o Totem.`);
+            }
+        }
+
+        function publicarDados() {
+            toggleMenu();
+            if (confirm("ATENÇÃO: Você tem certeza que deseja PUBLICAR? Isso atualizará o Totem imediatamente!")) {
+                
+                // *** Lógica de Coleta e Envio para JSONBin/API (igual ao anterior) ***
+                
+                console.log('Dados simulados para publicação.');
+                alert('✅ SUCESSO: Dados Serverless enviados! O Totem seria atualizado agora.');
+            }
+        }
+
+        // Inicializa a aba de Publicação ao carregar a página
+        window.onload = () => showTab('publicacao');
+    </script>
+</body>
+</html>
