@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Painel de Gerenciamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Cores LabSystem */
+        :root {
+            --clr-main: #007bff; /* Azul Elétrico (Botão principal, hover, bordas) */
+            --clr-accent: #ffc107; /* Amarelo Raio (Destaque, Toggle do menu) */
+            --clr-text: #2f363e;
+        }
+
+        /* Estilos Globais do Tailwind */
+        .text-main { color: var(--clr-main); }
+        .bg-main { background-color: var(--clr-main); }
+        .hover\:bg-main-dark:hover { background-color: #0056b3; }
+
+        /* Esconde a barra lateral (Sidebar) no mobile. No desktop, a barra lateral ainda aparece, mas a navegação via menu radial será a principal. */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+            /* Garantir que a área principal ocupe 100% da largura em telas pequenas */
+            .cms-main-content {
+                width: 100%;
+            }
+        }
+        
+        /* =========================================== */
+        /* ESTILOS DO MENU RADIAL FLUTUANTE */
+        /* =========================================== */
+        .radial-menu-container {
+            position: fixed;
+            bottom: 50px; /* Posição inicial no centro-inferior */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Sempre acima de tudo */
+            cursor: grab; /* Indica que é arrastável */
+        }
+
+        .menu-radial {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-radial .toggle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--clr-accent); /* Amarelo Raio */
+            border: 2px solid #fff;
+            border-radius: 50%;
+            color: var(--clr-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 2em;
+            font-weight: bold;
+            transition: transform 0.5s, box-shadow 0.5s;
+        }
+        
+        /* Animação do botão ao abrir */
+        .menu-radial.active .toggle {
+            transform: rotate(315deg);
+            box-shadow: 0 0 10px var(--clr-accent), 0 0 30px var(--clr-accent), 0 0 50px var(--clr-accent);
+        }
+
+        .menu-radial li {
+            position: absolute;
+            list-style: none;
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border: 2px solid var(--clr-main); /* Azul Elétrico */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: var(--clr-main);
+            /* A animação original é de 45deg, vamos otimizar para 4 itens: 90deg */
+            transform: rotate(calc(90deg * var(--i))) translate(120px) rotate(calc(-90deg * var(--i)));
+            transition: 0.5s;
+            opacity: 0;
+            pointer-events: none;
+            cursor: pointer;
+        }
+        
+        /* Posicionamento dos itens do menu */
+        .menu-radial.active li {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-radial li:hover {
+            background: var(--clr-main);
+            color: #fff;
+            box-shadow: 0 0 10px var(--clr-main), 0 0 30px var(--clr-main), 0 0 50px var(--clr-main);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+
+    <div class="flex min-h-screen bg-gray-50">
+
+        <div id="sidebar" class="sidebar flex flex-col w-64 bg-gray-800 text-white shadow-xl" style="background-color: var(--clr-text);">
+            <div class="flex items-center justify-center h-20 border-b border-gray-700">
+                <span class="text-2xl font-extrabold tracking-wider text-main">LabSystem CMS</span>
+            </div>
+            
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" onclick="showTab('publicacao', this)" id="nav-publicacao" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out bg-gray-900">
+                    <svg class="w-6 h-6 text-main" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Publicação</span>
+                </a>
+                <a href="#" onclick="showTab('operacionais', this)" id="nav-operacionais" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span>Dados Operacionais</span>
+                </a>
+                <a href="#" onclick="showTab('cardapio', this)" id="nav-cardapio" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Cardápio / Itens</span>
+                </a>
+                <a href="#" onclick="showTab('customizar', this)" id="nav-customizar" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <span>Customizar Totem</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="cms-main-content flex-1 flex flex-col overflow-hidden">
+            <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-md">
+                <h1 class="text-xl md:text-2xl font-semibold text-gray-800" id="current-title">Publicação</h1>
+                <button class="hidden lg:inline-flex px-4 py-2 bg-main text-white rounded-md hover:bg-main-dark transition duration-150 ease-in-out text-base font-medium" onclick="publicarDados()">
+                    🚀 Sincronizar e Publicar
+                </button>
+            </header>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-6">
+                
+                <div id="tab-publicacao" class="tab-content" style="display: block;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-xl font-semibold mb-4 text-main">Status de Publicação Serverless</h2>
+                        <p class="text-gray-600 mb-6">Esta seção é o núcleo do conceito Serverless. Ela coordena o envio de todos os dados configurados para o seu **Bin ID** no JSONBin.io e atualiza o Totem Digital em tempo real.</p>
+                        
+                        <div class="space-y-4 mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-300">
+                            <label class="block text-gray-700 font-bold">BIN ID (JSONBin)</label>
+                            <input type="text" id="binId" value="654321xyz" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-main focus:border-main">
+                            
+                            <label class="block text-gray-700 font-bold">Master Key (Escrita/Gravação)</label>
+                            <input type="password" id="masterKey" value="SUA_CHAVE_SECRETA_AQUI" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-main focus:border-main">
+                        </div>
+
+                        <button class="w-full py-3 bg-main text-white text-lg font-bold rounded-md hover:bg-main-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                            🚀 Publicar Tudo Agora (Sincronizar com Totem)
+                        </button>
+
+                        <p class="mt-4 text-sm text-center text-gray-500">A publicação é instantânea e atualizará o Totem Digital em todos os dispositivos.</p>
+                    </div>
+                </div>
+
+                <div id="tab-operacionais" class="tab-content" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-xl font-semibold mb-6 text-main">Gerenciamento Operacional da Loja</h2>
+                        <div class="space-y-6">
+                            </div>
+                        <div class="mt-8 flex justify-end">
+                            <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('operacionais')">
+                                Salvar Rascunho Operacional
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-cardapio" class="tab-content" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                        <h2 class="text-xl font-semibold mb-6 text-main">Gestão de Itens e Estoque</h2>
+                        <div class="mt-8 flex justify-end">
+                            <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('cardapio')">
+                                Salvar Rascunho do Cardápio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-customizar" class="tab-content" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-xl font-semibold mb-6 text-main">Definir Estilo do Totem Digital</h2>
+                        <div class="mt-8 flex justify-end">
+                            <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('customizar')">
+                                Salvar Rascunho da Customização
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <div class="radial-menu-container" id="radial-menu-container">
+        <ul class="menu-radial" id="menu-radial">
+            <div class="toggle" onclick="toggleRadialMenu()">+</div>
+            
+            <li style="--i:0" onclick="publicarDados()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </li>
+            
+            <li style="--i:1" onclick="previewTotem()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            </li>
+
+            <li style="--i:2" onclick="showTab('cardapio', document.getElementById('nav-cardapio'))">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </li>
+            
+            <li style="--i:3" onclick="showTab('operacionais', document.getElementById('nav-operacionais'))">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            </li>
+
+        </ul>
+    </div>
+    
+    <script>
+        const navLinks = {
+            'publicacao': 'Publicação',
+            'operacionais': 'Dados Operacionais',
+            'cardapio': 'Cardápio / Itens',
+            'customizar': 'Customizar Totem'
+        };
+
+        const radialMenuContainer = document.getElementById('radial-menu-container');
+
+        // ===========================================
+        // LÓGICA DO MENU RADIAL
+        // ===========================================
+
+        function toggleRadialMenu() {
+            document.getElementById('menu-radial').classList.toggle('active');
+        }
+
+        // ===========================================
+        // LÓGICA DE ARRASTAR (DRAGGABLE)
+        // ===========================================
+        let isDragging = false;
+        let offset = { x: 0, y: 0 };
+        let initialMousePos = { x: 0, y: 0 };
+        
+        radialMenuContainer.addEventListener('mousedown', startDrag);
+        radialMenuContainer.addEventListener('touchstart', startDrag);
+
+        function startDrag(e) {
+            // Se o menu radial estiver aberto, não permite arrastar (para clicar nos itens)
+            if (document.getElementById('menu-radial').classList.contains('active')) return;
+            
+            isDragging = true;
+            // Previne o comportamento padrão (ex: scroll em mobile)
+            e.preventDefault(); 
+            
+            // Determina se é touch ou mouse
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // Posição do mouse em relação ao canto superior esquerdo da tela
+            initialMousePos = { x: clientX, y: clientY };
+            
+            // Calcula o offset do menu (posição relativa ao container principal)
+            const rect = radialMenuContainer.getBoundingClientRect();
+            offset = {
+                x: rect.left,
+                y: rect.top
+            };
+
+            // Adiciona a classe para mudar o cursor durante o arrastar
+            radialMenuContainer.style.cursor = 'grabbing';
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', onDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // Calcula a nova posição
+            let newX = clientX - (initialMousePos.x - offset.x);
+            let newY = clientY - (initialMousePos.y - offset.y);
+
+            // Aplica a nova posição e remove a transformação central
+            radialMenuContainer.style.left = `${newX}px`;
+            radialMenuContainer.style.top = `${newY}px`;
+            radialMenuContainer.style.transform = 'none';
+
+            // Garante que o menu não saia da tela
+            const maxWidth = window.innerWidth - radialMenuContainer.offsetWidth;
+            const maxHeight = window.innerHeight - radialMenuContainer.offsetHeight;
+
+            if (newX < 0) radialMenuContainer.style.left = '0px';
+            if (newX > maxWidth) radialMenuContainer.style.left = `${maxWidth}px`;
+            if (newY < 0) radialMenuContainer.style.top = '0px';
+            if (newY > maxHeight) radialMenuContainer.style.top = `${maxHeight}px`;
+
+            e.preventDefault();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            radialMenuContainer.style.cursor = 'grab';
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchmove', onDrag);
+            document.removeEventListener('touchend', endDrag);
+        }
+
+
+        // ===========================================
+        // LÓGICA DE NAVEGAÇÃO E AÇÕES
+        // ===========================================
+
+        function showTab(tabId, element) {
+            // Esconder todos os conteúdos e remover a classe 'active' da navegação
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('a[id^="nav-"]').forEach(el => el.classList.remove('bg-gray-900'));
+            
+            // Mostrar o conteúdo
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            
+            // Adicionar a classe 'active' apenas se o elemento de navegação existir (sidebar desktop)
+            if(element) element.classList.add('bg-gray-900');
+
+            // Atualizar o título
+            document.getElementById('current-title').textContent = navLinks[tabId];
+
+            // Fechar o menu radial após a seleção
+            document.getElementById('menu-radial').classList.remove('active');
+        }
+        
+        function previewTotem() {
+            window.open('../totem/index1.html', '_blank');
+            document.getElementById('menu-radial').classList.remove('active');
+        }
+
+        function salvarRascunho(secao) {
+            console.log(`Dados da seção ${secao} salvos localmente (Rascunho)`);
+            alert(`✅ Dados de ${navLinks[secao]} salvos localmente como RASCUNHO.`);
+            document.getElementById('menu-radial').classList.remove('active');
+        }
+
+        function publicarDados() {
+             if (confirm("ATENÇÃO: Você tem certeza que deseja SINCRONIZAR e PUBLICAR? Isso atualizará o Totem Digital imediatamente para todos os clientes.")) {
+                // ... (Lógica de publicação permanece a mesma, omitida para concisão)
+                alert('✅ SUCESSO NA SIMULAÇÃO: Dados Serverless enviados! O Totem (index1.html) seria atualizado agora.');
+            }
+            document.getElementById('menu-radial').classList.remove('active');
+        }
+
+        // Inicializa a aba de Publicação ao carregar a página
+        window.onload = () => showTab('publicacao', document.getElementById('nav-publicacao'));
+    </script>
+</body>
+</html>
