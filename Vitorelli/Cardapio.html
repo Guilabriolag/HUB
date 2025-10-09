@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cardápio Vitorelli 3D - Final</title>
+  <title>Cardápio Vitorelli 3D - Final (v3)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
@@ -280,18 +280,18 @@
     }
     
     /* -------------------------------------- */
-    /* NOVO MENU DE NAVEGAÇÃO (CSS DO USUÁRIO) */
+    /* NOVO MENU DE NAVEGAÇÃO (Rodapé Fixo) */
     /* -------------------------------------- */
 
     .navigation {
-      width: 100%; /* Ajuste para ocupar toda a largura */
-      height: 90px; /* Levemente maior */
+      width: 100%; 
+      height: 90px; 
       background: var(--bg); 
-      position: fixed; /* Fixo no rodapé */
-      bottom: 0; /* No rodapé */
+      position: fixed; 
+      bottom: 0; 
       left: 0;
-      border-radius: 0; /* Remove o border-radius para ser full-width */
-      box-shadow: 0 -10px 30px rgba(0,0,0,.1); /* Sombra superior */
+      border-radius: 0; 
+      box-shadow: 0 -10px 30px rgba(0,0,0,.1); 
       overflow: hidden; 
       display: flex; 
       align-items: center; 
@@ -299,11 +299,10 @@
       z-index: 2000;
     }
     
-    /* Centraliza o conteúdo e limita a largura em telas grandes */
     .navigation ul {
       display: flex; 
       width: 100%; 
-      max-width: 600px; /* Largura máxima para desktop */
+      max-width: 600px; 
       justify-content: space-around; 
       position: relative; 
       align-items: center;
@@ -314,7 +313,7 @@
     .navigation ul li {
       list-style:none; 
       width:70px; 
-      height:80px; /* Ajuste a altura para centralizar melhor */
+      height:80px; 
       display:flex; 
       align-items:center; 
       justify-content:center;
@@ -341,7 +340,7 @@
     }
     .navigation ul li .text { 
         position:absolute; 
-        bottom:10px; /* Posição ajustada */
+        bottom:10px; 
         font-size:.75rem; 
         font-weight: 600;
         opacity:0; 
@@ -351,18 +350,18 @@
     /* ESTILO ATIVO */
     .navigation ul li.active .icon { 
         color:var(--clr); 
-        transform: translateY(-5px); /* Efeito sutil de flutuação */
+        transform: translateY(-5px); 
         transition: transform .3s;
     }
     .navigation ul li.active .text { 
         opacity:1; 
         color:var(--clr); 
-        transform:translateY(5px); /* Move o texto para baixo */
+        transform:translateY(5px); 
     }
 
     @media (max-width:480px){
       .navigation{width:100%;}
-      .navigation ul li{width:16%;height:80px} /* Distribui 6 itens */
+      .navigation ul li{width:16%;height:80px} 
     }
 
   </style>
@@ -620,6 +619,7 @@
         });
     }
 
+    // Função que lida com a lógica de adicionar itens, incluindo Meia-a-meia
     function adicionar(nome, precoInteira, precoBroto) {
       
       if (modoMeia) {
@@ -631,7 +631,8 @@
           
           if (saboresSelecionadosMeia.length === 2) {
             const [sabor1, sabor2] = saboresSelecionadosMeia;
-            const precoFinal = Math.max(sabor1.preco, sabor2.preco);
+            // Preço final é o MAIOR preço entre os dois sabores
+            const precoFinal = Math.max(sabor1.preco, sabor2.preco); 
             const tipoMeia = categoriaAtual === 'broto' ? 'Broto Meia-a-meia' : 'Pizza Meia-a-meia'; 
             
             carrinhoItens.push({ 
@@ -866,6 +867,7 @@
       msg += `\n========================\n`;
       msg += `*Agradecemos a preferência!*`;
 
+      // Número de telefone para envio do WhatsApp (apenas um exemplo)
       const numero = '5511993407322';
       const texto = encodeURIComponent(msg);
       window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
@@ -903,4 +905,4 @@
     };
   </script>
   </body>
-</html>
+  </html>
