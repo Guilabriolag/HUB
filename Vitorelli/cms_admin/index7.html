@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Painel de Gerenciamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* ======================================= */
+        /* Cores e Variáveis do LabSystem */
+        /* ======================================= */
+        :root {
+            --clr-primary: #007bff; /* Azul Elétrico (Principal) */
+            --clr-accent: #ffc107; /* Amarelo Raio (Destaque) */
+            --clr-toggle: #1f2937; /* Cinza Escuro do Toggle */
+        }
+        /* Classes Tailwind customizadas */
+        .text-primary { color: var(--clr-primary); }
+        .bg-primary { background-color: var(--clr-primary); }
+        .hover\:bg-primary-dark:hover { background-color: #0056b3; } /* Tom mais escuro do azul */
+
+        /* ======================================= */
+        /* Estilos do Menu Radial Flutuante e Arrastável */
+        /* ======================================= */
+        .radial-menu {
+            position: fixed;
+            /* Definido com left/top pelo JS para permitir o arraste */
+            top: 50px; 
+            left: 50px; 
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            cursor: move; /* Indica que é arrastável */
+            border-radius: 50%;
+        }
+        
+        .radial-menu .toggle {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: var(--clr-toggle);
+            border: 3px solid var(--clr-primary);
+            border-radius: 50%;
+            color: var(--clr-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 2.2em;
+            transition: transform 0.5s, box-shadow 0.3s, background 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .radial-menu.active .toggle {
+            transform: rotate(315deg);
+            color: var(--clr-toggle);
+            background: var(--clr-accent); /* Toggle Amarelo quando ativo */
+            box-shadow: 0 0 10px var(--clr-accent), 0 0 30px var(--clr-accent);
+        }
+
+        .radial-menu li {
+            position: absolute;
+            list-style: none;
+            width: 55px;
+            height: 55px;
+            background: #fff;
+            border: 2px solid var(--clr-primary); /* Borda Azul */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: var(--clr-toggle);
+            /* Transformação inicial para esconder/posicionar */
+            transform: rotate(calc(45deg * var(--i))) translate(0px); /* Começa no centro */
+            transition: 0.5s;
+            opacity: 0;
+            pointer-events: none;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .radial-menu.active li {
+            opacity: 1;
+            pointer-events: auto;
+            /* Move para fora, rotacionando o item para que o ícone fique reto */
+            transform: rotate(calc(45deg * var(--i))) translate(110px) rotate(calc(-45deg * var(--i)));
+            transition: 0.5s;
+        }
+        
+        .radial-menu li:hover {
+            background: var(--clr-primary);
+            color: #fff;
+            box-shadow: 0 0 10px var(--clr-primary), 0 0 30px var(--clr-primary);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+    
+    <ul class="radial-menu" id="radial-menu">
+        <div class="toggle" onclick="toggleMenu(event)" title="Menu de Navegação">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <li style="--i:0" onclick="showTab('publicacao', event)" title="Publicação">
+            <i class="fas fa-upload"></i>
+        </li>
+        <li style="--i:1" onclick="showTab('operacionais', event)" title="Dados Operacionais">
+            <i class="fas fa-chart-line"></i>
+        </li>
+        <li style="--i:2" onclick="showTab('cardapio', event)" title="Cardápio / Itens">
+            <i class="fas fa-pizza-slice"></i>
+        </li>
+        <li style="--i:3" onclick="showTab('customizar', event)" title="Customizar Totem">
+            <i class="fas fa-paint-roller"></i>
+        </li>
+        <li style="--i:4" onclick="previewTotem(event)" title="Preview em Tempo Real">
+            <i class="fas fa-eye"></i>
+        </li>
+        <li style="--i:5" onclick="stopInteraction(event)" title="Ajuda">
+            <i class="fas fa-question-circle"></i>
+        </li>
+        <li style="--i:6" onclick="stopInteraction(event)" title="Sair">
+            <i class="fas fa-sign-out-alt"></i>
+        </li>
+        <li style="--i:7" onclick="stopInteraction(event)" title="Módulo Extra">
+            <i class="fas fa-cogs"></i>
+        </li>
+    </ul>
+
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-md">
+            
+            <div class="flex items-center space-x-3">
+                <h1 class="text-xl md:text-2xl font-semibold text-gray-800" id="current-title">Publicação</h1>
+            </div>
+
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <span class="text-sm font-medium text-gray-500 hidden sm:inline">LabSystem CMS</span>
+                
+                <button class="px-3 py-1 md:px-4 md:py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-150 ease-in-out text-sm md:text-base font-medium" onclick="publicarDados()">
+                    🚀 Sincronizar e Publicar
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-6">
+            
+            <div id="tab-publicacao" class="tab-content" style="display: block;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-primary">Status de Publicação Serverless</h2>
+                    <p class="text-gray-600 mb-6">Esta seção é o núcleo do conceito Serverless. Ela coordena o envio de todos os dados configurados para o seu **Bin ID** no JSONBin.io (ou similar) e atualiza o Totem Digital em tempo real.</p>
+                    
+                    <div class="space-y-4 mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-300">
+                        <label class="block text-gray-700 font-bold">BIN ID (JSONBin)</label>
+                        <input type="text" id="binId" value="654321xyz" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        
+                        <label class="block text-gray-700 font-bold">Master Key (Escrita/Gravação)</label>
+                        <input type="password" id="masterKey" value="SUA_CHAVE_SECRETA_AQUI" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <button class="w-full py-3 bg-primary text-white text-lg font-bold rounded-md hover:bg-primary-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                        🚀 Publicar Tudo Agora (Sincronizar com Totem)
+                    </button>
+
+                    <p class="mt-4 text-sm text-center text-gray-500">A publicação é instantânea e atualizará o Totem Digital em todos os dispositivos.</p>
+                </div>
+            </div>
+
+            <div id="tab-operacionais" class="tab-content" style="display: none;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gerenciamento Operacional da Loja</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="statusLoja" class="block text-sm font-medium text-gray-700">Status de Abertura/Fechamento</label>
+                            <select id="statusLoja" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                                <option value="aberto">Aberto (Aceitando Pedidos)</option>
+                                <option value="fechado">Fechado (Fora do Horário)</option>
+                                <option value="pausa">Pausa/Manutenção</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="whatsapp" class="block text-sm font-medium text-gray-700">Contato WhatsApp (DDD + Número)</label>
+                            <input type="text" id="whatsapp" value="5511993407322" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Ex: 5511999998888">
+                            <p class="mt-2 text-xs text-gray-500">Este número será usado para receber pedidos via WhatsApp no Totem.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Configuração de Taxas de Entrega</label>
+                            <textarea id="taxasEntrega" rows="5" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md font-mono text-xs p-2">
+// Formato usado na Versão 6.0
+{
+    "Centro": 3.00,
+    "Chácara Boa Vista": 3.00,
+    "Green Hills": 10.00,
+    "JD. Bom Jesus": 3.00,
+    "Morro Branco": 4.00,
+    "Parque das Avencas": 3.00,
+    "Paiol/KM 50": 7.00,
+    "Trailer Club Gaivota": 10.00,
+    "Vila Nova": 3.00
+}
+                            </textarea>
+                            <p class="mt-2 text-xs text-gray-500">Edite as taxas e bairros diretamente no formato JSON acima.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('operacionais')">
+                            💾 Salvar Rascunho Operacional
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-cardapio" class="tab-content" style="display: none;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gestão de Itens e Estoque</h2>
+                    
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-700">Itens Atuais (28 Registros)</h3>
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out">
+                            + Novo Item
+                        </button>
+                    </div>
+
+                    <div class="border p-4 rounded-lg bg-gray-50">
+                        <h4 class="font-bold mb-4 border-b pb-2 text-primary">Editar: Pizza 4 Queijos</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome</label>
+                                <input type="text" value="4 Queijos" class="mt-1 w-full p-2 border rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Preço Inteira (R$)</label>
+                                <input type="number" step="0.01" value="47.00" class="mt-1 w-full p-2 border rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Preço Broto (R$)</label>
+                                <input type="number" step="0.01" value="37.00" class="mt-1 w-full p-2 border rounded-md">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700">Ingredientes / Descrição</label>
+                            <textarea rows="2" class="mt-1 w-full p-2 border rounded-md">molho, mussarela, parmesão, provolone, gorgonzola, azeitona e orégano</textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Link da Imagem</label>
+                                <input type="text" value="[link da imagem aqui]" class="mt-1 w-full p-2 border rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Estoque (Opcional)</label>
+                                <input type="number" value="99" class="mt-1 w-full p-2 border rounded-md">
+                                <p class="mt-1 text-xs text-gray-500">Alerte quando o estoque estiver baixo.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Excluir</button>
+                            <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Salvar Item</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 border rounded-lg">
+                        <ul class="space-y-2">
+                            <li class="flex justify-between items-center py-2 border-b">
+                                <span>5 Queijos</span>
+                                <span class="text-sm text-gray-500">Pizza - R$ 49,00 / R$ 39,00</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b">
+                                <span>Coca-Cola 2L</span>
+                                <span class="text-sm text-gray-500">Bebida - R$ 18,00</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2">
+                                <span>Calzone de Frango</span>
+                                <span class="text-sm text-gray-500">Calzone - R$ 37,00</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('cardapio')">
+                            💾 Salvar Rascunho do Cardápio
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="tab-customizar" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Definir Estilo do Totem Digital</h2>
+                    <div class="space-y-6">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="corPrincipal" class="block text-sm font-medium text-gray-700">Cor Principal (Hex Code)</label>
+                                <input type="color" id="corPrincipal" value="#007bff" class="mt-1 block w-full h-10 border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label for="logoUrl" class="block text-sm font-medium text-gray-700">URL do Logo da Loja</label>
+                                <input type="url" id="logoUrl" value="https://stock.adobe.com/es/search?k=da+logo" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://...">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="backgroundUrl" class="block text-sm font-medium text-gray-700">URL da Imagem de Fundo do Totem</label>
+                                <input type="url" id="backgroundUrl" value="https://unsplash.com/pt-br/s/fotografias/plano-de-fundo-hd" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://...">
+                            </div>
+                            <div>
+                                <label for="musicaUrl" class="block text-sm font-medium text-gray-700">Música Ambiente (URL do YouTube)</label>
+                                <input type="url" id="musicaUrl" value="https://www.youtube.com/watch?v=-lK0EKYrLGE" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://www.youtube.com/watch?v=...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('customizar')">
+                            💾 Salvar Rascunho da Customização
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const navLinks = {
+            'publicacao': 'Publicação',
+            'operacionais': 'Dados Operacionais',
+            'cardapio': 'Cardápio / Itens',
+            'customizar': 'Customizar Totem'
+        };
+
+        const radialMenu = document.getElementById('radial-menu');
+        const mainTitle = document.getElementById('current-title');
+
+        // ===========================================
+        // 1. LÓGICA DO DRAG & DROP (ARRÁSTAVEL)
+        // ===========================================
+        let isDragging = false;
+        let startX, startY;
+
+        // Adicionar a classe 'draggable' ao menu
+        radialMenu.classList.add('draggable');
+
+        function startDrag(e) {
+            // Se o clique veio de um item <li> (ou qualquer filho), ignora o drag
+            if (e.target.closest('li')) return; 
+
+            e.preventDefault(); // Previne a seleção de texto durante o arrasto
+
+            isDragging = true;
+            radialMenu.classList.remove('active'); // Fecha o menu ao começar a arrastar
+            
+            // Calcula o ponto de clique em relação ao canto superior esquerdo do elemento
+            startX = e.clientX - radialMenu.getBoundingClientRect().left;
+            startY = e.clientY - radialMenu.getBoundingClientRect().top;
+            
+            radialMenu.style.cursor = 'grabbing';
+        }
+
+        function duringDrag(e) {
+            if (!isDragging) return;
+
+            let newX = e.clientX - startX;
+            let newY = e.clientY - startY;
+
+            // Limitar o arrasto dentro da janela visível
+            newX = Math.max(0, Math.min(newX, window.innerWidth - radialMenu.offsetWidth));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - radialMenu.offsetHeight));
+
+            // Aplica as novas posições
+            radialMenu.style.left = `${newX}px`;
+            radialMenu.style.top = `${newY}px`;
+            radialMenu.style.right = 'auto'; 
+            radialMenu.style.bottom = 'auto';
+        }
+
+        function endDrag() {
+            isDragging = false;
+            radialMenu.style.cursor = 'move';
+        }
+
+        // Atribui os listeners ao menu radial
+        radialMenu.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', duringDrag);
+        document.addEventListener('mouseup', endDrag);
+
+        // Posiciona o menu no canto inferior direito ao carregar
+        window.addEventListener('load', () => {
+            const margin = 50;
+            const initialX = window.innerWidth - radialMenu.offsetWidth - margin;
+            const initialY = window.innerHeight - radialMenu.offsetHeight - margin;
+
+            radialMenu.style.left = `${initialX}px`;
+            radialMenu.style.top = `${initialY}px`;
+        });
+        
+        // ===========================================
+        // 2. LÓGICA DO MENU RADIAL (Abertura e Fechamento)
+        // ===========================================
+
+        function toggleMenu(e) {
+            e.stopPropagation(); // Previne a ativação do drag ao abrir
+            radialMenu.classList.toggle('active');
+        }
+
+        // Função utilitária para parar a interação (usada nos itens de menu)
+        function stopInteraction(e) {
+             e.stopPropagation(); 
+        }
+
+        // ===========================================
+        // 3. LÓGICA DAS ABAS E AÇÕES
+        // ===========================================
+
+        function showTab(tabId, e) {
+            e.stopPropagation(); // Para a propagação do clique do item
+            
+            // 1. Esconder todos os conteúdos 
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            
+            // 2. Mostrar o conteúdo
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+
+            // 3. Atualizar o título
+            mainTitle.textContent = navLinks[tabId];
+            
+            // 4. Fechar o menu
+            radialMenu.classList.remove('active');
+        }
+
+        function previewTotem(e) {
+            e.stopPropagation();
+            // Abre o arquivo do Totem (Interface do Cliente) em uma nova aba/janela
+            // O caminho relativo é "../totem/index1.html"
+            window.open('../totem/index1.html', '_blank');
+            radialMenu.classList.remove('active');
+        }
+
+        function salvarRascunho(secao) {
+            console.log(`Dados da seção ${secao} salvos localmente (Rascunho)`);
+            alert(`✅ Dados de ${navLinks[secao]} salvos localmente como RASCUNHO.`);
+        }
+
+        function publicarDados() {
+            if (confirm("ATENÇÃO: Você tem certeza que deseja SINCRONIZAR e PUBLICAR? Isso atualizará o Totem Digital imediatamente para todos os clientes.")) {
+                // Lógica de coleta de dados e envio (JSONBin/API)
+                console.log('SIMULAÇÃO: Iniciando publicação...');
+                alert('✅ SUCESSO NA SIMULAÇÃO: Dados Serverless enviados! O Totem seria atualizado agora.');
+            }
+        }
+
+        // Inicializa a aba de Publicação ao carregar a página
+        window.onload = () => showTab('publicacao', { stopPropagation: () => {} }); // Simula evento vazio
+    </script>
+</body>
+</html>
