@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Painel de Gerenciamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* ======================================= */
+        /* Cores e Variáveis do LabSystem */
+        /* ======================================= */
+        :root {
+            --clr-primary: #007bff; /* Azul Elétrico (Principal) */
+            --clr-accent: #ffc107; /* Amarelo Raio (Destaque) */
+            --clr-toggle: #1f2937; /* Cinza Escuro do Toggle */
+        }
+        .text-primary { color: var(--clr-primary); }
+        .bg-primary { background-color: var(--clr-primary); }
+        .hover\:bg-primary-dark:hover { background-color: #0056b3; } 
+
+        /* ======================================= */
+        /* Estilos do Menu Radial Flutuante e Arrastável */
+        /* ======================================= */
+        .radial-menu {
+            position: fixed;
+            bottom: 50px; 
+            right: 50px; 
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            cursor: default; /* Cursor padrão na área UL */
+            border-radius: 50%;
+        }
+        
+        /* O botão toggle é o que deve ser clicável/arrastável */
+        .radial-menu .toggle {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: var(--clr-toggle);
+            border: 3px solid var(--clr-primary);
+            border-radius: 50%;
+            color: var(--clr-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: move; /* Cursor de movimento no botão */
+            z-index: 100;
+            font-size: 2.2em;
+            transition: transform 0.5s, box-shadow 0.3s, background 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            user-select: none; /* Evita a seleção de texto durante o arraste */
+        }
+        
+        .radial-menu.active .toggle {
+            transform: rotate(315deg);
+            color: var(--clr-toggle);
+            background: var(--clr-accent); 
+            box-shadow: 0 0 10px var(--clr-accent), 0 0 30px var(--clr-accent);
+        }
+
+        .radial-menu li {
+            position: absolute;
+            list-style: none;
+            width: 55px;
+            height: 55px;
+            background: #fff;
+            border: 2px solid var(--clr-primary); 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: var(--clr-toggle);
+            transform: rotate(calc(45deg * var(--i))) translate(0px); 
+            transition: 0.5s;
+            opacity: 0;
+            pointer-events: none;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .radial-menu.active li {
+            opacity: 1;
+            pointer-events: auto;
+            transform: rotate(calc(45deg * var(--i))) translate(110px) rotate(calc(-45deg * var(--i)));
+            transition: 0.5s;
+        }
+        
+        .radial-menu li:hover {
+            background: var(--clr-primary);
+            color: #fff;
+            box-shadow: 0 0 10px var(--clr-primary), 0 0 30px var(--clr-primary);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+    
+    <ul class="radial-menu" id="radial-menu">
+        <div class="toggle" id="menu-toggle" title="Menu de Navegação">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <li style="--i:0" onclick="showTab('publicacao', event)" title="Publicação"><i class="fas fa-upload"></i></li>
+        <li style="--i:1" onclick="showTab('operacionais', event)" title="Dados Operacionais"><i class="fas fa-cogs"></i></li>
+        <li style="--i:2" onclick="showTab('cardapio', event)" title="Cardápio / Itens"><i class="fas fa-pizza-slice"></i></li>
+        <li style="--i:3" onclick="showTab('customizar', event)" title="Visual e Layout"><i class="fas fa-palette"></i></li>
+        <li style="--i:4" onclick="previewTotem(event)" title="Preview em Tempo Real"><i class="fas fa-eye"></i></li>
+        <li style="--i:5" onclick="stopInteraction(event)" title="Ajuda"><i class="fas fa-question-circle"></i></li>
+        <li style="--i:6" onclick="stopInteraction(event)" title="Segurança"><i class="fas fa-lock"></i></li>
+        <li style="--i:7" onclick="stopInteraction(event)" title="Sair"><i class="fas fa-sign-out-alt"></i></li>
+    </ul>
+
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-md">
+            
+            <div class="flex items-center space-x-3">
+                <h1 class="text-xl md:text-2xl font-semibold text-gray-800" id="current-title">Publicação</h1>
+            </div>
+
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <span class="text-sm font-medium text-gray-500 hidden sm:inline">LabSystem CMS</span>
+                <button class="px-3 py-1 md:px-4 md:py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-150 ease-in-out text-sm md:text-base font-medium" onclick="publicarDados()">
+                    🚀 Sincronizar e Publicar
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-6">
+            
+            <div id="tab-publicacao" class="tab-content" style="display: block;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-primary">Status de Publicação Serverless</h2>
+                    <p class="text-gray-600 mb-6">Coordena o envio de dados configurados para o seu **BIN ID** (JSONBin.io) e atualiza o Totem Digital em tempo real.</p>
+                    
+                    <div class="space-y-4 mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-300">
+                        <label class="block text-gray-700 font-bold">BIN ID (JSONBin)</label>
+                        <input type="text" id="binId" value="654321xyz" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        
+                        <label class="block text-gray-700 font-bold">Master Key (Escrita/Gravação)</label>
+                        <input type="password" id="masterKey" value="SUA_CHAVE_SECRETA_AQUI" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <button class="w-full py-3 bg-primary text-white text-lg font-bold rounded-md hover:bg-primary-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                        🚀 Publicar Tudo Agora (Sincronizar com Totem)
+                    </button>
+                    <p class="mt-4 text-sm text-center text-gray-500">A publicação é instantânea e atualizará o Totem Digital.</p>
+                </div>
+            </div>
+
+            <div id="tab-operacionais" class="tab-content" style="display: none;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gerenciamento Operacional da Loja</h2>
+                    
+                    <div class="mb-8 p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">📇 Dados Institucionais</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="block text-sm font-medium text-gray-700">Nome da Loja</label><input type="text" value="McClone Lanches" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Telefone Principal</label><input type="text" value="(XX) XXXXX-XXXX" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Chave PIX</label><input type="text" value="chave-pix-aleatoria@email.com" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Endereço Físico</label><input type="text" value="Rua Exemplo, 123" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Dados Bancários</label><input type="text" value="Agência: XXXX, Conta: YYYY" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">URL do Logo</label><input type="url" value="https://example.com/logo.png" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Mensagem de Pagamento</label><textarea rows="2" class="mt-1 w-full p-2 border rounded-md">Por favor, envie o comprovante de pagamento.</textarea></div>
+                        </div>
+                        <div class="mt-4 flex justify-end"><button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('institucional')">Salvar Dados</button></div>
+                    </div>
+
+                    <div class="mb-8 p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">🕒 Horários e Cobertura</h3>
+                        <div class="space-y-4">
+                            <label class="block text-sm font-medium text-gray-700">Dias de Funcionamento</label>
+                            <div class="flex flex-wrap gap-2 text-sm">
+                                <span class="p-2 border rounded-full bg-primary text-white">Seg</span><span class="p-2 border rounded-full bg-primary text-white">Ter</span>
+                                <span class="p-2 border rounded-full bg-primary text-white">Qua</span><span class="p-2 border rounded-full bg-primary text-white">Qui</span>
+                                <span class="p-2 border rounded-full bg-primary text-white">Sex</span><span class="p-2 border rounded-full bg-gray-300">Sáb</span>
+                                <span class="p-2 border rounded-full bg-gray-300">Dom</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700">Abertura</label><input type="time" value="08:00" class="mt-1 w-full p-2 border rounded-md"></div>
+                                <div><label class="block text-sm font-medium text-gray-700">Fechamento</label><input type="time" value="22:00" class="mt-1 w-full p-2 border rounded-md"></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Áreas de Cobertura (Bairros, um por linha)</label>
+                                <textarea rows="4" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2">Centro
+Jardim América
+Vila Nova
+Morro Branco</textarea>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center text-sm font-medium text-gray-700"><input type="checkbox" checked class="form-checkbox h-4 w-4 text-primary rounded"> Exibir Cobertura no Totem</label>
+                                <label class="flex items-center text-sm font-medium text-gray-700"><input type="checkbox" class="form-checkbox h-4 w-4 text-primary rounded"> Cálculo Automático de Taxa (Mapa)</label>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-end"><button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('horarios')">Salvar Horários e Cobertura</button></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-cardapio" class="tab-content" style="display: none;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gestão de Itens e Estoque</h2>
+                    
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-700">Itens Atuais (28 Registros)</h3>
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out">
+                            + Novo Item
+                        </button>
+                    </div>
+
+                    <div class="border p-4 rounded-lg bg-gray-50">
+                        <h4 class="font-bold mb-4 border-b pb-2 text-primary">Editar: Pizza 4 Queijos</h4>
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Excluir</button>
+                            <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Salvar Item</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('cardapio')">
+                            💾 Salvar Rascunho do Cardápio
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-customizar" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">🎨 Visual e Layout do Totem Digital</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label for="corPrimaria" class="block text-sm font-medium text-gray-700">Cor Primária</label><input type="color" id="corPrimaria" value="#007bff" class="mt-1 block w-full h-10 border-gray-300 rounded-md"></div>
+                            <div><label for="corSecundaria" class="block text-sm font-medium text-gray-700">Cor Secundária</label><input type="color" id="corSecundaria" value="#ffc107" class="mt-1 block w-full h-10 border-gray-300 rounded-md"></div>
+                            <div><label for="corFundo" class="block text-sm font-medium text-gray-700">Cor de Fundo</label><input type="color" id="corFundo" value="#f3f4f6" class="mt-1 block w-full h-10 border-gray-300 rounded-md"></div>
+                            <div><label for="fonte" class="block text-sm font-medium text-gray-700">Fonte Padrão</label><input type="text" id="fonte" value="Inter" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 border-t pt-4">
+                            <label class="flex items-center text-sm font-medium text-gray-700"><input type="checkbox" checked class="form-checkbox h-4 w-4 text-primary rounded"> Exibir Estoque no Totem</label>
+                            <label class="flex items-center text-sm font-medium text-gray-700"><input type="checkbox" checked class="form-checkbox h-4 w-4 text-primary rounded"> Exibir Tempo Estimado</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('customizar')">
+                            💾 Salvar Layout
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const navLinks = {
+            'publicacao': 'Publicação',
+            'operacionais': 'Dados Operacionais',
+            'cardapio': 'Cardápio / Itens',
+            'customizar': 'Visual e Layout'
+        };
+
+        const radialMenu = document.getElementById('radial-menu');
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainTitle = document.getElementById('current-title');
+
+        // ===========================================
+        // 1. LÓGICA DO DRAG & DROP (ARRÁSTAVEL) - FIX DEFINITIVO
+        // ===========================================
+        let isDragging = false;
+        let isMoving = false; // Flag para determinar se foi um arraste ou clique
+        let startX, startY;
+        let initialX, initialY;
+        const dragThreshold = 5; // Distância mínima para ser considerado arraste (em pixels)
+
+        function getClientCoords(e) {
+            if (e.touches && e.touches.length) {
+                return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+            }
+            return e;
+        }
+
+        function startDrag(e) {
+            e.preventDefault(); 
+            const coords = getClientCoords(e);
+            
+            isDragging = true;
+            isMoving = false; // Reinicia a flag de movimento
+            radialMenu.classList.remove('active'); 
+            
+            // Posição inicial do elemento e do mouse/toque
+            const rect = radialMenu.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+            startX = coords.clientX;
+            startY = coords.clientY;
+            
+            menuToggle.style.cursor = 'grabbing';
+
+            document.addEventListener('mousemove', duringDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', duringDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function duringDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault(); 
+            
+            const coords = getClientCoords(e);
+            
+            const dx = coords.clientX - startX;
+            const dy = coords.clientY - startY;
+
+            // Se o movimento for maior que o threshold, confirma que é um arraste
+            if (Math.abs(dx) > dragThreshold || Math.abs(dy) > dragThreshold) {
+                isMoving = true;
+            }
+            
+            let newX = initialX + dx;
+            let newY = initialY + dy;
+
+            // Limitar o arrasto
+            newX = Math.max(0, Math.min(newX, window.innerWidth - radialMenu.offsetWidth));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - radialMenu.offsetHeight));
+
+            // Aplica as novas posições
+            radialMenu.style.left = `${newX}px`;
+            radialMenu.style.top = `${newY}px`;
+            radialMenu.style.right = 'auto'; 
+            radialMenu.style.bottom = 'auto';
+        }
+
+        function endDrag(e) {
+            if (isDragging) {
+                // Remove listeners
+                document.removeEventListener('mousemove', duringDrag);
+                document.removeEventListener('mouseup', endDrag);
+                document.removeEventListener('touchmove', duringDrag);
+                document.removeEventListener('touchend', endDrag);
+
+                if (!isMoving) {
+                    // Se não houve movimento (clique rápido), abre o menu
+                    toggleMenu(e); 
+                }
+                
+                isDragging = false;
+                isMoving = false;
+                menuToggle.style.cursor = 'move';
+            }
+        }
+
+        // Atribui os listeners APENAS ao botão de toggle
+        menuToggle.addEventListener('mousedown', startDrag);
+        menuToggle.addEventListener('touchstart', startDrag); 
+
+
+        // Posiciona o menu no canto inferior direito ao carregar
+        window.addEventListener('load', () => {
+            const margin = 50;
+            const initialX = window.innerWidth - radialMenu.offsetWidth - margin;
+            const initialY = window.innerHeight - radialMenu.offsetHeight - margin;
+
+            radialMenu.style.left = `${initialX}px`;
+            radialMenu.style.top = `${initialY}px`;
+        });
+        
+        // ===========================================
+        // 2. LÓGICA DO MENU RADIAL (Abertura e Fechamento)
+        // ===========================================
+
+        function toggleMenu(e) {
+            e.stopPropagation(); 
+            radialMenu.classList.toggle('active');
+        }
+
+        function stopInteraction(e) {
+             e.stopPropagation(); 
+        }
+
+        // ===========================================
+        // 3. LÓGICA DAS ABAS E AÇÕES
+        // ===========================================
+
+        function showTab(tabId, e) {
+            e.stopPropagation(); 
+            
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            mainTitle.textContent = navLinks[tabId];
+            
+            radialMenu.classList.remove('active');
+        }
+
+        function previewTotem(e) {
+            e.stopPropagation();
+            window.open('../totem/index1.html', '_blank');
+            radialMenu.classList.remove('active');
+        }
+
+        function salvarRascunho(secao) {
+            console.log(`Dados da seção ${secao} salvos localmente (Rascunho)`);
+            alert(`✅ Dados de ${secao.toUpperCase()} salvos localmente como RASCUNHO.`);
+        }
+
+        function publicarDados() {
+            if (confirm("ATENÇÃO: Você tem certeza que deseja SINCRONIZAR e PUBLICAR? Isso atualizará o Totem Digital imediatamente para todos os clientes.")) {
+                console.log('SIMULAÇÃO: Iniciando publicação...');
+                alert('✅ SUCESSO NA SIMULAÇÃO: Dados Serverless enviados! O Totem seria atualizado agora.');
+            }
+        }
+
+        // Inicializa a aba de Publicação ao carregar a página
+        window.onload = () => showTab('publicacao', { stopPropagation: () => {} });
+    </script>
+</body>
+</html>
