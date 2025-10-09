@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Painel de Gerenciamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/heroicons@latest"></script>
+    <style>
+        :root {
+            --cor-principal: #ff3c3c; /* Vermelho LabSystem/Vitorelli */
+            --cor-fundo-sidebar: #1f2937; /* Cinza Escuro */
+            --cor-fundo-main: #f3f4f6; /* Cinza Claro */
+        }
+        .text-primary { color: var(--cor-principal); }
+        .bg-primary { background-color: var(--cor-principal); }
+        .hover\:bg-primary-dark:hover { background-color: #d83434; }
+        
+        /* Estilo para a Tab Ativa na Área Principal */
+        .tab-button.active {
+            border-bottom-width: 3px;
+            border-color: var(--cor-principal);
+            font-weight: 600;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+
+    <div class="flex h-screen bg-gray-50">
+
+        <div class="flex flex-col w-64 bg-gray-800 text-white shadow-xl" style="background-color: var(--cor-fundo-sidebar);">
+            <div class="flex items-center justify-center h-20 border-b border-gray-700">
+                <span class="text-2xl font-extrabold tracking-wider text-primary">LabSystem CMS</span>
+            </div>
+            
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                
+                <a href="#" onclick="showTab('publicacao')" id="nav-publicacao" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out active-link bg-gray-900">
+                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Publicação</span>
+                </a>
+
+                <a href="#" onclick="showTab('operacionais')" id="nav-operacionais" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span>Dados Operacionais</span>
+                </a>
+                
+                <a href="#" onclick="showTab('cardapio')" id="nav-cardapio" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Cardápio / Itens</span>
+                </a>
+                
+                <a href="#" onclick="showTab('customizar')" id="nav-customizar" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <span>Customizar Totem</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-md">
+                <h1 class="text-2xl font-semibold text-gray-800" id="current-title">Publicação</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm font-medium text-gray-500">Última Atualização: 10/10/2025 07:15</span>
+                    <button class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                        Sincronizar e Publicar Dados
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+                
+                <div id="tab-publicacao" class="tab-content" style="display: block;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-xl font-semibold mb-4 text-primary">Status de Publicação Serverless</h2>
+                        <p class="text-gray-600 mb-6">Esta seção é o núcleo do conceito Serverless. Ela coordena o envio de todos os dados configurados para o seu **Bin ID** no JSONBin.io (ou similar) e atualiza o Totem Digital em tempo real.</p>
+                        
+                        <div class="space-y-4 mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-300">
+                            <label class="block text-gray-700 font-bold">BIN ID (JSONBin)</label>
+                            <input type="text" id="binId" value="654321xyz" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                            
+                            <label class="block text-gray-700 font-bold">Master Key (Escrita/Gravação)</label>
+                            <input type="password" id="masterKey" value="SUA_CHAVE_SECRETA_AQUI" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        </div>
+
+                        <button class="w-full py-3 bg-primary text-white text-lg font-bold rounded-md hover:bg-primary-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                            🚀 Publicar Tudo Agora (Sincronizar com Totem)
+                        </button>
+
+                        <p class="mt-4 text-sm text-center text-gray-500">A publicação é instantânea e atualizará o Totem Digital em todos os dispositivos.</p>
+                    </div>
+                </div>
+
+                <div id="tab-operacionais" class="tab-content" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-xl font-semibold mb-6 text-primary">Gerenciamento Operacional da Loja</h2>
+                        <div class="space-y-6">
+                            
+                            <div>
+                                <label for="statusLoja" class="block text-sm font-medium text-gray-700">Status de Abertura/Fechamento</label>
+                                <select id="statusLoja" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                                    <option value="aberto">Aberto (Aceitando Pedidos)</option>
+                                    <option value="fechado">Fechado (Fora do Horário)</option>
+                                    <option value="pausa">Pausa/Manutenção</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="whatsapp" class="block text-sm font-medium text-gray-700">Contato WhatsApp (DDD + Número)</label>
+                                <input type="text" id="whatsapp" value="5511993407322" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Ex: 5511999998888">
+                                <p class="mt-2 text-xs text-gray-500">Este número será usado para receber pedidos via WhatsApp no Totem.</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Configuração de Taxas de Entrega</label>
+                                <textarea id="taxasEntrega" rows="5" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md font-mono text-xs p-2">
+// Formato usado na Versão 6.0
+{
+    "Centro": 3.00,
+    "Chácara Boa Vista": 3.00,
+    "Green Hills": 10.00,
+    "JD. Bom Jesus": 3.00,
+    "Morro Branco": 4.00,
+    "Parque das Avencas": 3.00,
+    "Paiol/KM 50": 7.00,
+    "Trailer Club Gaivota": 10.00,
+    "Vila Nova": 3.00
+}
+                                </textarea>
+                                <p class="mt-2 text-xs text-gray-500">Edite as taxas e bairros diretamente no formato JSON acima.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-cardapio" class="tab-content" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                        <h2 class="text-xl font-semibold mb-6 text-primary">Gestão de Itens e Estoque</h2>
+                        
+                        <div class="mb-4 flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-700">Itens Atuais (28 Registros)</h3>
+                            <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out">
+                                + Novo Item
+                            </button>
+                        </div>
+
+                        <div class="border p-4 rounded-lg bg-gray-50">
+                            <h4 class="font-bold mb-4 border-b pb-2 text-primary">Editar: Pizza 4 Queijos</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Nome</label>
+                                    <input type="text" value="4 Queijos" class="mt-1 w-full p-2 border rounded-md">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Preço Inteira (R$)</label>
+                                    <input type="number" step="0.01" value="47.00" class="mt-1 w-full p-2 border rounded-md">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Preço Broto (R$)</label>
+                                    <input type="number" step="0.01" value="37.00" class="mt-1 w-full p-2 border rounded-md">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700">Ingredientes / Descrição</label>
+                                <textarea rows="2" class="mt-1 w-full p-2 border rounded-md">molho, mussarela, parmesão, provolone, gorgonzola, azeitona e orégano</textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Link da Imagem</label>
+                                    <input type="text" value="[link da imagem aqui]" class="mt-1 w-full p-2 border rounded-md">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Estoque (Opcional)</label>
+                                    <input type="number" value="99" class="mt-1 w-full p-2 border rounded-md">
+                                    <p class="mt-1 text-xs text-gray-500">Alerte quando o estoque estiver baixo.</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex justify-end space-x-3">
+                                <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Excluir</button>
+                                <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Salvar Item</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 border rounded-lg">
+                            <ul class="space-y-2">
+                                <li class="flex justify-between items-center py-2 border-b">
+                                    <span>5 Queijos</span>
+                                    <span class="text-sm text-gray-500">Pizza - R$ 49,00 / R$ 39,00</span>
+                                </li>
+                                <li class="flex justify-between items-center py-2 border-b">
+                                    <span>Coca-Cola 2L</span>
+                                    <span class="text-sm text-gray-500">Bebida - R$ 18,00</span>
+                                </li>
+                                <li class="flex justify-between items-center py-2">
+                                    <span>Calzone de Frango</span>
+                                    <span class="text-sm text-gray-500">Calzone - R$ 37,00</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="tab-customizar" class="tab-content" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-xl font-semibold mb-6 text-primary">Definir Estilo do Totem Digital</h2>
+                        <div class="space-y-6">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="corPrincipal" class="block text-sm font-medium text-gray-700">Cor Principal (Hex Code)</label>
+                                    <input type="color" id="corPrincipal" value="#ff3c3c" class="mt-1 block w-full h-10 border-gray-300 rounded-md">
+                                </div>
+                                <div>
+                                    <label for="logoUrl" class="block text-sm font-medium text-gray-700">URL do Logo da Loja</label>
+                                    <input type="url" id="logoUrl" value="https://stock.adobe.com/es/search?k=da+logo" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://...">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="backgroundUrl" class="block text-sm font-medium text-gray-700">URL da Imagem de Fundo do Totem</label>
+                                    <input type="url" id="backgroundUrl" value="https://unsplash.com/pt-br/s/fotografias/plano-de-fundo-hd" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://...">
+                                </div>
+                                <div>
+                                    <label for="musicaUrl" class="block text-sm font-medium text-gray-700">Música Ambiente (URL do YouTube)</label>
+                                    <input type="url" id="musicaUrl" value="https://support.google.com/youtube/answer/57792?hl=pt&co=GENIE.Platform%3DAndroid" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://www.youtube.com/watch?v=...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const navLinks = {
+            'publicacao': 'Publicação',
+            'operacionais': 'Dados Operacionais',
+            'cardapio': 'Cardápio / Itens',
+            'customizar': 'Customizar Totem'
+        };
+
+        function showTab(tabId) {
+            // Esconder todos os conteúdos e remover a classe 'active' da navegação
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('a[id^="nav-"]').forEach(el => el.classList.remove('bg-gray-900'));
+            
+            // Mostrar o conteúdo e adicionar a classe 'active' na navegação
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            document.getElementById(`nav-${tabId}`).classList.add('bg-gray-900');
+
+            // Atualizar o título
+            document.getElementById('current-title').textContent = navLinks[tabId];
+        }
+
+        function publicarDados() {
+            // 1. Coletar todos os dados dos campos (Status, Taxas, Cardápio, Cores)
+            
+            // 2. Montar o Objeto JSON de dados principal (o BIN)
+            const dadosParaPublicar = {
+                status: document.getElementById('statusLoja').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                taxas: JSON.parse(document.getElementById('taxasEntrega').value),
+                cardapio: [ 
+                    // ... todos os itens do cardápio viriam aqui
+                    // Exemplo:
+                    { nome: "4 Queijos", inteira: 47.00, broto: 37.00, ... },
+                ],
+                config: {
+                    corPrincipal: document.getElementById('corPrincipal').value,
+                    logoUrl: document.getElementById('logoUrl').value,
+                    musicaUrl: document.getElementById('musicaUrl').value
+                }
+            };
+
+            // 3. ENVIAR DADOS PARA O JSONBin/API
+            /* const binId = document.getElementById('binId').value;
+            const masterKey = document.getElementById('masterKey').value;
+
+            fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': masterKey 
+                },
+                body: JSON.stringify(dadosParaPublicar)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Sucesso! Dados publicados e Totem Atualizado.');
+                console.log('Publicação efetuada:', data);
+            })
+            .catch(error => {
+                alert('Erro ao publicar. Verifique o BIN ID e a Master Key.');
+                console.error('Erro na publicação:', error);
+            });
+            */
+           
+            // SIMULAÇÃO:
+            alert('SIMULAÇÃO: Dados do CMS prontos para publicação (Serverless).');
+        }
+
+        // Inicializa a aba de Publicação ao carregar a página
+        window.onload = () => showTab('publicacao');
+    </script>
+</body>
+</html>
