@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Painel de Gerenciamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* ======================================= */
+        /* Cores e Variáveis do LabSystem */
+        /* ======================================= */
+        :root {
+            --clr-primary: #007bff; /* Azul Elétrico (Principal) */
+            --clr-accent: #ffc107; /* Amarelo Raio (Destaque) */
+            --clr-toggle: #1f2937; /* Cinza Escuro do Toggle */
+        }
+        /* Classes Tailwind customizadas */
+        .text-primary { color: var(--clr-primary); }
+        .bg-primary { background-color: var(--clr-primary); }
+        .hover\:bg-primary-dark:hover { background-color: #0056b3; } 
+        
+        /* Estilo para o Botão Toggle de Dia Ativo */
+        .day-toggle.active {
+            background-color: var(--clr-primary);
+            color: #fff;
+        }
+        .day-toggle:not(.active) {
+            background-color: #e5e7eb; /* Cinza Claro */
+            color: #4b5563;
+        }
+        .day-toggle {
+             cursor: pointer; /* Adicionado para indicar clicabilidade */
+        }
+
+        /* Estilos do Menu Radial (Para Arraste) */
+        .radial-menu {
+            position: fixed;
+            bottom: 50px; 
+            right: 50px; 
+            width: 70px;
+            height: 70px;
+            z-index: 50;
+            cursor: default; 
+            border-radius: 50%;
+        }
+        .radial-menu .toggle {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: var(--clr-toggle);
+            border: 3px solid var(--clr-primary);
+            border-radius: 50%;
+            color: var(--clr-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: move; 
+            z-index: 100;
+            font-size: 2.2em;
+            transition: transform 0.5s, box-shadow 0.3s, background 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            user-select: none;
+        }
+        .radial-menu.active .toggle {
+            transform: rotate(315deg);
+            color: var(--clr-toggle);
+            background: var(--clr-accent); 
+        }
+        .radial-menu li {
+            position: absolute; list-style: none; width: 55px; height: 55px; background: #fff;
+            border: 2px solid var(--clr-primary); border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; font-size: 1.2em;
+            color: var(--clr-toggle); transform: rotate(calc(45deg * var(--i))) translate(0px); 
+            transition: 0.5s; opacity: 0; pointer-events: none; cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+        .radial-menu.active li {
+            opacity: 1; pointer-events: auto;
+            transform: rotate(calc(45deg * var(--i))) translate(110px) rotate(calc(-45deg * var(--i)));
+            transition: 0.5s;
+        }
+        .radial-menu li:hover {
+            background: var(--clr-primary); color: #fff;
+            box-shadow: 0 0 10px var(--clr-primary), 0 0 30px var(--clr-primary);
+        }
+
+        /* Estilo para a Tabela de Gestão de Itens */
+        .item-row:nth-child(even) {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+    
+    <ul class="radial-menu" id="radial-menu">
+        <div class="toggle" id="menu-toggle" title="Menu de Navegação">
+            <i class="fas fa-bars"></i>
+        </div>
+        <li style="--i:0" onclick="showTab('dashboard', event)" title="Visão Geral"><i class="fas fa-chart-line"></i></li> 
+        <li style="--i:1" onclick="showTab('operacionais', event)" title="Dados Operacionais"><i class="fas fa-cogs"></i></li>
+        <li style="--i:2" onclick="showTab('cardapio', event)" title="Cardápio / Itens"><i class="fas fa-pizza-slice"></i></li>
+        <li style="--i:3" onclick="showTab('customizar', event)" title="Visual e Layout"><i class="fas fa-palette"></i></li>
+        <li style="--i:4" onclick="showTab('serverless', event)" title="Config. Serverless"><i class="fas fa-upload"></i></li> 
+        <li style="--i:5" onclick="previewTotem(event)" title="Preview em Tempo Real / Totem"><i class="fas fa-eye"></i></li>
+        <li style="--i:6" onclick="showTab('perfil', event)" title="Perfil e Atendimento"><i class="fas fa-user-circle"></i></li> 
+        <li style="--i:7" onclick="stopInteraction(event)" title="Sair"><i class="fas fa-sign-out-alt"></i></li>
+    </ul>
+
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-md">
+            
+            <div class="flex items-center space-x-3">
+                <h1 class="text-xl md:text-2xl font-semibold text-gray-800" id="current-title">Visão Geral (Início)</h1>
+            </div>
+
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <span class="text-sm font-medium text-gray-500 hidden sm:inline">LabSystem CMS</span>
+                <button class="px-3 py-1 md:px-4 md:py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-150 ease-in-out text-sm md:text-base font-medium" onclick="publicarDados()">
+                    🚀 Sincronizar e Publicar
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-6">
+            
+            <div id="tab-dashboard" class="tab-content" style="display: block;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold mb-6 text-primary">Visão Geral do CMS e Status</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-4 bg-green-100 border-l-4 border-green-500 rounded-lg shadow">
+                            <p class="text-sm font-medium text-gray-500">Status Operacional</p>
+                            <p class="text-2xl font-bold text-green-700 mt-1" id="dashboard-status">ABERTO</p>
+                            <p class="text-xs text-gray-500">Próximo fechamento: <span id="dashboard-fechamento">22:00</span></p>
+                        </div>
+                        <div class="p-4 bg-blue-100 border-l-4 border-blue-500 rounded-lg shadow">
+                            <p class="text-sm font-medium text-gray-500">Itens no Cardápio</p>
+                            <p class="text-2xl font-bold text-blue-700 mt-1" id="dashboard-total-itens">2</p>
+                            <p class="text-xs text-gray-500"><span id="dashboard-indisponiveis">1</span> item(s) indisponível/esgotado(s).</p>
+                        </div>
+                        <div class="p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-lg shadow">
+                            <p class="text-sm font-medium text-gray-500">Última Sincronização</p>
+                            <p class="text-2xl font-bold text-yellow-700 mt-1" id="dashboard-sincronizacao">N/A</p>
+                            <p class="text-xs text-gray-500">BIN ID: <span id="dashboard-binid">654321xyz</span></p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4 border-b pb-2 text-gray-700">Ações Rápidas</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 font-medium" onclick="showProductForm()"><i class="fas fa-plus"></i> Novo Produto</button>
+                        <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-medium" onclick="showTab('operacionais', event)"><i class="fas fa-map-marked-alt"></i> Mudar Cobertura</button>
+                        <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 font-medium" onclick="setStatus('pausa'); salvarRascunho('operacionais')"><i class="fas fa-pause-circle"></i> Pausa Imediata</button>
+                        <button class="px-4 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 font-medium" onclick="setStatus('aberto'); salvarRascunho('operacionais')"><i class="fas fa-store"></i> Abrir Imediato</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-operacionais" class="tab-content" style="display: none;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gerenciamento Operacional da Loja</h2>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Status Atual da Loja</label>
+                        <div class="flex rounded-md shadow-sm" role="group">
+                            <button type="button" id="status-aberto" class="status-btn px-4 py-2 text-sm font-medium rounded-l-lg border border-primary bg-primary text-white hover:bg-primary-dark" onclick="setStatus('aberto')">
+                                <i class="fas fa-check-circle"></i> Aberto
+                            </button>
+                            <button type="button" id="status-pausa" class="status-btn px-4 py-2 text-sm font-medium border-t border-b border-primary bg-white text-primary hover:bg-gray-100" onclick="setStatus('pausa')">
+                                <i class="fas fa-pause-circle"></i> Pausa
+                            </button>
+                            <button type="button" id="status-fechado" class="status-btn px-4 py-2 text-sm font-medium rounded-r-lg border border-primary bg-white text-primary hover:bg-gray-100" onclick="setStatus('fechado')">
+                                <i class="fas fa-times-circle"></i> Fechado
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">📇 Dados Institucionais</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="block text-sm font-medium text-gray-700">Nome da Loja</label><input type="text" value="" class="mt-1 w-full p-2 border rounded-md" id="nome-loja"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Telefone Principal</label><input type="text" value="" class="mt-1 w-full p-2 border rounded-md" id="tel-principal"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Chave PIX</label><input type="text" value="" class="mt-1 w-full p-2 border rounded-md" id="chave-pix"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Endereço Físico</label><input type="text" value="" class="mt-1 w-full p-2 border rounded-md" id="endereco-fisico"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Dados Bancários</label><input type="text" value="" class="mt-1 w-full p-2 border rounded-md" id="dados-bancarios"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">URL do Logo</label><input type="url" value="" class="mt-1 w-full p-2 border rounded-md" id="url-logo"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Mensagem de Pagamento</label><textarea rows="2" class="mt-1 w-full p-2 border rounded-md" id="msg-pagamento"></textarea></div>
+                        </div>
+                        <div class="mt-4 flex justify-end"><button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('institucional')">Salvar Dados</button></div>
+                    </div>
+
+                    <div class="mb-8 p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">🕒 Horários e Cobertura</h3>
+                        <div class="space-y-4">
+                            
+                            <label class="block text-sm font-medium text-gray-700">Dias de Funcionamento (Clique para selecionar)</label>
+                            <div class="flex flex-wrap gap-2 text-sm" id="dias-funcionamento">
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="seg">Seg</button>
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="ter">Ter</button>
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="qua">Qua</button>
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="qui">Qui</button>
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="sex">Sex</button>
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="sab">Sáb</button>
+                                <button type="button" class="day-toggle p-2 border rounded-full transition duration-150" data-dia="dom">Dom</button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700">Abertura</label><input type="time" value="08:00" class="mt-1 w-full p-2 border rounded-md" id="horario-abertura"></div>
+                                <div><label class="block text-sm font-medium text-gray-700">Fechamento</label><input type="time" value="22:00" class="mt-1 w-full p-2 border rounded-md" id="horario-fechamento"></div>
+                            </div>
+
+                            <label class="block text-sm font-medium text-gray-700 mt-4">Áreas de Cobertura (Bairro e Taxa)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="input-bairro" placeholder="Nome do Bairro" class="flex-grow p-2 border rounded-md">
+                                <input type="number" step="0.01" id="input-taxa" placeholder="Taxa (R$)" class="w-24 p-2 border rounded-md">
+                                <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onclick="addCoverageArea()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+
+                            <ul id="coverage-list" class="space-y-2 text-sm p-2 border rounded-md bg-white">
+                                </ul>
+                        </div>
+                        <div class="mt-4 flex justify-end"><button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('operacionais')">Salvar Horários e Cobertura</button></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-cardapio" class="tab-content" style="display: none;">
+                 <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">Gestão de Itens e Estoque</h2>
+                    
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-700">Lista de Edição Rápida (<span id="count-itens">0</span> Itens)</h3>
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out" onclick="showProductForm()">
+                            <i class="fas fa-plus mr-2"></i> Adicionar Novo Produto
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto border rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cat</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estoque</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="cardapio-tabela">
+                                </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('cardapio')">
+                            💾 Salvar Rascunho do Cardápio
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-customizar" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary">🎨 Visual e Layout do Totem Digital</h2>
+                    
+                    <div class="space-y-6">
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div><label for="corPrimaria" class="block text-sm font-medium text-gray-700">Cor Primária</label><input type="color" id="corPrimaria" value="#007bff" class="mt-1 block w-full h-10 border-gray-300 rounded-md"></div>
+                            <div><label for="corSecundaria" class="block text-sm font-medium text-gray-700">Cor Secundária</label><input type="color" id="corSecundaria" value="#ffc107" class="mt-1 block w-full h-10 border-gray-300 rounded-md"></div>
+                            <div class="md:col-span-1">
+                                <label for="fonte" class="block text-sm font-medium text-gray-700">Fonte Padrão (Ex: Inter, Roboto)</label>
+                                <input type="text" id="fonte" value="Inter" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Nome da Fonte Google/Local">
+                            </div>
+                        </div>
+
+                        <div class="border p-4 rounded-lg bg-gray-50">
+                            <h3 class="text-base font-medium text-gray-700 mb-2">Fundo (Cor ou Imagem URL)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label for="corFundo" class="block text-sm font-medium text-gray-700">Cor de Fundo (Padrão)</label><input type="color" id="corFundo" value="#f3f4f6" class="mt-1 block w-full h-10 border-gray-300 rounded-md"></div>
+                                <div><label for="backgroundUrl" class="block text-sm font-medium text-gray-700">URL Imagem de Fundo</label><input type="url" id="backgroundUrl" value="" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="https://link-da-imagem.jpg"></div>
+                            </div>
+                        </div>
+
+                        <div class="border p-4 rounded-lg bg-gray-50">
+                            <h3 class="text-base font-medium text-gray-700 mb-2">Música Ambiente e Ícones</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="musicaUrl" class="block text-sm font-medium text-gray-700">Música Ambiente (URL)</label>
+                                    <input type="url" id="musicaUrl" value="" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="URL do YouTube ou Spotify">
+                                </div>
+                                <div>
+                                    <label for="volume" class="block text-sm font-medium text-gray-700">Volume Inicial (0-100): <span id="volume-value">50</span>%</label>
+                                    <input type="range" id="volume" min="0" max="100" value="50" class="mt-2 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="border p-4 rounded-lg bg-gray-50">
+                            <h3 class="text-base font-medium text-gray-700 mb-2">Opções de Pedido (Taxas)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="minimoPedido" class="block text-sm font-medium text-gray-700">Valor Mínimo de Pedido (R$)</label>
+                                    <input type="number" id="minimoPedido" value="0.00" step="0.01" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                <div>
+                                    <label for="taxaServico" class="block text-sm font-medium text-gray-700">Taxa de Serviço (%)</label>
+                                    <input type="number" id="taxaServico" value="0" min="0" max="100" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 border-t pt-4">
+                            <label class="flex items-center text-sm font-medium text-gray-700"><input type="checkbox" checked class="form-checkbox h-4 w-4 text-primary rounded" id="exibir-estoque"> Exibir Estoque no Totem</label>
+                            <label class="flex items-center text-sm font-medium text-gray-700"><input type="checkbox" checked class="form-checkbox h-4 w-4 text-primary rounded" id="exibir-tempo"> Exibir Tempo Estimado</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out font-semibold" onclick="salvarRascunho('layout')">
+                            💾 Salvar Layout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-serverless" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-primary">Configurações Serverless e API (Publicação)</h2>
+                    <p class="text-gray-600 mb-6">Gerencie as credenciais para comunicação com o banco de dados remoto (Ex: JSONBin.io).</p>
+                    
+                    <div class="space-y-4 mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-300">
+                        
+                        <label class="block text-gray-700 font-bold">Nome da BIN/Endpoint (Organização)</label>
+                        <input type="text" id="binName" value="LabSystem Totem Store" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        
+                        <label class="block text-gray-700 font-bold">BIN ID (JSONBin)</label>
+                        <input type="text" id="binId" value="654321xyz" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        
+                        <label class="block text-gray-700 font-bold">Master Key (Escrita/Gravação)</label>
+                        <input type="password" id="masterKey" value="SUA_CHAVE_SECRETA_AQUI" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-primary focus:border-primary">
+                        <p class="text-xs text-yellow-800 mt-1">NOTA: Estes campos serão preenchidos automaticamente com base na constante `API_CONFIG` do JavaScript.</p>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Histórico de Publicação</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-gray-600">
+                        <li>Publicado com sucesso: 09/10/2025 às 09:20 (Itens: 28, Layout: OK)</li>
+                        <li>Erro de API Key: 08/10/2025 às 17:45</li>
+                        <li>Publicado com sucesso: 08/10/2025 às 10:00 (Itens: 26, Layout: OK)</li>
+                    </ul>
+
+                    <button class="w-full mt-6 py-3 bg-primary text-white text-lg font-bold rounded-md hover:bg-primary-dark transition duration-150 ease-in-out" onclick="publicarDados()">
+                        🚀 Publicar Tudo Agora (Sincronizar com Totem)
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-perfil" class="tab-content" style="display: none;">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-6 text-primary"><i class="fas fa-user-circle mr-2"></i> Perfil e Atendimento</h2>
+                    
+                    <div class="mb-8 p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">👤 Informações Pessoais (Usuário CMS)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="block text-sm font-medium text-gray-700">Nome</label><input type="text" value="João" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Sobrenome</label><input type="text" value="da Silva" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div class="col-span-1"><label class="block text-sm font-medium text-gray-700">Telefone (DDI DDD NUM)</label><input type="text" value="+55 11 99340-7322" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div class="col-span-1"><label class="block text-sm font-medium text-gray-700">Data de Nascimento</label><input type="date" value="1990-01-01" class="mt-1 w-full p-2 border rounded-md"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Documento de Identidade (CPF ou CNPJ)</label><input type="text" value="123.456.789-00" class="mt-1 w-full p-2 border rounded-md"></div>
+                        </div>
+                        <div class="mt-4 flex justify-end"><button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="salvarRascunho('perfil')">Atualizar Perfil</button></div>
+                    </div>
+
+                    <div class="mb-8 p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">💰 Consumo e Faturas (Licença LabSystem)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="block text-sm font-medium text-gray-700">Próximo Vencimento</label><p class="mt-1 w-full p-2 bg-white border rounded-md font-bold text-green-600">01/11/2025</p></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Histórico de Consumo (Últimos 30 dias)</label><p class="mt-1 w-full p-2 bg-white border rounded-md">Total de 124 Publicações (PUT)</p></div>
+                        </div>
+                        <div class="mt-4 flex justify-start"><button class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 font-semibold" onclick="alert('Simulação de download de relatório.')">Baixar Histórico de Faturas</button></div>
+                    </div>
+
+                    <div class="p-5 border rounded-lg bg-gray-50">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">❓ Atendimento e Suporte</h3>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://wa.me/5511993407322" target="_blank" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 font-semibold"><i class="fab fa-whatsapp"></i> Canais de Atendimento</a>
+                            <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold" onclick="alert('Simulação de acesso à área de tutoriais.')"><i class="fas fa-video"></i> Tutoriais em Vídeo</button>
+                            <button class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold" onclick="alert('Simulação de seção de Perguntas Frequentes (FAQ).')"><i class="fas fa-question-circle"></i> Perguntas Frequentes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+
+    <div id="product-form-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 overflow-y-auto hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl m-4 p-6 w-full max-w-2xl transform transition-all">
+            <h3 class="text-xl font-bold mb-4 text-primary" id="product-form-title">Adicionar Novo Produto</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nome do Produto</label>
+                    <input type="text" class="mt-1 w-full p-2 border rounded-md" placeholder="Ex: Pizza Calabresa Grande">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Modo de Serviço (Ex: Inteira, Meia, Unidade)</label>
+                    <input type="text" class="mt-1 w-full p-2 border rounded-md" placeholder="Ex: Grande/Broto, Pote, Kg/gr, ou 'Meia'">
+                    <p class="text-xs text-gray-500 mt-1">Defina a unidade base (Ex: **Kg**, **m²**, **Unidade**, **Meia**). O sistema suporta a lógica **Meia-Meia**.</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Categoria</label>
+                    <select class="mt-1 w-full p-2 border rounded-md">
+                        <option>Pizzas</option>
+                        <option>Bebidas</option>
+                        <option>Sobremesas</option>
+                        <option>Adicionar Nova Categoria...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Subcategoria (Opcional)</label>
+                    <select class="mt-1 w-full p-2 border rounded-md">
+                        <option>Salgadas</option>
+                        <option>Doces</option>
+                        <option>Refrigerantes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700">Descrição/Ingredientes</label>
+                <textarea rows="3" class="mt-1 w-full p-2 border rounded-md" placeholder="Lista de ingredientes ou descrição detalhada."></textarea>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mt-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Preço (R$)</label>
+                    <input type="number" step="0.01" value="0.00" class="mt-1 w-full p-2 border rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Estoque Atual</label>
+                    <input type="number" value="100" class="mt-1 w-full p-2 border rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Disponível</label>
+                    <select class="mt-1 w-full p-2 border rounded-md">
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700">URL da Imagem</label>
+                <input type="url" class="mt-1 w-full p-2 border rounded-md" placeholder="https://link-da-imagem-do-produto.jpg">
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600" onclick="hideProductForm()">Cancelar</button>
+                <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onclick="salvarRascunho('produto')">Salvar Produto</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Mapeamento das abas para o título principal
+        const navLinks = {
+            'dashboard': 'Visão Geral (Início)',
+            'operacionais': 'Dados Operacionais',
+            'cardapio': 'Cardápio / Itens',
+            'customizar': 'Visual e Layout',
+            'serverless': 'Config. Serverless (API)',
+            'perfil': 'Perfil e Atendimento' 
+        };
+
+        // ===========================================
+        // 0. CONFIGURAÇÃO DA API JSONBIN.IO E DADOS DUMMY
+        // ===========================================
+        const API_CONFIG = {
+            BIN_NAME: "LabSystem Totem Store", // Novo campo para organização
+            BIN_ID: "66f461e7890538030252b49c", 
+            MASTER_KEY: "SUA_CHAVE_SECRETA_AQUI",
+            ENDPOINT: "https://api.jsonbin.io/v3/b/"
+        };
+        
+        // Função para gerar dados dummy do cardápio (25 itens)
+        function generateDummyCardapio(count) {
+            const baseItems = [
+                { id: "1", nome: "Pizza 4 Queijos", preco: 47.00, categoria: "Pizza", estoque: 99, disponivel: true, modo: "Grande" },
+                { id: "2", nome: "Calzone Frango", preco: 37.00, categoria: "Calzone", estoque: 20, disponivel: false, modo: "Unidade" },
+                { id: "3", nome: "Coca-Cola Lata", preco: 7.00, categoria: "Bebida", estoque: 150, disponivel: true, modo: "Lata" },
+            ];
+
+            // Adiciona itens de teste para alcançar a contagem de 25
+            for (let i = baseItems.length + 1; i <= count; i++) {
+                baseItems.push({
+                    id: String(i),
+                    nome: `Item de Teste ${i}`,
+                    preco: (10.00 + (i % 10) * 0.50), // Preço variado
+                    categoria: (i % 2 === 0 ? "Bebidas" : "Pizzas"),
+                    estoque: i * 5,
+                    disponivel: (i % 3 !== 0), // Alterna a disponibilidade
+                    modo: "Unidade"
+                });
+            }
+            return baseItems;
+        }
+
+        // DADOS INICIAIS (Para o primeiro carregamento, antes de salvar no localStorage)
+        const DUMMY_FETCH_DATA = {
+            institucional: {
+                nome: "McClone Lanches",
+                telPrincipal: "(11) 99340-7322",
+                chavePix: "chave-pix-aleatoria@email.com",
+                enderecoFisico: "Rua Exemplo, 123",
+                dadosBancarios: "Agência: XXXX, Conta: YYYY",
+                urlLogo: "https://example.com/logo.png",
+                msgPagamento: "Por favor, envie o comprovante de pagamento via WhatsApp."
+            },
+            operacionais: {
+                status: "aberto",
+                diasFuncionamento: ["seg", "ter", "qua", "qui", "sex"], // Sáb e Dom desativados
+                horarioAbertura: "10:00", 
+                horarioFechamento: "23:30", 
+                cobertura: [
+                    { bairro: "Centro", taxa: 3.00 },
+                    { bairro: "Morro Branco", taxa: 4.00 }
+                ]
+            },
+            cardapio: generateDummyCardapio(25), // Agora com 25 itens
+            layout: {
+                corPrimaria: "#007bff",
+                corSecundaria: "#ffc107",
+                fonte: "Inter",
+                corFundo: "#f3f4f6",
+                backgroundUrl: "",
+                musicaUrl: "https://youtube.com/playlist",
+                volume: 75, 
+                minimoPedido: 10.00, 
+                taxaServico: 5, 
+                exibirEstoque: true,
+                exibirTempo: true
+            }
+        };
+
+
+        const radialMenu = document.getElementById('radial-menu');
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainTitle = document.getElementById('current-title');
+        const productFormModal = document.getElementById('product-form-modal');
+        let currentStatus = 'aberto'; 
+        let isDragging = false; 
+        let isMoving = false; 
+        let startX, startY;
+        let initialX, initialY;
+        const dragThreshold = 5; 
+
+        
+        // ===========================================
+        // 1. LÓGICA DO DRAG & DROP (ARRÁSTAVEL) - (Sem Alterações)
+        // ===========================================
+        function getClientCoords(e) {
+            return (e.touches && e.touches.length) ? { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY } : e;
+        }
+
+        function startDrag(e) {
+            e.preventDefault(); 
+            const coords = getClientCoords(e);
+            isDragging = true;
+            isMoving = false; 
+            radialMenu.classList.remove('active'); 
+            
+            const rect = radialMenu.getBoundingClientRect();
+            initialX = rect.left; initialY = rect.top;
+            startX = coords.clientX; startY = coords.clientY;
+            
+            menuToggle.style.cursor = 'grabbing';
+
+            document.addEventListener('mousemove', duringDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', duringDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function duringDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault(); 
+            const coords = getClientCoords(e);
+            
+            const dx = coords.clientX - startX;
+            const dy = coords.clientY - startY;
+
+            if (Math.abs(dx) > dragThreshold || Math.abs(dy) > dragThreshold) {
+                isMoving = true;
+            }
+            
+            let newX = initialX + dx;
+            let newY = initialY + dy;
+
+            newX = Math.max(0, Math.min(newX, window.innerWidth - radialMenu.offsetWidth));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - radialMenu.offsetHeight));
+
+            radialMenu.style.left = `${newX}px`;
+            radialMenu.style.top = `${newY}px`;
+            radialMenu.style.right = 'auto'; 
+            radialMenu.style.bottom = 'auto';
+        }
+
+        function endDrag(e) {
+            if (isDragging) {
+                document.removeEventListener('mousemove', duringDrag);
+                document.removeEventListener('mouseup', endDrag);
+                document.removeEventListener('touchmove', duringDrag);
+                document.removeEventListener('touchend', endDrag);
+
+                if (!isMoving) {
+                    toggleMenu(e); 
+                }
+                
+                isDragging = false;
+                isMoving = false;
+                menuToggle.style.cursor = 'move';
+            }
+        }
+
+        menuToggle.addEventListener('mousedown', startDrag);
+        menuToggle.addEventListener('touchstart', startDrag); 
+
+        // ===========================================
+        // 2. LÓGICA DO MENU RADIAL (Abertura e Fechamento) - (Sem Alterações)
+        // ===========================================
+
+        function toggleMenu(e) {
+            e.stopPropagation(); 
+            radialMenu.classList.toggle('active');
+        }
+
+        function stopInteraction(e) {
+             e.stopPropagation(); 
+        }
+
+        // ===========================================
+        // 3. LÓGICA DAS ABAS E AÇÕES - (Alteração: salvarRascunho)
+        // ===========================================
+
+        function showTab(tabId, e) {
+            e.stopPropagation(); 
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            // Mude o display: block para o ID da aba
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                mainTitle.textContent = navLinks[tabId];
+            } else {
+                 console.error(`Aba com ID 'tab-${tabId}' não encontrada.`);
+            }
+            radialMenu.classList.remove('active');
+        }
+
+        function previewTotem(e) {
+            e.stopPropagation();
+            // Simulação de abertura do totem em nova aba
+            window.open('../totem/index1.html', '_blank'); 
+            radialMenu.classList.remove('active');
+        }
+        
+        // NOVO: Função centralizada para coletar todos os dados do DOM
+        function collectAllCurrentData() {
+            // 1. Dados Institucionais
+            const dadosInstitucionais = {
+                nome: document.getElementById('nome-loja').value,
+                telPrincipal: document.getElementById('tel-principal').value,
+                chavePix: document.getElementById('chave-pix').value,
+                enderecoFisico: document.getElementById('endereco-fisico').value,
+                dadosBancarios: document.getElementById('dados-bancarios').value,
+                urlLogo: document.getElementById('url-logo').value,
+                msgPagamento: document.getElementById('msg-pagamento').value,
+            };
+            
+            // 2. Dados Operacionais
+            const diasAtivos = Array.from(document.querySelectorAll('.day-toggle.active')).map(btn => btn.getAttribute('data-dia'));
+            const areasCobertura = Array.from(document.querySelectorAll('#coverage-list li')).map(li => ({
+                bairro: li.getAttribute('data-bairro'),
+                taxa: parseFloat(li.getAttribute('data-taxa'))
+            }));
+            const dadosOperacionais = {
+                status: currentStatus,
+                diasFuncionamento: diasAtivos,
+                horarioAbertura: document.getElementById('horario-abertura').value,
+                horarioFechamento: document.getElementById('horario-fechamento').value,
+                cobertura: areasCobertura
+            };
+
+            // 3. Dados do Cardápio (Lê o estado ATUAL da tabela)
+            const dadosCardapio = Array.from(document.querySelectorAll('#cardapio-tabela .item-row')).map(row => {
+                // Tenta encontrar o ícone de 'toggle-on' para definir a disponibilidade
+                const isAvailable = row.querySelector('.fa-toggle-on') !== null;
+                
+                return {
+                    id: row.getAttribute('data-id'),
+                    nome: row.querySelector('[data-field="nome"]').textContent,
+                    // Garante que o preço e estoque sejam lidos como números
+                    preco: parseFloat(row.querySelector('[data-field="preco"]').textContent),
+                    categoria: row.querySelector('[data-field="categoria"]').textContent,
+                    estoque: parseInt(row.querySelector('[data-field="estoque"]').textContent),
+                    disponivel: isAvailable,
+                    modo: "Unidade Padrão" // Simplificação, pois o formulário de edição rápida não o expõe.
+                }
+            });
+
+            // 4. Dados de Layout
+            const dadosLayout = {
+                corPrimaria: document.getElementById('corPrimaria').value,
+                corSecundaria: document.getElementById('corSecundaria').value,
+                fonte: document.getElementById('fonte').value,
+                corFundo: document.getElementById('corFundo').value,
+                backgroundUrl: document.getElementById('backgroundUrl').value,
+                musicaUrl: document.getElementById('musicaUrl').value,
+                volume: parseInt(document.getElementById('volume').value),
+                minimoPedido: parseFloat(document.getElementById('minimoPedido').value),
+                taxaServico: parseInt(document.getElementById('taxaServico').value),
+                exibirEstoque: document.getElementById('exibir-estoque').checked,
+                exibirTempo: document.getElementById('exibir-tempo').checked
+            };
+
+            // 5. Montar o Payload Final (Estrutura Completa)
+            return {
+                institucional: dadosInstitucionais,
+                operacionais: dadosOperacionais,
+                cardapio: dadosCardapio,
+                layout: dadosLayout
+            };
+        }
+
+
+        // ATUALIZADO: Função para SALVAR de verdade no LocalStorage
+        function salvarRascunho(secao) {
+            const dataToSave = collectAllCurrentData();
+            
+            try {
+                // Salva todos os dados atuais do CMS em uma única chave
+                localStorage.setItem('CMS_DATA_V9', JSON.stringify(dataToSave));
+                
+                let message;
+                if (secao === 'cardapio') {
+                    updateDashboardCounts();
+                    message = `✅ Dados do Cardápio (Total de ${document.getElementById('count-itens').textContent} Itens) salvos localmente (Rascunho).`;
+                } else if (secao === 'produto') {
+                    // Após salvar um produto (simulação), atualiza as contagens e salva o rascunho
+                    updateDashboardCounts();
+                    message = `✅ Produto salvo e Cardápio atualizado localmente.`;
+                } else {
+                    message = `✅ Dados de ${secao.toUpperCase()} salvos localmente (Rascunho).`;
+                }
+                alert(message);
+                
+            } catch (e) {
+                console.error("Erro ao salvar no localStorage:", e);
+                alert("❌ Erro ao salvar dados localmente. Tente novamente.");
+            }
+            
+            if(secao === 'produto') hideProductForm();
+        }
+        
+        // ===========================================
+        // 4. LÓGICA DE API (GET & PUT) - (Alteração: fetchData e publicarDados)
+        // ===========================================
+        
+        // ATUALIZADO: Função para buscar dados, priorizando localStorage
+        async function fetchData() {
+            // Define o status de carregamento e o BIN ID no painel
+            document.getElementById('dashboard-sincronizacao').textContent = 'Carregando...';
+            document.getElementById('dashboard-binid').textContent = API_CONFIG.BIN_ID;
+            
+            let data;
+            try {
+                const localData = localStorage.getItem('CMS_DATA_V9');
+                if (localData) {
+                    // Carrega do localStorage se houver
+                    data = JSON.parse(localData);
+                    console.log("DADOS CARREGADOS com sucesso a partir do localStorage.");
+                    document.getElementById('dashboard-sincronizacao').textContent = 'Local (Draft)';
+                } else {
+                    // Se não houver, usa os dados DUMMY
+                    data = DUMMY_FETCH_DATA;
+                    // Salva os dados DUMMY imediatamente para persistência no próximo carregamento
+                    localStorage.setItem('CMS_DATA_V9', JSON.stringify(data));
+                    console.log("DADOS INICIAIS CARREGADOS a partir do DUMMY_FETCH_DATA e salvos no localStorage.");
+                    document.getElementById('dashboard-sincronizacao').textContent = 'DUMMY (10:00)';
+                }
+                
+                applyData(data);
+                updateDashboardCounts(); // Inicializa as contagens
+            } catch (e) {
+                console.error("Erro ao carregar ou processar dados:", e);
+                // Fallback para dados DUMMY se o local storage estiver corrompido
+                applyData(DUMMY_FETCH_DATA);
+                updateDashboardCounts(); 
+                document.getElementById('dashboard-sincronizacao').textContent = 'Erro (Usando DUMMY)';
+                alert("❌ Erro ao carregar dados locais. Usando dados padrão.");
+            }
+        }
+
+        // Função para aplicar os dados do JSON nos campos do CMS
+        function applyData(data) {
+            // --- 1. Dados Institucionais ---
+            document.getElementById('nome-loja').value = data.institucional.nome;
+            document.getElementById('tel-principal').value = data.institucional.telPrincipal;
+            document.getElementById('chave-pix').value = data.institucional.chavePix;
+            document.getElementById('endereco-fisico').value = data.institucional.enderecoFisico;
+            document.getElementById('dados-bancarios').value = data.institucional.dadosBancarios;
+            document.getElementById('url-logo').value = data.institucional.urlLogo;
+            document.getElementById('msg-pagamento').value = data.institucional.msgPagamento;
+
+            // --- 2. Dados Operacionais (Status, Horários e Dias) ---
+            setStatus(data.operacionais.status);
+            document.getElementById('horario-abertura').value = data.operacionais.horarioAbertura;
+            document.getElementById('horario-fechamento').value = data.operacionais.horarioFechamento;
+            document.getElementById('dashboard-fechamento').textContent = data.operacionais.horarioFechamento;
+            
+            document.querySelectorAll('.day-toggle').forEach(btn => {
+                const dia = btn.getAttribute('data-dia');
+                if (data.operacionais.diasFuncionamento.includes(dia)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // --- 3. Cobertura ---
+            const coverageList = document.getElementById('coverage-list');
+            coverageList.innerHTML = ''; // Limpa os dados de exemplo
+            data.operacionais.cobertura.forEach(area => {
+                coverageList.appendChild(createCoverageListItem(area.bairro, area.taxa));
+            });
+
+            // --- 4. Cardápio ---
+            const cardapioTabela = document.getElementById('cardapio-tabela');
+            cardapioTabela.innerHTML = '';
+            data.cardapio.forEach(item => {
+                cardapioTabela.appendChild(createCardapioRow(item));
+            });
+            
+            // --- 5. Layout ---
+            document.getElementById('corPrimaria').value = data.layout.corPrimaria;
+            document.getElementById('corSecundaria').value = data.layout.corSecundaria;
+            document.getElementById('fonte').value = data.layout.fonte;
+            document.getElementById('corFundo').value = data.layout.corFundo;
+            document.getElementById('backgroundUrl').value = data.layout.backgroundUrl;
+            document.getElementById('musicaUrl').value = data.layout.musicaUrl;
+            document.getElementById('volume').value = data.layout.volume;
+            document.getElementById('volume-value').textContent = data.layout.volume; // Atualiza o texto do range
+            document.getElementById('minimoPedido').value = data.layout.minimoPedido.toFixed(2);
+            document.getElementById('taxaServico').value = data.layout.taxaServico;
+            document.getElementById('exibir-estoque').checked = data.layout.exibirEstoque;
+            document.getElementById('exibir-tempo').checked = data.layout.exibirTempo;
+
+            // --- 6. Config Serverless ---
+            document.getElementById('binName').value = API_CONFIG.BIN_NAME;
+            document.getElementById('binId').value = API_CONFIG.BIN_ID;
+            document.getElementById('masterKey').value = API_CONFIG.MASTER_KEY;
+        }
+
+
+        // ATUALIZADO: Função Central para Publicação de Dados (PUT)
+        async function publicarDados() { 
+            if (!confirm("ATENÇÃO: Você tem certeza que deseja SINCRONIZAR e PUBLICAR? Isso atualizará o Totem Digital imediatamente para todos os clientes.")) {
+                return;
+            }
+            
+            const binId = document.getElementById('binId').value;
+            const masterKey = document.getElementById('masterKey').value;
+            
+            // **IMPORTANTE**: Coleta os dados mais recentes do DOM, garantindo que o que foi salvo localmente ou editado agora seja publicado.
+            const dadosCompletos = collectAllCurrentData();
+
+            console.log("PAYLOAD JSON PRONTO PARA ENVIO (PUT)", JSON.stringify(dadosCompletos, null, 2));
+            
+            // SIMULAÇÃO DE SUCESSO (Substituir por chamada fetch PUT real)
+            setTimeout(() => {
+                alert('✅ SUCESSO NA SIMULAÇÃO: Dados Serverless enviados! O Totem seria atualizado agora. (BIN ID: ' + binId + ')');
+                document.getElementById('dashboard-sincronizacao').textContent = 'Agora';
+                console.log('Publicação simulada concluída.');
+            }, 500); 
+        }
+
+
+        // ===========================================
+        // 5. HELPERS E LÓGICA DE AÇÕES DO CARDÁPIO - (Sem Alterações na Lógica)
+        // ===========================================
+        
+        // Helper para atualizar as contagens no Dashboard e no Cardápio
+        function updateDashboardCounts() {
+            const rows = document.querySelectorAll('#cardapio-tabela .item-row');
+            const totalItems = rows.length;
+            const availableRows = Array.from(rows).filter(row => row.querySelector('i.fa-toggle-on'));
+            const unavailableItems = totalItems - availableRows.length;
+            
+            document.getElementById('count-itens').textContent = totalItems;
+            document.getElementById('dashboard-total-itens').textContent = totalItems;
+            document.getElementById('dashboard-indisponiveis').textContent = unavailableItems;
+        }
+
+        // Ação: Alterna a disponibilidade de um item (ON/OFF)
+        function toggleAvailability(button) {
+            const icon = button.querySelector('i.fas');
+            let isAvailable = icon.classList.contains('fa-toggle-on');
+
+            if (isAvailable) {
+                // Desativar
+                icon.classList.remove('fa-toggle-on', 'text-green-500');
+                icon.classList.add('fa-toggle-off', 'text-gray-400');
+            } else {
+                // Ativar
+                icon.classList.remove('fa-toggle-off', 'text-gray-400');
+                icon.classList.add('fa-toggle-on', 'text-green-500');
+            }
+
+            // Garante que o estado seja salvo localmente
+            salvarRascunho('cardapio-toggle');
+        }
+
+        // Ação: Exclui um item do Cardápio
+        function deleteProduct(button) {
+            if (confirm('Tem certeza que deseja EXCLUIR este item do cardápio?')) {
+                const row = button.closest('.item-row');
+                row.remove();
+                // Garante que o estado seja salvo localmente
+                salvarRascunho('cardapio-exclusao'); 
+            }
+        }
+
+        // Helper para criar a linha TR da Tabela do Cardápio
+        function createCardapioRow(item) {
+             const row = document.createElement('tr');
+             row.className = 'item-row';
+             row.setAttribute('data-id', item.id);
+             const toggleIcon = item.disponivel ? 'fa-toggle-on text-green-500' : 'fa-toggle-off text-gray-400';
+             
+             row.innerHTML = `
+                 <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900" data-field="nome">${item.nome}</td>
+                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500" data-field="preco">${item.preco.toFixed(2)}</td>
+                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500" data-field="categoria">${item.categoria}</td>
+                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500" data-field="estoque">${item.estoque}</td>
+                 <td class="px-4 py-3 whitespace-nowrap text-sm text-center">
+                     <button class="text-primary hover:text-blue-700 mr-2" title="Editar" onclick="showProductForm('${item.nome}', '${item.id}')"><i class="fas fa-edit"></i></button>
+                     <button class="text-red-500 hover:text-red-700" title="Excluir" onclick="deleteProduct(this)"><i class="fas fa-trash"></i></button>
+                     <button class="ml-2" title="Disponível/Indisponível" onclick="toggleAvailability(this)"><i class="fas ${toggleIcon}"></i></button>
+                 </td>
+             `;
+             return row;
+        }
+
+        // ===========================================
+        // 6. LÓGICA DE STATUS E OUTROS HELPERS - (Alteração: addCoverageArea/editCoverageArea)
+        // ===========================================
+
+        // Lógica de Modal
+        function showProductForm(productName = 'Novo Produto', productId = null) {
+            document.getElementById('product-form-title').textContent = (productName === 'Novo Produto') ? 'Adicionar Novo Produto' : `Editar: ${productName}`;
+            
+            // Lógica para carregar dados do produto (se productId for fornecido)
+            console.log(productId ? `Editando produto ID: ${productId}` : 'Adicionando novo produto');
+
+            productFormModal.classList.remove('hidden');
+            productFormModal.classList.add('flex');
+        }
+
+        function hideProductForm() {
+            productFormModal.classList.add('hidden');
+            productFormModal.classList.remove('flex');
+        }
+
+        // Lógica Operacional: Status
+        function setStatus(status) {
+            currentStatus = status;
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'hover:bg-primary-dark');
+                btn.classList.add('bg-white', 'text-primary', 'hover:bg-gray-100');
+            });
+            const activeBtn = document.getElementById(`status-${status}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-primary', 'text-white', 'hover:bg-primary-dark');
+                activeBtn.classList.remove('bg-white', 'text-primary', 'hover:bg-gray-100');
+            }
+            // Atualiza o dashboard
+            const dashboardStatus = document.getElementById('dashboard-status');
+            if(dashboardStatus) {
+                dashboardStatus.textContent = status.toUpperCase();
+                // Remove todas as cores e aplica a correta
+                dashboardStatus.className = dashboardStatus.className.replace(/text-(green|yellow|red)-\d+/g, '');
+                dashboardStatus.classList.add(`text-${status === 'aberto' ? 'green' : (status === 'pausa' ? 'yellow' : 'red')}-700`);
+            }
+        }
+        
+        // Lógica Operacional: Dias de Funcionamento
+        function toggleDay(e) {
+            const button = e.currentTarget;
+            button.classList.toggle('active');
+            salvarRascunho('operacionais-dias'); // Salva ao alternar dia
+        }
+
+        // Lógica Operacional: Áreas de Cobertura
+        function createCoverageListItem(bairro, taxa) {
+             const listItem = document.createElement('li');
+             listItem.className = 'flex justify-between items-center border-b pb-1 item-row';
+             listItem.setAttribute('data-bairro', bairro);
+             listItem.setAttribute('data-taxa', taxa.toFixed(2));
+             
+             listItem.innerHTML = `
+                 <span>${bairro} (R$ ${taxa.toFixed(2).replace('.', ',')})</span>
+                 <div>
+                     <button class="text-blue-500 hover:text-blue-700 mr-2" onclick="editCoverageArea(this)"><i class="fas fa-edit"></i></button>
+                     <button class="text-red-500 hover:text-red-700" onclick="deleteCoverageArea(this)"><i class="fas fa-trash"></i></button>
+                 </div>
+             `;
+             return listItem;
+         }
+
+        function addCoverageArea() {
+            const bairroInput = document.getElementById('input-bairro');
+            const taxaInput = document.getElementById('input-taxa');
+            const bairro = bairroInput.value.trim();
+            const taxa = parseFloat(taxaInput.value);
+            
+            if (bairro && !isNaN(taxa)) {
+                const list = document.getElementById('coverage-list');
+                list.appendChild(createCoverageListItem(bairro, taxa));
+                bairroInput.value = '';
+                taxaInput.value = '';
+                salvarRascunho('operacionais-cobertura'); // Salva após adicionar
+            } else {
+                alert('Por favor, preencha o Bairro e a Taxa corretamente.');
+            }
+        }
+        
+        function editCoverageArea(button) {
+             const listItem = button.closest('li');
+             const currentBairro = listItem.getAttribute('data-bairro');
+             const currentTaxa = listItem.getAttribute('data-taxa');
+             
+             const newBairro = prompt('Editar Bairro:', currentBairro);
+             if (newBairro === null) return; 
+
+             const newTaxa = prompt('Editar Taxa de Entrega:', currentTaxa);
+             if (newTaxa === null) return; 
+
+             const taxaFormatada = parseFloat(newTaxa).toFixed(2);
+             
+             if (newBairro.trim() && !isNaN(taxaFormatada)) {
+                listItem.setAttribute('data-bairro', newBairro);
+                listItem.setAttribute('data-taxa', taxaFormatada);
+                listItem.querySelector('span').textContent = `${newBairro} (R$ ${taxaFormatada.replace('.', ',')})`;
+                salvarRascunho('operacionais-cobertura'); // Salva após editar
+             } else {
+                 alert('Edição inválida.');
+             }
+        }
+
+        function deleteCoverageArea(button) {
+            if (confirm('Tem certeza que deseja excluir esta área de cobertura?')) {
+                const listItem = button.closest('li');
+                listItem.remove();
+                salvarRascunho('operacionais-cobertura'); // Salva após excluir
+            }
+        }
+        
+        // Inicialização: Garante que os listeners estejam ativos e carrega dados
+        window.onload = () => {
+            fetchData(); // Carrega os dados persistidos primeiro
+            showTab('dashboard', { stopPropagation: () => {} }); 
+            
+            document.querySelectorAll('.day-toggle').forEach(button => {
+                button.addEventListener('click', toggleDay);
+            });
+            
+            document.getElementById('volume').addEventListener('input', (e) => {
+                document.getElementById('volume-value').textContent = e.target.value;
+            });
+        };
+    </script>
+</body>
+  </html>
