@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cardápio Vitorelli Final</title>
+  <title>Cardápio Vitorelli Final V6</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
@@ -29,31 +29,51 @@
       background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtlAIqbNWtq6dQL3X3N_TgGBe8Eul0udZm-YlzXxTFbkbo3sBrpMm6RJ3Pm76fv5PV7rgEGEYSkA_1l_8bJ6AA-YnRZWrtHW1m1PjLsH_Wpjb-FCto68f_a-bJc-sysKvbkXIkASwWP6N3PffP1QDwRY97RHrYiFj_cD2O1MorFgqpYwojgAZeks8pws0O/s2400/20250927_014811.jpg') no-repeat center center fixed;
       background-size: cover;
       color: var(--cor-texto);
-      padding-bottom: 90px;
+      padding-bottom: 90px; /* Espaço para o menu fixo inferior */
     }
 
-    /* Header e Logo */
+    /* Header e Logo - Novo Layout [ (Log) - Cardápio - (?) ] */
     header { 
       text-align: center; 
-      padding: 15px 10px;
+      padding: 15px 20px; 
       background: rgba(0, 0, 0, 0.8); 
       border-bottom: 2px solid var(--cor-principal);
       position: sticky;
       top: 0;
       z-index: 1000;
+      display: flex; /* Habilita o Flexbox */
+      align-items: center; 
+      justify-content: space-between; /* Distribui os elementos */
+    }
+    header .logo-container {
+        display: flex;
+        align-items: center;
     }
     header img {
-      width: 80px;
+      width: 50px; /* Logo menor */
+      height: 50px;
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--cor-principal);
-      /* Novo Link da Logo */
+      box-shadow: 0 0 8px var(--cor-principal);
+      object-fit: cover;
       content: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png');
     }
     header h1 {
       color: var(--cor-principal);
-      font-size: 1.6em;
-      margin-top: 5px;
+      font-size: 1.4em; /* Título menor */
+      margin-top: 0;
+      margin-left: 10px; /* Espaço entre logo e título */
       text-shadow: 1px 1px 3px #000;
+    }
+    .header-placeholder {
+        width: 30px; /* Tamanho do Placeholder '?' */
+        height: 30px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5em;
+        color: var(--cor-principal);
+        cursor: pointer;
     }
     
     /* Layout */
@@ -79,7 +99,7 @@
         gap: 15px;
         margin-bottom: 25px;
         width: 100%;
-        max-width: 400px;
+        max-width: 450px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -92,6 +112,7 @@
         cursor: pointer;
         transition: all 0.2s;
         font-size: 0.9em;
+        flex-grow: 1;
     }
     .subnav button.active {
         background-color: var(--cor-principal);
@@ -142,7 +163,7 @@
       margin-top: 10px;
     }
     
-    /* Novo estilo para imagens no slide (Bebidas) */
+    /* Estilo para imagens no slide */
     .swiper-slide .item-image {
         max-width: 80%;
         max-height: 120px; 
@@ -150,6 +171,8 @@
         margin: 10px auto;
         display: block;
         object-fit: contain;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     }
 
     /* Menu de Navegação (Inferior) */
@@ -166,14 +189,76 @@
       align-items: center; 
       justify-content: center;
     }
-    /* Estilos do carrinho e utilidades (toast, alert) - Mantidos do código anterior */
+    /* Estilos de Menu/Carrinho (Mantidos e ajustados para z-index) */
+    .navigation ul {
+        display: flex;
+        width: 100%;
+        max-width: 700px;
+        list-style: none;
+        justify-content: space-around;
+        padding: 0 10px;
+    }
+    .navigation ul li {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        list-style: none;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .navigation ul li a {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .navigation ul li a .icon {
+        position: relative;
+        display: block;
+        line-height: 65px;
+        font-size: 1.5em;
+        text-align: center;
+        transition: 0.5s;
+        color: var(--icon-inactive);
+    }
+    .navigation ul li.active a .icon {
+        transform: translateY(-25px);
+        color: var(--clr);
+        filter: drop-shadow(0 0 5px var(--clr));
+    }
+    .navigation ul li a .text {
+        position: absolute;
+        color: var(--clr);
+        font-weight: 400;
+        font-size: 0.75em;
+        letter-spacing: 0.05em;
+        transition: 0.5s;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    .navigation ul li.active a .text {
+        opacity: 1;
+        transform: translateY(10px);
+    }
+    .navigation ul li:nth-child(6) { /* Carrinho */
+        width: 80px; 
+    }
+    
+    /* Estilos do carrinho (modal) */
     #carrinho-lateral {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0.9);
         z-index: 3500; 
         display: none; 
         justify-content: center;
@@ -191,35 +276,55 @@
         max-height: 90vh;
         overflow-y: auto;
     }
-    #toast-notification {
-      visibility: hidden;
-      min-width: 250px;
-      background-color: var(--cor-principal);
-      color: #fff;
-      text-align: center;
-      border-radius: 8px;
-      padding: 10px;
-      position: fixed;
-      z-index: 5000;
-      left: 50%;
-      bottom: 90px;
-      transform: translateX(-50%);
-      font-size: 1em;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      transition: visibility 0s, opacity 0.5s linear;
-      opacity: 0;
+    #carrinho-lista {
+        list-style: none;
+        padding: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 15px;
     }
-    #toast-notification.show {
-      visibility: visible;
-      opacity: 1;
+    #carrinho-lista li {
+        padding: 8px 0;
+        border-top: 1px solid #eee;
+    }
+    #resumo-valores h4 {
+        color: var(--cor-principal);
+        font-size: 1.5em;
+        margin-top: 10px;
+    }
+    #taxa-entrega-row {
+        display: flex;
+        justify-content: space-between;
+    }
+    .botao-whatsapp {
+      background-color: var(--cor-botao-adicionar);
+      color: #fff;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 1.1em;
+      transition: background-color 0.2s;
+    }
+    .botao-whatsapp:hover {
+        background-color: #31a361;
     }
   </style>
   </head>
 <body>
 
   <header>
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png" alt="Logo Pizzaria Vitorelli">
-    <h1>Cardápio Digital</h1>
+    <div class="logo-container">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png" alt="Logo Pizzaria Vitorelli">
+        <h1>Cardápio Digital</h1>
+    </div>
+    <div class="header-placeholder" onclick="showCustomAlert('Ajuda e Informações', 'Clique nos ícones do menu inferior para navegar entre Pizzas, Brotos, Calzones, Bebidas e o Carrinho de Pedidos.')">
+      <ion-icon name="help-circle-outline"></ion-icon>
+    </div>
   </header>
   
   <div class="main-content">
@@ -228,7 +333,7 @@
       <h2>Pizzas - Inteira</h2>
       
       <div class="subnav">
-        <button id="btn-inteira" class="active" onclick="mostrar('inteira', this)">🍕 Pizza Inteira</button>
+        <button id="btn-inteira" class="active" onclick="mostrar('inteira', this)">🍕 Inteira</button>
         <button id="btn-meia" onclick="mostrar('meia', this)">✂️ Meia-a-meia</button>
       </div>
 
@@ -252,7 +357,7 @@
         
         <div id="resumo-valores">
             <p>Subtotal: <span id="subtotal">R$ 0,00</span></p>
-            <p id="taxa-entrega-row" style="display:none;">Taxa de Entrega: <span id="taxa-entrega">R$ 0,00</span></p>
+            <p id="taxa-entrega-row" style="display:none; justify-content: space-between;">Taxa de Entrega: <span id="taxa-entrega">R$ 0,00</span></p>
             <h4>Total: <span id="total-final">R$ 0,00</span></h4>
         </div>
         
@@ -322,8 +427,7 @@
       </li>
       <li data-categoria="broto">
         <a href="#" onclick="event.preventDefault(); selecionar('broto'); activateNav(this);">
-          <span class="icon"><ion-icon name="ellipse-outline"></ion-icon></span>
-          <span class="text">Brotos</span>
+          <span class="icon"><ion-icon name="cut-outline"></ion-icon></span> <span class="text">Brotos</span>
         </a>
       </li>
       <li data-categoria="calzone">
@@ -334,8 +438,7 @@
       </li>
       <li data-categoria="bebidas">
         <a href="#" onclick="event.preventDefault(); selecionar('bebidas'); activateNav(this);">
-          <span class="icon"><ion-icon name="beer-outline"></ion-icon></span>
-          <span class="text">Bebidas</span>
+          <span class="icon"><ion-icon name="bottle-outline"></ion-icon></span> <span class="text">Bebidas</span>
         </a>
       </li>
       <li data-categoria="ingredientes">
@@ -346,8 +449,7 @@
       </li>
       <li data-categoria="carrinho">
         <a href="#" onclick="event.preventDefault(); toggleCarrinho(true); activateNav(this);">
-          <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
-          <span class="text">Carrinho</span>
+          <span class="icon"><ion-icon name="fast-food-outline"></ion-icon></span> <span class="text">Carrinho</span>
         </a>
       </li>
     </ul>
@@ -364,33 +466,45 @@
     // DADOS DO CARDÁPIO (ATUALIZADOS E COMPLETOS)
     const cardapio = {
       pizza: [
-        { nome: '4 Queijos', precoInteira: 47.00, precoBroto: 37.00, ingredientes: 'molho, mussarela, parmesão, provolone, gorgonzola, azeitona e orégano' },
-        { nome: '5 Queijos', precoInteira: 49.00, precoBroto: 39.00, ingredientes: 'molho, mussarela, parmesão, provolone, gorgonzola, catupiry, azeitona e orégano' },
-        { nome: 'Abobrinha I', precoInteira: 41.00, precoBroto: 34.00, ingredientes: 'molho, mussarela, abobrinha, alho frito, azeitona e orégano' },
-        { nome: 'Abobrinha II', precoInteira: 41.00, precoBroto: 34.00, ingredientes: 'molho, mussarela, abobrinha, pimenta calabresa, azeitona e orégano' },
-        { nome: 'Alho', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'molho, mussarela, alho frito, azeitona e orégano' },
-        { nome: 'Aliche', precoInteira: 49.00, precoBroto: 39.00, ingredientes: 'molho, mussarela, aliche, tomate, azeitona e orégano' },
-        { nome: 'Americana', precoInteira: 50.00, precoBroto: 40.00, ingredientes: 'molho, mussarela, lombinho, pimentão, champignon, tomate cereja, azeitona sem caroço e orégano' },
-        { nome: 'Atum I', precoInteira: 46.00, precoBroto: 36.00, ingredientes: 'molho, atum, cebola, azeitona e orégano' },
-        { nome: 'Atum II (com mussarela)', precoInteira: 48.00, precoBroto: 38.00, ingredientes: 'molho, mussarela, atum, cebola, azeitona e orégano' },
-        { nome: 'Bacon', precoInteira: 44.00, precoBroto: 38.00, ingredientes: 'molho, mussarela, bacon, azeitona e orégano' },
-        { nome: 'Brócolis', precoInteira: 47.00, precoBroto: 38.00, ingredientes: 'molho, brócolis, mussarela, bacon, azeitona e orégano' },
-        { nome: 'Calabresa I', precoInteira: 38.00, precoBroto: 29.00, ingredientes: 'molho, calabresa, tomate, cebola, azeitona e orégano' },
-        { nome: 'Calabresa II', precoInteira: 43.00, precoBroto: 34.00, ingredientes: 'molho, mussarela, calabresa, cebola, azeitona e orégano' },
-        { nome: 'Frango Catupiry', precoInteira: 47.00, precoBroto: 37.00, ingredientes: 'molho, frango, catupiry, azeitona e orégano' },
-        { nome: 'Gênova', precoInteira: 48.00, precoBroto: 37.00, ingredientes: 'molho, mussarela, provolone, presunto, molho pesto e azeitona' },
-        { nome: 'Lombinho', precoInteira: 46.00, precoBroto: 36.00, ingredientes: 'molho, mussarela, lombinho, provolone, azeitona e orégano' },
-        { nome: 'Marguerita', precoInteira: 40.00, precoBroto: 30.00, ingredientes: 'molho, mussarela, parmesão, tomate, azeitona e manjericão' },
-        { nome: 'Mussarela', precoInteira: 38.00, precoBroto: 29.00, ingredientes: 'molho, mussarela, tomate, azeitona e orégano' },
-        { nome: 'Peperonni', precoInteira: 49.00, precoBroto: 39.00, ingredientes: 'molho, mussarela, peperonni e azeitona' },
-        { nome: 'Pomodoro', precoInteira: 44.00, precoBroto: 34.00, ingredientes: 'molho, parmesão, alho frito, tomate e orégano' },
-        { nome: 'Potatosa', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'molho, batata, parmesão, calabresa, catupiry, azeitona sem caroço e orégano' },
-        { nome: 'Portuguesa', precoInteira: 50.00, precoBroto: 40.00, ingredientes: 'molho, mussarela, presunto, ovo cozido, ervilha, tomate, azeitona sem caroço e orégano' },
-        { nome: 'Rúcula e Tomate Seco', precoInteira: 46.00, precoBroto: 36.00, ingredientes: 'molho, mussarela, rúcula, tomate seco, azeitona e orégano' },
-        { nome: 'Toscana', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'molho, mussarela, linguiça calabresa moída, tomate, azeitona e orégano' },
+        { 
+          nome: '4 Queijos', 
+          precoInteira: 47.00, 
+          precoBroto: 37.00, 
+          ingredientes: 'molho, mussarela, parmesão, provolone, gorgonzola, azeitona e orégano',
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1v7SvnOcwHHkrI_kA8IcE3s4p-_GHbv725ne7hKm5M48nd_asbsZZrWKs3Kfo6rj5O3kh6P2J-WkJhxjqBUhrcp6FnYV4agrnKc5W41ZrYq3aytU_iRfF1FJxwCgN9MfATSd1BbRTaL77kbLswzqslfn2xuB-aKTZ3Cs3HrpI7AouquBNIPUpP56hUhsJ/s1000/16195-heineken-lata-269ml-normal-8un.20250923144026.png'
+        },
+        { 
+          nome: '5 Queijos', 
+          precoInteira: 49.00, 
+          precoBroto: 39.00, 
+          ingredientes: 'molho, mussarela, parmesão, provolone, gorgonzola, catupiry, azeitona e orégano',
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGLREGHN-MyUOkhZn8kkpY9EojpZ3MJaddE_uPm65r3ALsVfRaAk1jRANRwZnG5fFviR2lP_9ARDnN6gCnLAViEvL_FqSxEtdzqr2r-tuAN8mYUpY10W0XJ-W-yXHSce2d_QxA9Qd04x-FzD0qEEMTqJQliuU6042pmWO0I6vcGtGgsGZUCZO6xE6nloYA/s424/Clipped_image_20251009_052602.png'
+        },
+        { nome: 'Abobrinha I', precoInteira: 41.00, precoBroto: 34.00, ingredientes: 'molho, mussarela, abobrinha, alho frito, azeitona e orégano', imagem: '' },
+        { nome: 'Abobrinha II', precoInteira: 41.00, precoBroto: 34.00, ingredientes: 'molho, mussarela, abobrinha, pimenta calabresa, azeitona e orégano', imagem: '' },
+        { nome: 'Alho', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'molho, mussarela, alho frito, azeitona e orégano', imagem: '' },
+        { nome: 'Aliche', precoInteira: 49.00, precoBroto: 39.00, ingredientes: 'molho, mussarela, aliche, tomate, azeitona e orégano', imagem: '' },
+        { nome: 'Americana', precoInteira: 50.00, precoBroto: 40.00, ingredientes: 'molho, mussarela, lombinho, pimentão, champignon, tomate cereja, azeitona sem caroço e orégano', imagem: '' },
+        { nome: 'Atum I', precoInteira: 46.00, precoBroto: 36.00, ingredientes: 'molho, atum, cebola, azeitona e orégano', imagem: '' },
+        { nome: 'Atum II (com mussarela)', precoInteira: 48.00, precoBroto: 38.00, ingredientes: 'molho, mussarela, atum, cebola, azeitona e orégano', imagem: '' },
+        { nome: 'Bacon', precoInteira: 44.00, precoBroto: 38.00, ingredientes: 'molho, mussarela, bacon, azeitona e orégano', imagem: '' },
+        { nome: 'Brócolis', precoInteira: 47.00, precoBroto: 38.00, ingredientes: 'molho, brócolis, mussarela, bacon, azeitona e orégano', imagem: '' },
+        { nome: 'Calabresa I', precoInteira: 38.00, precoBroto: 29.00, ingredientes: 'molho, calabresa, tomate, cebola, azeitona e orégano', imagem: '' },
+        { nome: 'Calabresa II', precoInteira: 43.00, precoBroto: 34.00, ingredientes: 'molho, mussarela, calabresa, cebola, azeitona e orégano', imagem: '' },
+        { nome: 'Frango Catupiry', precoInteira: 47.00, precoBroto: 37.00, ingredientes: 'molho, frango, catupiry, azeitona e orégano', imagem: '' },
+        { nome: 'Gênova', precoInteira: 48.00, precoBroto: 37.00, ingredientes: 'molho, mussarela, provolone, presunto, molho pesto e azeitona', imagem: '' },
+        { nome: 'Lombinho', precoInteira: 46.00, precoBroto: 36.00, ingredientes: 'molho, mussarela, lombinho, provolone, azeitona e orégano', imagem: '' },
+        { nome: 'Marguerita', precoInteira: 40.00, precoBroto: 30.00, ingredientes: 'molho, mussarela, parmesão, tomate, azeitona e manjericão', imagem: '' },
+        { nome: 'Mussarela', precoInteira: 38.00, precoBroto: 29.00, ingredientes: 'molho, mussarela, tomate, azeitona e orégano', imagem: '' },
+        { nome: 'Peperonni', precoInteira: 49.00, precoBroto: 39.00, ingredientes: 'molho, mussarela, peperonni e azeitona', imagem: '' },
+        { nome: 'Pomodoro', precoInteira: 44.00, precoBroto: 34.00, ingredientes: 'molho, parmesão, alho frito, tomate e orégano', imagem: '' },
+        { nome: 'Potatosa', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'molho, batata, parmesão, calabresa, catupiry, azeitona sem caroço e orégano', imagem: '' },
+        { nome: 'Portuguesa', precoInteira: 50.00, precoBroto: 40.00, ingredientes: 'molho, mussarela, presunto, ovo cozido, ervilha, tomate, azeitona sem caroço e orégano', imagem: '' },
+        { nome: 'Rúcula e Tomate Seco', precoInteira: 46.00, precoBroto: 36.00, ingredientes: 'molho, mussarela, rúcula, tomate seco, azeitona e orégano', imagem: '' },
+        { nome: 'Toscana', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'molho, mussarela, linguiça calabresa moída, tomate, azeitona e orégano', imagem: '' },
         // Pizzas Doces/Especiais
-        { nome: 'Anita e Garibaldi', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'parmesão e goiabada' },
-        { nome: 'Banana', precoInteira: 41.00, precoBroto: 31.00, ingredientes: 'banana, açúcar, doce de leite e canela' },
+        { nome: 'Anita e Garibaldi', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'parmesão e goiabada', imagem: '' },
+        { nome: 'Banana', precoInteira: 41.00, precoBroto: 31.00, ingredientes: 'banana, açúcar, doce de leite e canela', imagem: '' },
       ],
       // Broto e Calzone usam a lista de pizzas, mas o preço Broto/Calzone (precoBroto)
       broto: null, 
@@ -412,7 +526,7 @@
           nome: 'Guaraná Antarctica 2L', 
           preco: 18.00, 
           ingredientes: 'Refrigerante',
-          imagem: '' // Sem imagem específica fornecida
+          imagem: '' 
         }, 
         { 
           nome: 'Guaraná Kuat 2L', 
@@ -424,13 +538,13 @@
           nome: 'HEINEKEN', 
           preco: 8.00, 
           ingredientes: 'Cerveja',
-          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1v7SvnOcwHHkrI_kA8IcE3s4p-_GHbv725ne7hKm5M48nd_asbsQZrWKs3Kfo6rj5O3kh6P2J-WkJhxjqBUhrcp6FnYV4agrnKc5W41ZrYq3aytU_iRfF1FJxwCgN9MfATSd1BbRTaL77kbLswzqslfn2xuB-aKTZ3Cs3HrpI7AouquBNIPUpP56hUhsJ/s1000/16195-heineken-lata-269ml-normal-8un.20250923144026.png'
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1v7SvnOcwHHkrI_kA8IcE3s4p-_GHbv725ne7hKm5M48nd_asbsZZrWKs3Kfo6rj5O3kh6P2J-WkJhxjqBUhrcp6FnYV4agrnKc5W41ZrYq3aytU_iRfF1FJxwCgN9MfATSd1BbRTaL77kbLswzqslfn2xuB-aKTZ3Cs3HrpI7AouquBNIPUpP56hUhsJ/s1000/16195-heineken-lata-269ml-normal-8un.20250923144026.png'
         },
       ],
       ingredientes: [
-        { nome: 'Ingrediente Extra: Bacon', preco: 5.00, ingredientes: 'Adicione bacon extra ao seu pedido.' },
-        { nome: 'Borda Recheada: Catupiry', preco: 8.00, ingredientes: 'Borda com recheio de Catupiry original.' },
-        { nome: 'Borda Recheada: Chocolate', preco: 10.00, ingredientes: 'Borda recheada com chocolate.' },
+        { nome: 'Ingrediente Extra: Bacon', preco: 5.00, ingredientes: 'Adicione bacon extra ao seu pedido.', imagem: '' },
+        { nome: 'Borda Recheada: Catupiry', preco: 8.00, ingredientes: 'Borda com recheio de Catupiry original.', imagem: '' },
+        { nome: 'Borda Recheada: Chocolate', preco: 10.00, ingredientes: 'Borda recheada com chocolate.', imagem: '' },
       ]
     };
 
@@ -445,19 +559,23 @@
       categoriaAtual = categoria;
       const subnav = document.querySelector('.subnav');
       
-      if (categoria === 'pizza') {
+      // Habilita ou desabilita os botões Inteira/Meia
+      if (categoria === 'pizza' || categoria === 'broto') {
         subnav.style.display = 'flex';
         document.getElementById('btn-inteira').classList.add('active');
         document.getElementById('btn-meia').classList.remove('active');
         mostrar('inteira');
       } else {
         subnav.style.display = 'none'; 
-        mostrar('inteira'); 
+        mostrar('inteira'); // 'inteira' é só um nome de tipo, não implica pizza inteira aqui
       }
     }
 
     function mostrar(tipo, element) {
-        modoMeia = categoriaAtual === 'pizza' && tipo === 'meia';
+        // Verifica se a categoria atual suporta Meia-a-meia
+        const suportaMeia = categoriaAtual === 'pizza' || categoriaAtual === 'broto';
+        modoMeia = suportaMeia && tipo === 'meia';
+
         const carouselWrapper = document.getElementById('carousel-wrapper');
         carouselWrapper.innerHTML = ''; 
         saboresSelecionadosMeia = [];
@@ -469,11 +587,15 @@
 
         // Atualiza o Título
         let titleElement = document.getElementById('sabores').querySelector('h2');
-        let titleText = categoriaAtual.charAt(0).toUpperCase() + categoriaAtual.slice(1);
-        if (categoriaAtual === 'pizza') {
-            titleText = `Pizzas - ${modoMeia ? 'Meia-a-meia' : 'Inteira'}`;
-        } else if (categoriaAtual === 'broto' || categoriaAtual === 'calzone') {
-            titleText = `${titleText} (Opções de Pizza)`;
+        let baseTitle = categoriaAtual.charAt(0).toUpperCase() + categoriaAtual.slice(1);
+        
+        if (suportaMeia) {
+            baseTitle = (categoriaAtual === 'broto' ? 'Brotos' : 'Pizzas');
+            titleText = `${baseTitle} - ${modoMeia ? 'Meia-a-meia' : (categoriaAtual === 'broto' ? 'Broto (Inteira)' : 'Inteira')}`;
+        } else if (categoriaAtual === 'calzone') {
+            titleText = `Calzone (Opções de Pizza)`;
+        } else {
+            titleText = baseTitle;
         }
         titleElement.textContent = titleText;
 
@@ -481,7 +603,6 @@
         // Determina a lista de itens a exibir
         let itensDaCategoria = [];
         if (categoriaAtual === 'broto' || categoriaAtual === 'calzone' || categoriaAtual === 'pizza') {
-            // Usa a lista de pizzas para Broto e Calzone, mas o preço será o Broto/Calzone
             itensDaCategoria = cardapio.pizza;
         } else {
             itensDaCategoria = cardapio[categoriaAtual] || [];
@@ -500,12 +621,12 @@
                 precoExibido = precoOutro; 
             }
             
-            // Lógica para Imagem (somente se item.imagem existir)
+            // Lógica para Imagem
             const itemImage = item.imagem ? `<img src="${item.imagem}" alt="${item.nome}" class="item-image">` : '';
 
             // Ajusta o texto do botão
             let buttonText = 'Adicionar';
-            if (categoriaAtual === 'pizza' && modoMeia) {
+            if (suportaMeia && modoMeia) {
                 buttonText = 'Escolher 1/2';
             } else if (categoriaAtual === 'ingredientes') {
                 buttonText = 'Adicionar Extra';
@@ -555,24 +676,30 @@
 
     function adicionar(nome, precoInteira, precoBroto, precoOutro) {
       
-      if (categoriaAtual === 'pizza' && modoMeia) {
+      const isMeia = categoriaAtual === 'pizza' || categoriaAtual === 'broto';
+
+      if (isMeia && modoMeia) {
+        // Usa o preço de Broto se a categoria for Broto, senão usa o de Pizza
+        const precoBase = categoriaAtual === 'broto' ? precoBroto : precoInteira; 
+
         // Lógica Meia-a-meia
         if (saboresSelecionadosMeia.length < 2) {
-          saboresSelecionadosMeia.push({ nome, preco: precoInteira }); 
+          saboresSelecionadosMeia.push({ nome, preco: precoBase }); 
           showToast(`Sabor ${nome} adicionado! Escolha o segundo sabor.`);
           
           if (saboresSelecionadosMeia.length === 2) {
             const [sabor1, sabor2] = saboresSelecionadosMeia;
             const precoFinal = Math.max(sabor1.preco, sabor2.preco);
+            const tipoItem = categoriaAtual === 'broto' ? 'Broto Meia-a-meia' : 'Pizza Meia-a-meia';
             
             carrinhoItens.push({ 
                 nome: `1/2 ${sabor1.nome} & 1/2 ${sabor2.nome}`, 
                 preco: precoFinal, 
-                tipo: 'Pizza Meia-a-meia', 
+                tipo: tipoItem, 
                 qtde: 1 
             });
             renderizarCarrinho();
-            showToast(`Meia ${sabor1.nome} e Meia ${sabor2.nome} adicionadas. Total: R$ ${precoFinal.toFixed(2)}.`);
+            showToast(`Meia ${sabor1.nome} e Meia ${sabor2.nome} (${tipoItem}) adicionadas. Total: R$ ${precoFinal.toFixed(2)}.`);
             saboresSelecionadosMeia = [];
             toggleCarrinho(true); 
           }
@@ -628,16 +755,22 @@
 
         lista.innerHTML = '';
         if (carrinhoItens.length === 0) {
-            lista.innerHTML = '<li id="empty-cart-message">O carrinho está vazio.</li>';
+            lista.innerHTML = '<li id="empty-cart-message" style="text-align: center; color: #777;">O carrinho está vazio.</li>';
         } else {
             carrinhoItens.forEach((item, index) => {
                 const li = document.createElement('li');
+                li.style.display = 'flex';
+                li.style.justifyContent = 'space-between';
+                li.style.alignItems = 'center';
                 li.innerHTML = `
-                    <span style="font-weight: bold;">${item.nome}</span> 
-                    <span style="float: right;">R$ ${item.preco.toFixed(2)} 
-                        <button onclick="removerItem(${index})" style="background: var(--cor-principal); color: #fff; border: none; padding: 2px 5px; margin-left: 5px; cursor: pointer; border-radius: 3px; font-size: 0.8em; line-height: 1;">X</button>
-                    </span>
-                    <br><small style="color:#777;">(${item.tipo})</small>
+                    <div style="flex: 1;">
+                        <span style="font-weight: bold;">${item.nome}</span> 
+                        <br><small style="color:#777;">(${item.tipo})</small>
+                    </div>
+                    <div style="flex-shrink: 0; display: flex; align-items: center;">
+                        <span style="font-weight: bold; margin-right: 10px;">R$ ${item.preco.toFixed(2)}</span>
+                        <button onclick="removerItem(${index})" style="background: var(--cor-principal); color: #fff; border: none; padding: 2px 5px; cursor: pointer; border-radius: 3px; font-size: 0.8em; line-height: 1;">X</button>
+                    </div>
                 `;
                 lista.appendChild(li);
                 subtotal += item.preco;
@@ -798,7 +931,7 @@
       msg += `\n========================\n`;
       msg += `*Agradecemos a preferência!*`;
 
-      const numero = '5511993407322'; // Número de exemplo (altere para o seu número)
+      const numero = '5511993407322'; // Número de exemplo
       const texto = encodeURIComponent(msg);
       window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
     }
