@@ -18,13 +18,12 @@
       --cor-fundo-cardapio: rgba(0, 0, 0, 0.8); /* Fundo mais escuro para visibilidade */
       --cor-texto: #fff;
       --cor-botao-adicionar: #38c172;
-      --cor-botoes-tamanho: #f0ad4e;
       --clr: var(--cor-principal); 
       --bg: #fff;
       --icon-inactive: #999;
     }
 
-    /* Base e Fundo (com o link atualizado) */
+    /* Base e Fundo */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family:"Poppins",sans-serif; }
     body {
       background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtlAIqbNWtq6dQL3X3N_TgGBe8Eul0udZm-YlzXxTFbkbo3sBrpMm6RJ3Pm76fv5PV7rgEGEYSkA_1l_8bJ6AA-YnRZWrtHW1m1PjLsH_Wpjb-FCto68f_a-bJc-sysKvbkXIkASwWP6N3PffP1QDwRY97RHrYiFj_cD2O1MorFgqpYwojgAZeks8pws0O/s2400/20250927_014811.jpg') no-repeat center center fixed;
@@ -33,7 +32,7 @@
       padding-bottom: 90px;
     }
 
-    /* Header e Logo (com o novo link) */
+    /* Header e Logo */
     header { 
       text-align: center; 
       padding: 15px 10px;
@@ -67,7 +66,40 @@
       margin: 0 auto;
     }
 
-    /* Carrossel Swiper 3D (Visibilidade) */
+    /* Títulos e Subnavegação */
+    #sabores h2 {
+        color: var(--cor-principal);
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    }
+    .subnav {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        width: 100%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .subnav button {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--cor-texto);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.9em;
+    }
+    .subnav button.active {
+        background-color: var(--cor-principal);
+        color: var(--cor-texto);
+        box-shadow: 0 0 10px rgba(255, 60, 60, 0.5);
+    }
+    
+    /* Carrossel Swiper 3D */
     .swiper {
         width: 100%;
         height: 450px; 
@@ -109,11 +141,18 @@
       transition: background-color 0.2s;
       margin-top: 10px;
     }
-    .swiper-slide button:hover {
-      background-color: #31a462;
+    
+    /* Novo estilo para imagens no slide (Bebidas) */
+    .swiper-slide .item-image {
+        max-width: 80%;
+        max-height: 120px; 
+        height: auto;
+        margin: 10px auto;
+        display: block;
+        object-fit: contain;
     }
 
-    /* Menu de Navegação */
+    /* Menu de Navegação (Inferior) */
     .navigation {
       width: 100%; 
       height: 80px; 
@@ -127,57 +166,7 @@
       align-items: center; 
       justify-content: center;
     }
-    .navigation ul {
-      display: flex; 
-      width: 100%; 
-      max-width: 600px; 
-      justify-content: space-around; 
-      align-items: center;
-      list-style: none;
-    }
-    .navigation ul li {
-      list-style: none;
-      width: 70px;
-      height: 100%;
-      position: relative;
-    }
-    .navigation ul li a {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      text-align: center;
-      font-weight: 500;
-      text-decoration: none;
-      color: var(--icon-inactive);
-    }
-    .navigation ul li a .icon {
-        font-size: 1.7em;
-        line-height: 70px;
-        transition: 0.5s;
-    }
-    .navigation ul li.active a .icon {
-        color: var(--clr);
-        transform: translateY(-5px);
-    }
-    .navigation ul li a .text {
-        position: absolute;
-        color: var(--clr);
-        font-weight: 400;
-        font-size: 0.75em;
-        letter-spacing: 0.05em;
-        transition: 0.5s;
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    .navigation ul li.active a .text {
-        opacity: 1;
-        transform: translateY(10px);
-    }
-
-    /* Carrinho Modal */
+    /* Estilos do carrinho e utilidades (toast, alert) - Mantidos do código anterior */
     #carrinho-lateral {
         position: fixed;
         top: 0;
@@ -202,50 +191,6 @@
         max-height: 90vh;
         overflow-y: auto;
     }
-    #carrinho-lista {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 20px;
-        border-top: 1px solid #ddd;
-        padding-top: 10px;
-    }
-    #carrinho-lista li {
-        padding: 8px 0;
-        border-bottom: 1px dashed #eee;
-        font-size: 0.95em;
-    }
-    #resumo-valores {
-        border-top: 2px solid var(--cor-principal);
-        padding-top: 10px;
-        margin-top: 10px;
-    }
-    #resumo-valores p {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 5px;
-        font-size: 1em;
-    }
-    #resumo-valores h4 {
-        display: flex;
-        justify-content: space-between;
-        color: var(--cor-principal);
-        font-size: 1.5em;
-        margin-top: 10px;
-    }
-    .botao-whatsapp {
-        background: #25d366;
-        color: white;
-        width: 100%;
-        padding: 12px;
-        border: none;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 1.1em;
-        margin-top: 20px;
-    }
-    
-    /* Toast Notification */
     #toast-notification {
       visibility: hidden;
       min-width: 250px;
@@ -268,20 +213,13 @@
       visibility: visible;
       opacity: 1;
     }
-
-    /* Media Query Principal para Responsividade (Desktop) */
-    @media (min-width: 900px) {
-        .main-content {
-            flex-direction: row; 
-        }
-    }
   </style>
   </head>
 <body>
 
   <header>
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png" alt="Logo Pizzaria Vitorelli">
-    <h1>Cardápio</h1>
+    <h1>Cardápio Digital</h1>
   </header>
   
   <div class="main-content">
@@ -338,7 +276,6 @@
               <option value="Paiol/KM 50">Paiol/KM 70 (R$ 7,00)</option>
               <option value="Green Hills">Green Hills (R$ 10,00)</option>
               <option value="Trailer Club Gaivota">Trailer Club Gaivota (R$ 10,00)</option>
-              <option value="Consultar Cobertura">Consultar Cobertura</option>
             </select>
           </div>
 
@@ -368,10 +305,10 @@
   <div id="toast-notification"></div>
 
   <div id="custom-alert-overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 4000; justify-content: center; align-items: center;">
-    <div id="custom-alert-box">
-      <h4 id="custom-alert-title"></h4>
-      <p id="custom-alert-message"></p>
-      <button onclick="document.getElementById('custom-alert-overlay').style.display='none'">OK</button>
+    <div id="custom-alert-box" style="background: white; padding: 25px; border-radius: 10px; max-width: 80%; text-align: center; color: #333;">
+      <h4 id="custom-alert-title" style="color: var(--cor-principal); margin-bottom: 10px;"></h4>
+      <p id="custom-alert-message" style="margin-bottom: 15px;"></p>
+      <button onclick="document.getElementById('custom-alert-overlay').style.display='none'" style="background: var(--cor-principal); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">OK</button>
     </div>
   </div>
   
@@ -424,7 +361,7 @@
     let mySwiper = null; 
     let carrinhoItens = []; 
 
-    // DADOS DO CARDÁPIO (ATUALIZADOS)
+    // DADOS DO CARDÁPIO (ATUALIZADOS E COMPLETOS)
     const cardapio = {
       pizza: [
         { nome: '4 Queijos', precoInteira: 47.00, precoBroto: 37.00, ingredientes: 'molho, mussarela, parmesão, provolone, gorgonzola, azeitona e orégano' },
@@ -455,20 +392,46 @@
         { nome: 'Anita e Garibaldi', precoInteira: 45.00, precoBroto: 35.00, ingredientes: 'parmesão e goiabada' },
         { nome: 'Banana', precoInteira: 41.00, precoBroto: 31.00, ingredientes: 'banana, açúcar, doce de leite e canela' },
       ],
-      // Broto e Calzone usam a mesma lista de sabores/preços (precoBroto)
+      // Broto e Calzone usam a lista de pizzas, mas o preço Broto/Calzone (precoBroto)
       broto: null, 
       calzone: null, 
       bebidas: [
-        { nome: 'Coca-Cola 2L', preco: 18.00, ingredientes: 'Refrigerante' },
-        { nome: 'Coca-Cola Zero 2L', preco: 18.00, ingredientes: 'Refrigerante' },
-        { nome: 'Guaraná Antarctica 2L', preco: 18.00, ingredientes: 'Refrigerante' },
-        { nome: 'Guaraná Kuat 2L', preco: 12.00, ingredientes: 'Refrigerante' },
-        { nome: 'HEINEKEN', preco: 8.00, ingredientes: 'Cerveja' },
+        { 
+          nome: 'Coca-Cola 2L', 
+          preco: 18.00, 
+          ingredientes: 'Refrigerante', 
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg73_umj1G0CDt2HKB0pbp-uZM1biesihbgshH1vxwn62XtpHt2fPcNK38vX0OUjSLzhdA0TdW0VP5nd6IJmxNvKzJDo6YrE5dTw94RN0cu4fCfFl520Sc5E2D1lzU-GSvrOdV1EKx-c0nZF6_FhOa5ch1K5O8BrC2K4v14gbfY14CQt8YYGrfqLWIOXn9p/s800/930238-800-auto.png'
+        },
+        { 
+          nome: 'Coca-Cola Zero 2L', 
+          preco: 18.00, 
+          ingredientes: 'Refrigerante', 
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg73_umj1G0CDt2HKB0pbp-uZM1biesihbgshH1vxwn62XtpHt2fPcNK38vX0OUjSLzhdA0TdW0VP5nd6IJmxNvKzJDo6YrE5dTw94RN0cu4fCfFl520Sc5E2D1lzU-GSvrOdV1EKx-c0nZF6_FhOa5ch1K5O8BrC2K4v14gbfY14CQt8YYGrfqLWIOXn9p/s800/930238-800-auto.png'
+        },
+        { 
+          nome: 'Guaraná Antarctica 2L', 
+          preco: 18.00, 
+          ingredientes: 'Refrigerante',
+          imagem: '' // Sem imagem específica fornecida
+        }, 
+        { 
+          nome: 'Guaraná Kuat 2L', 
+          preco: 12.00, 
+          ingredientes: 'Refrigerante',
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGLREGHN-MyUOkhZn8kkpY9EojpZ3MJaddE_uPm65r3ALsVfRaAk1jRANRwZnG5fFviR2lP_9ARDnN6gCnLAViEvL_FqSxEtdzqr2r-tuAN8mYUpY10W0XJ-W-yXHSce2d_QxA9Qd04x-FzD0qEEMTqJQliuU6042pmWO0I6vcGtGgsGZUCZO6xE6nloYA/s424/Clipped_image_20251009_052602.png'
+        },
+        { 
+          nome: 'HEINEKEN', 
+          preco: 8.00, 
+          ingredientes: 'Cerveja',
+          imagem: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg1v7SvnOcwHHkrI_kA8IcE3s4p-_GHbv725ne7hKm5M48nd_asbsQZrWKs3Kfo6rj5O3kh6P2J-WkJhxjqBUhrcp6FnYV4agrnKc5W41ZrYq3aytU_iRfF1FJxwCgN9MfATSd1BbRTaL77kbLswzqslfn2xuB-aKTZ3Cs3HrpI7AouquBNIPUpP56hUhsJ/s1000/16195-heineken-lata-269ml-normal-8un.20250923144026.png'
+        },
       ],
       ingredientes: [
-        { nome: 'Ingrediente Extra: Bacon Meia', preco: 5.00, ingredientes: 'Adicione bacon extra ao seu pedido.' },
-        { nome: 'Ingrediente Extra: Bacon Inteira', preco: 8.00, ingredientes: 'Adicione bacon extra ao seu pedido.' },
-        ]
+        { nome: 'Ingrediente Extra: Bacon', preco: 5.00, ingredientes: 'Adicione bacon extra ao seu pedido.' },
+        { nome: 'Borda Recheada: Catupiry', preco: 8.00, ingredientes: 'Borda com recheio de Catupiry original.' },
+        { nome: 'Borda Recheada: Chocolate', preco: 10.00, ingredientes: 'Borda recheada com chocolate.' },
+      ]
     };
 
     // ===================================================
@@ -488,9 +451,7 @@
         document.getElementById('btn-meia').classList.remove('active');
         mostrar('inteira');
       } else {
-        // Esconde os botões de opção Meia-a-meia para Broto, Calzone, Bebidas e Extras
         subnav.style.display = 'none'; 
-        // Chama mostrar para popular o carrossel (o parâmetro 'tipo' será ignorado)
         mostrar('inteira'); 
       }
     }
@@ -508,20 +469,19 @@
 
         // Atualiza o Título
         let titleElement = document.getElementById('sabores').querySelector('h2');
+        let titleText = categoriaAtual.charAt(0).toUpperCase() + categoriaAtual.slice(1);
         if (categoriaAtual === 'pizza') {
-            titleElement.textContent = `Pizzas - ${modoMeia ? 'Meia-a-meia' : 'Inteira'}`;
-        } else {
-            // Se for Broto ou Calzone, usa a lista de pizzas mas exibe o preço Broto/Calzone
-            let titleText = categoriaAtual.charAt(0).toUpperCase() + categoriaAtual.slice(1);
-            if (categoriaAtual === 'broto' || categoriaAtual === 'calzone') {
-                titleText = `${titleText} (Opções)`;
-            }
-            titleElement.textContent = titleText;
+            titleText = `Pizzas - ${modoMeia ? 'Meia-a-meia' : 'Inteira'}`;
+        } else if (categoriaAtual === 'broto' || categoriaAtual === 'calzone') {
+            titleText = `${titleText} (Opções de Pizza)`;
         }
+        titleElement.textContent = titleText;
+
 
         // Determina a lista de itens a exibir
         let itensDaCategoria = [];
         if (categoriaAtual === 'broto' || categoriaAtual === 'calzone' || categoriaAtual === 'pizza') {
+            // Usa a lista de pizzas para Broto e Calzone, mas o preço será o Broto/Calzone
             itensDaCategoria = cardapio.pizza;
         } else {
             itensDaCategoria = cardapio[categoriaAtual] || [];
@@ -540,6 +500,9 @@
                 precoExibido = precoOutro; 
             }
             
+            // Lógica para Imagem (somente se item.imagem existir)
+            const itemImage = item.imagem ? `<img src="${item.imagem}" alt="${item.nome}" class="item-image">` : '';
+
             // Ajusta o texto do botão
             let buttonText = 'Adicionar';
             if (categoriaAtual === 'pizza' && modoMeia) {
@@ -553,6 +516,7 @@
                 <div class="swiper-slide">
                     <div>
                         <h4>${item.nome}</h4>
+                        ${itemImage}
                         <p>${item.ingredientes}</p>
                     </div>
                     <div>
@@ -625,7 +589,7 @@
             preco = precoBroto; 
             tipoItem = 'Broto';
         } else if (categoriaAtual === 'calzone') {
-            preco = precoBroto; // Calzone tem o mesmo preço Broto
+            preco = precoBroto; 
             tipoItem = 'Calzone';
         } else if (categoriaAtual === 'bebidas') {
              preco = precoOutro; 
@@ -834,7 +798,7 @@
       msg += `\n========================\n`;
       msg += `*Agradecemos a preferência!*`;
 
-      const numero = '5511993407322'; // Número de exemplo
+      const numero = '5511993407322'; // Número de exemplo (altere para o seu número)
       const texto = encodeURIComponent(msg);
       window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
     }
