@@ -17,7 +17,7 @@ let carrinho = {}; // { produtoId: { item: {}, quantidade: 0 } }
 function openCart() {
     document.getElementById('cart-drawer').classList.add('open');
     document.getElementById('cart-overlay').classList.add('active');
-    renderizarCarrinho(); // Garante que o conteúdo está atualizado ao abrir
+    renderizarCarrinho(); 
 }
 
 function closeCart() {
@@ -26,7 +26,7 @@ function closeCart() {
 }
 
 // ===============================================
-// FUNÇÕES DE CARREGAMENTO DE DADOS (CORRIGIDO)
+// FUNÇÕES DE CARREGAMENTO DE DADOS E CONFIGURAÇÃO
 // ===============================================
 
 async function carregarDados() {
@@ -41,11 +41,8 @@ async function carregarDados() {
         }
 
         const result = await response.json();
-        
-        // 🚨 CORREÇÃO: Lendo a estrutura correta: result.record.data
         const dataRecord = result.record.data || result.record;
         
-        // Limpa e atribui novos dados
         Object.keys(dadosConfiguracao).forEach(key => delete dadosConfiguracao[key]);
         Object.assign(dadosConfiguracao, dataRecord);
 
@@ -53,8 +50,11 @@ async function carregarDados() {
              throw new Error("Dados de configuração inválidos ou Bin vazio.");
         }
 
+        // NOVO: Renderiza o menu antes do cardápio
+        const produtos = dadosConfiguracao.cardapio || [];
+        renderizarMenuCategorias(produtos);
+        renderizarCardapio(produtos); 
         aplicarConfiguracoes();
-        renderizarCardapio(dadosConfiguracao.cardapio || []);
         
     } catch (error) {
         console.error("Erro ao carregar dados do JSONBin:", error);
@@ -63,7 +63,6 @@ async function carregarDados() {
 }
 
 function aplicarConfiguracoes() {
-    // 🚨 CORREÇÃO DE SEGURANÇA: Garante que as variáveis existem
     const institucional = dadosConfiguracao.institucional || {};
     const operacionais = dadosConfiguracao.operacionais || {};
     const layout = dadosConfiguracao.layout || {};
@@ -77,7 +76,12 @@ function aplicarConfiguracoes() {
     
     // Aplica dados institucionais e status
     document.title = institucional.nome || 'Cardápio Digital';
-    document.getElementById('loja-nome').textContent = institucional.nome || 'Nome da Loja'; // CORRIGIDO AQUI
+    
+    // CORRIGIDO: Agora mira o H1 específico (header-loja-nome)
+    const nomeLojaHeader = document.getElementById('header-loja-nome');
+    if (nomeLojaHeader) {
+        nomeLojaHeader.textContent = institucional.nome || 'Nome da Loja';
+    }
     
     const logoElement = document.getElementById('loja-logo');
     if (logoElement) {
@@ -94,20 +98,80 @@ function aplicarConfiguracoes() {
 
 
 // ===============================================
+// FUNÇÕES DE FILTRO E RENDERIZAÇÃO DO MENU (NOVO)
+// ===============================================
+
+function extrairCategorias(produtos) {
+    const categorias = new Set(['TODOS']);
+    produtos.forEach(p => {
+        if (p.categoria) {
+            // Garante que a primeira letra é maiúscula para exibição
+            const catFormatada = p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1);
+            categorias.add(catFormatada);
+        }
+    });
+    return Array.from(categorias);
+}
+
+function renderizarMenuCategorias(produtos) {
+    const categorias = extrairCategorias(produtos);
+    const menu = document.getElementById('category-menu');
+    menu.innerHTML = '';
+
+    categorias.forEach(categoria => {
+        const button = document.createElement('button');
+        button.className = 'category-button';
+        button.textContent = categoria;
+        button.setAttribute('data-category', categoria);
+        button.onclick = () => filtrarCardapio(categoria, button);
+        menu.appendChild(button);
+    });
+    
+    // Ativa o botão 'TODOS' por padrão
+    const todosButton = menu.querySelector('[data-category="TODOS"]');
+    if (todosButton) {
+        todosButton.classList.add('active');
+    }
+}
+
+function filtrarCardapio(categoria, clickedButton) {
+    // 1. Remove 'active' de todos os botões
+    document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+    
+    // 2. Adiciona 'active' ao botão clicado
+    clickedButton.classList.add('active');
+
+    // 3. Filtra e renderiza
+    let produtosParaRenderizar = dadosConfiguracao.cardapio || [];
+
+    if (categoria !== 'TODOS') {
+        // Filtra comparando a categoria do produto com a categoria selecionada (ignora case)
+        produtosParaRenderizar = produtosParaRenderizar
+            .filter(p => p.categoria.toLowerCase() === categoria.toLowerCase());
+    }
+
+    renderizarCardapio(produtosParaRenderizar);
+}
+
+
+// ===============================================
 // FUNÇÕES DE RENDERIZAÇÃO DO CARDÁPIO
 // ===============================================
 
 function renderizarCardapio(produtos) {
-    // ... (Esta função permanece inalterada)
     if (produtos.length === 0) {
-        cardapioContainer.innerHTML = '<p class="text-center p-8 text-white">Nenhum produto disponível no momento.</p>';
+        cardapioContainer.innerHTML = '<p class="text-center p-8 text-white">Nenhum produto disponível nesta categoria.</p>';
         return;
     }
 
     cardapioContainer.innerHTML = '';
     let categoriaAtual = '';
 
-    produtos.forEach(produto => {
+    // Garante que o array está ordenado pela categoria para que o agrupamento funcione
+    const produtosOrdenados = [...produtos].sort((a, b) => a.categoria.localeCompare(b.categoria));
+
+
+    produtosOrdenados.forEach(produto => {
         // Se a categoria mudou, adiciona um novo título
         if (produto.categoria !== categoriaAtual) {
             categoriaAtual = produto.categoria;
@@ -143,6 +207,7 @@ function renderizarCardapio(produtos) {
 
 // ===============================================
 // FUNÇÕES DE LÓGICA DO CARRINHO (COMANDA INTELIGENTE)
+// (Permanece como no código anterior)
 // ===============================================
 
 function calcularTotais() {
@@ -209,7 +274,7 @@ function renderizarCarrinho() {
     whatsappButton.className = `whatsapp-fixed ${totalItens > 0 ? 'bg-red-500' : 'bg-green-600'}`;
     whatsappButton.innerHTML = totalItens > 0 
         ? `<i class="fas fa-shopping-basket"></i> Abrir Comanda (${totalItens})`
-        : `<i class="fab fa-whatsapp"></i> Fazer Pedido`; // Mensagem inicial
+        : `<i class="fab fa-whatsapp"></i> Fazer Pedido`;
 }
 
 function adicionarAoCarrinho(id) {
