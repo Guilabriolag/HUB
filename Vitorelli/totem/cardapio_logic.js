@@ -16,15 +16,36 @@ let currentOrderStep = 'options'; // NOVO: Controla o passo atual: 'options', 'r
 // ===============================================
 
 function openOrderDrawer() {
+    console.log("Tentativa de abrir a Comanda.");
     const { totalItens } = calcularTotais();
+
     if (totalItens === 0) {
+         // Comportamento normal se o carrinho estiver vazio
          alert("Seu carrinho está vazio. Adicione itens antes de prosseguir com o pedido.");
          return;
     }
-    document.getElementById('order-drawer').classList.add('open');
-    document.getElementById('order-overlay').classList.add('active');
-    renderizarCarrinho(); // Garante que o resumo está atualizado
-    renderOrderStep();
+    
+    // Verifica se os elementos críticos do HTML existem (Ajuste de robustez)
+    const drawer = document.getElementById('order-drawer');
+    const overlay = document.getElementById('order-overlay');
+    
+    if (!drawer || !overlay) {
+        alert("Erro fatal: Componentes do pedido (Drawer/Overlay) não encontrados no HTML. Certifique-se de que o arquivo index.html (Totem) foi atualizado corretamente.");
+        console.error("ERRO: Elemento 'order-drawer' ou 'order-overlay' está faltando no HTML.");
+        return;
+    }
+
+    drawer.classList.add('open');
+    overlay.classList.add('active');
+    
+    // Tenta renderizar o conteúdo do drawer
+    try {
+        renderizarCarrinho(); 
+        renderOrderStep();
+    } catch (e) {
+        console.error("Erro durante a renderização do pedido (função openOrderDrawer):", e);
+        alert("Erro na renderização do painel do pedido. Por favor, verifique o Console do navegador (F12) para mais detalhes.");
+    }
 }
 
 function closeOrderDrawer() {
@@ -273,7 +294,7 @@ function renderizarCarrinho() {
     // 1. Obtém a taxa de entrega atual (se estiver no passo de Delivery e com bairro selecionado)
     let taxaEntregaAtual = 0.00;
     const selectBairro = document.getElementById('delivery-bairro');
-    if (currentOrderStep === 'delivery' && selectBairro.value) {
+    if (currentOrderStep === 'delivery' && selectBairro && selectBairro.value) {
          const selectedOption = selectBairro.options[selectBairro.selectedIndex];
          taxaEntregaAtual = parseFloat(selectedOption.getAttribute('data-taxa')) || 0.00;
     }
@@ -340,8 +361,11 @@ function renderizarCarrinho() {
 }
 
 function adicionarAoCarrinho(id) {
-    const produto = dadosConfiguracao.cardapio.find(p => p.id === id);
-    if (!produto || !produto.disponivel) return;
+    const produto = dadosConfiguracao.cardapio?.find(p => p.id === id); // Uso de optional chaining para segurança
+    if (!produto || !produto.disponivel) {
+        console.warn(`Produto ${id} não encontrado ou indisponível.`);
+        return;
+    }
 
     if (carrinho[id]) {
         carrinho[id].quantidade += 1;
@@ -349,7 +373,14 @@ function adicionarAoCarrinho(id) {
         carrinho[id] = { item: produto, quantidade: 1 };
     }
     
-    renderizarCarrinho();
+    console.log(`Produto ${produto.nome} adicionado. Total: ${carrinho[id].quantidade}`);
+
+    try {
+       renderizarCarrinho();
+    } catch(e) {
+        console.error("Erro ao renderizar o carrinho após adição:", e);
+        alert("Erro ao adicionar o item. Recarregue a página e verifique o Console (F12).");
+    }
 }
 
 function mudarQuantidade(id, delta) {
@@ -511,7 +542,7 @@ function getPaymentDetails(type, totalGeral) {
 
 function collectAndSendOrder(tipo) {
     const selectBairro = document.getElementById('delivery-bairro');
-    const taxaEntregaCalculada = tipo === 'delivery' && selectBairro.value 
+    const taxaEntregaCalculada = tipo === 'delivery' && selectBairro && selectBairro.value 
         ? parseFloat(selectBairro.options[selectBairro.selectedIndex].getAttribute('data-taxa')) || 0.00 
         : 0.00;
 
