@@ -527,16 +527,24 @@
                     mostrarStatus('✅ Publicado (Local e Remoto) com Sucesso!', 'bg-green-500');
                     carregarDados();
                 } else {
-                    // Trata erro de forma explícita
+                    // Trata erro de forma explícita e mostra ao usuário
                     const errorText = await response.text();
                     console.error('Erro de API JSONBin:', errorText);
-                    throw new Error(`Erro na API (${response.status}): ${errorText.substring(0, 100)}...`);
+                    const errorMessage = `Erro na API (${response.status}): ${response.statusText}. Resposta do servidor: ${errorText.substring(0, 100)}...`;
+                    
+                    mostrarStatus(`❌ ERRO: Falha ao Publicar Remotamente.`, 'bg-red-500');
+                    alert(`Erro ao publicar. Verifique sua Chave Mestra e Bin ID (Seção 0).\nDetalhes do Erro: ${errorMessage}`);
+                    
+                    // Se o erro for 403 Forbidden, sugere a correção de chave
+                    if (response.status === 403) {
+                         alert('DICA: Erro 403 Forbidden geralmente significa que a Chave Mestra (X-Master-Key) está incorreta ou não tem permissão de escrita (PUT).');
+                    }
                 }
 
             } catch (error) {
                 console.error('Erro ao publicar os dados:', error);
                 mostrarStatus(`❌ ERRO: Falha ao Publicar Remotamente.`, 'bg-red-500');
-                alert(`Erro ao publicar. Verifique sua Chave Mestra e Bin ID (Seção 0). Mensagem: ${error.message}`);
+                alert(`Erro de rede ou conexão. Mensagem: ${error.message}.`);
             }
         }
         
