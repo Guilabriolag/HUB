@@ -37,14 +37,12 @@ async function carregarDadosDoCardapio() {
     try {
         const headers = {};
         if (ACCESS_KEY && ACCESS_KEY.length > 0) {
-            // Essa linha é CRÍTICA se seu Bin for PRIVADO
             headers['X-Access-Key'] = ACCESS_KEY; 
         }
 
         const response = await fetch(JSONBIN_URL + '/latest', {
             method: 'GET',
             headers: headers,
-            // ESSENCIAL para garantir que o navegador não use cache antigo
             cache: 'no-store' 
         });
 
@@ -53,7 +51,6 @@ async function carregarDadosDoCardapio() {
         }
 
         const result = await response.json();
-        // Acessa o objeto principal de dados
         const data = result.record.data || result.record; 
 
         // 1. POPULAÇÃO DAS VARIÁVEIS GLOBAIS
@@ -61,7 +58,7 @@ async function carregarDadosDoCardapio() {
         DADOS_OPERACIONAIS = data.operacionais || {};
         DADOS_LAYOUT = data.layout || {};
         CARDAPIO_DATA = data.cardapio || [];
-        COBERTURA_DATA = DADOS_OPERACIONAIS.cobertura || []; // Array de {bairro, taxa}
+        COBERTURA_DATA = DADOS_OPERACIONAIS.cobertura || [];
         
         // 2. ATUALIZAÇÃO DO LOCAL STORAGE (para tema e status)
         localStorage.setItem(LS_KEYS.PRIMARY_COLOR, DADOS_LAYOUT.corPrimaria || '#007bff');
@@ -75,6 +72,7 @@ async function carregarDadosDoCardapio() {
         
         // 4. RENDERIZAÇÃO
         loadAndApplyTheme(); 
+        handleMedia(); // <--- CHAMA A FUNÇÃO DE MÍDIA
         
         const initialCategory = CARDAPIO_DATA.filter(p => p.disponivel)[0]?.categoria || null;
         if (initialCategory) {
@@ -105,29 +103,56 @@ function loadAndApplyTheme() {
     const root = document.documentElement;
     const corPrimaria = localStorage.getItem(LS_KEYS.PRIMARY_COLOR) || '#007bff';
     const corSecundaria = localStorage.getItem(LS_KEYS.SECONDARY_COLOR) || '#ffc107';
-    const corHeader = localStorage.getItem(LS_KEYS.HEADER_COLOR) || '#FFFFFF'; // Lendo do Storage
+    const corHeader = localStorage.getItem(LS_KEYS.HEADER_COLOR) || '#FFFFFF';
     const status = localStorage.getItem(LS_KEYS.STORE_STATUS) || 'fechado';
     
     // Aplica as variáveis CSS globais
     root.style.setProperty('--cor-primaria', corPrimaria);
     root.style.setProperty('--cor-secundaria', corSecundaria);
+    root.style.setProperty('--cor-botao-carrinho', DADOS_LAYOUT.corBotaoCarrinho || '#25D366');
 
-    // LÓGICA ESPECÍFICA PARA O CABEÇALHO
+    // LOGO
+    const logoElement = document.getElementById('store-logo');
+    if (logoElement && DADOS_INSTITUCIONAIS.urlLogo) {
+        logoElement.src = DADOS_INSTITUCIONAIS.urlLogo;
+    }
+
+    // WHATSAPP LINK
+    const whatsappLink = document.getElementById('whatsapp-number');
+    const whatsappNum = DADOS_INSTITUCIONAIS.telPrincipal || '5511999999999';
+    if (whatsappLink) {
+        const encodedMessage = encodeURIComponent("Olá, gostaria de fazer um pedido...");
+        whatsappLink.href = `https://api.whatsapp.com/send?phone=${whatsappNum}&text=${encodedMessage}`;
+    }
+
+    // CABEÇALHO
     const headerElement = document.querySelector('.main-header');
     if (headerElement) {
         if (corHeader.toUpperCase() === 'TRANSPARENTE') {
             headerElement.style.backgroundColor = 'transparent';
-            headerElement.classList.remove('shadow-md', 'bg-white');
+            headerElement.classList.remove('shadow-md');
             headerElement.classList.add('shadow-none');
         } else {
             headerElement.style.backgroundColor = corHeader;
-            headerElement.classList.remove('shadow-none', 'bg-transparent');
+            headerElement.classList.remove('shadow-none');
             headerElement.classList.add('shadow-md');
         }
     }
 
+    // IMAGEM DE FUNDO
+    const urlFundo = DADOS_LAYOUT.backgroundUrl || null; // Usa backgroundUrl do JSON
+    if (urlFundo && urlFundo.length > 0) {
+        document.body.style.backgroundImage = `url('${urlFundo}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundPosition = 'center';
+    } else {
+        document.body.style.backgroundImage = 'none'; 
+        // Aplica cor de fundo se não houver imagem
+        document.body.style.backgroundColor = DADOS_LAYOUT.corFundo || '#f3f4f6';
+    }
+
     // Atualiza o Status da Loja
-    const statusElement = document.getElementById('status-loja');
     let statusText = 'FECHADO';
     let statusClasses = 'bg-red-500';
 
@@ -139,9 +164,58 @@ function loadAndApplyTheme() {
         statusClasses = 'bg-yellow-500';
     }
     
+    const statusElement = document.getElementById('status-loja');
     if (statusElement) {
         statusElement.textContent = statusText;
         statusElement.className = `status-badge px-3 py-1 rounded-full text-xs font-semibold ${statusClasses} text-white`;
+    }
+}
+
+
+// ===============================================
+// FUNÇÕES DE MÍDIA (MÚSICA)
+// ===============================================
+
+function handleMedia() {
+    const urlMusica = DADOS_LAYOUT.urlMusica || '';
+    // Lendo o campo booleano 'on'/'off'
+    const autoplay = DADOS_LAYOUT.musicaAutoplay === 'on'; 
+    
+    const audioToggle = document.getElementById('audio-toggle');
+    let audio = document.getElementById('background-audio');
+
+    if (urlMusica.length > 0) {
+        audio.src = urlMusica;
+        
+        if (autoplay) {
+            // Tenta dar Play mutado para contornar bloqueios de navegador
+            audio.muted = true;
+            audio.play().catch(e => {
+                console.log('Autoplay bloqueado pelo navegador. Mantenha o ícone.', e);
+            });
+            audioToggle.innerHTML = '<i class="fas fa-volume-mute"></i>'; // Começa mutado
+        } else {
+            audio.pause();
+            audio.muted = false;
+            audioToggle.innerHTML = '<i class="fas fa-volume-up"></i>'; // Começa desmutado, mas parado
+        }
+
+        // Mostrar o botão de toggle e configurar o listener
+        audioToggle.classList.remove('hidden');
+        audioToggle.onclick = () => {
+            audio.muted = !audio.muted;
+            if (audio.muted) {
+                audioToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                audioToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+                audio.play().catch(e => console.log('Erro ao tocar: ', e));
+            }
+        };
+        
+    } else {
+        // Se não houver URL de música, garante que o botão está escondido
+        if (audioToggle) audioToggle.classList.add('hidden');
+        if (audio) audio.pause();
     }
 }
 
@@ -154,7 +228,6 @@ function renderCategoryMenu(activeCategory) {
     const menuContainer = document.getElementById('category-menu');
     if (!menuContainer) return;
     
-    // Extrai categorias únicas dos produtos DISPONÍVEIS
     const availableProducts = CARDAPIO_DATA.filter(p => p.disponivel);
     const categories = [...new Set(availableProducts.map(p => p.categoria).filter(c => c))];
     
@@ -226,7 +299,6 @@ function filterProducts(category) {
 // ===============================================
 
 function addToCart(productId) {
-    // Procura o produto no array de dados vindo do JSONBin
     const product = CARDAPIO_DATA.find(p => p.id === productId);
     if (!product || !product.disponivel) return;
 
@@ -274,8 +346,6 @@ function updateCartUI() {
     cartCount.textContent = totalQty;
     
     // 2. Renderiza a lista de itens
-    // ... (Mantida a lógica do usuário)
-
     if (cart.length === 0) {
         cartList.innerHTML = `<p class="text-center text-gray-500 p-4">Seu carrinho está vazio.</p>`;
     } else {
@@ -392,7 +462,6 @@ function renderBairroOptions() {
     
     select.innerHTML = '<option value="">Selecione seu Bairro...</option>';
     
-    // Itera sobre o array COBERTURA_DATA vindo do JSONBin
     COBERTURA_DATA.forEach(item => {
         if (item.bairro.toLowerCase() !== 'retirada') {
             const option = document.createElement('option');
@@ -406,7 +475,6 @@ function renderBairroOptions() {
 function updateDeliveryTax() {
     const selectedBairro = document.getElementById('delivery-bairro').value;
     
-    // Encontra a taxa no array COBERTURA_DATA
     const selectedCoverage = COBERTURA_DATA.find(item => item.bairro === selectedBairro);
     
     deliveryTax = selectedCoverage ? selectedCoverage.taxa : 0;
@@ -420,14 +488,12 @@ function updateDeliveryTax() {
 function handleFormSubmit(event) {
     event.preventDefault();
     
-    // Verificação de Loja Aberta
     const storeStatus = localStorage.getItem(LS_KEYS.STORE_STATUS);
     if (storeStatus !== 'aberto') {
         alert("A loja está fechada ou em pausa e não está aceitando pedidos no momento.");
         return;
     }
     
-    // Montagem da Mensagem (Mantida a lógica do usuário)
     let mensagem = "";
     let nomeCliente = "";
 
@@ -463,12 +529,10 @@ function handleFormSubmit(event) {
     }
     mensagem += `TOTAL GERAL: R$ ${totalGeral.toFixed(2).replace('.', ',')}\n`;
 
-    // Informação de pagamento
     if (DADOS_INSTITUCIONAIS.msgPagamento) {
         mensagem += `\n*INFORMAÇÃO DE PAGAMENTO:*\n${DADOS_INSTITUCIONAIS.msgPagamento}\n`;
     }
 
-    // Monta o link do WhatsApp
     const whatsappNumber = DADOS_INSTITUCIONAIS.telPrincipal || '5511999999999'; 
     const encodedMessage = encodeURIComponent(mensagem);
     const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
@@ -489,7 +553,7 @@ function handleFormSubmit(event) {
 // ===============================================
 
 function init() {
-    // 1. CARREGA DADOS REMOTOS E RENDERIZA O TEMA/MENU
+    // 1. CARREGA DADOS REMOTOS E RENDERIZA O TEMA/MENU/MÍDIA
     carregarDadosDoCardapio();
     
     // 2. ADICIONA LISTENERS
