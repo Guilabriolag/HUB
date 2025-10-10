@@ -541,6 +541,7 @@
 
             renderizarCardapio();
             closeProductModal();
+            salvarLocalmente(); // Salva no local storage após editar/adicionar
         });
 
         function openProductModal(product = null) {
@@ -590,6 +591,7 @@
                 CARDAPIO_DATA = CARDAPIO_DATA.filter(p => p.id !== id);
                 renderizarCardapio();
                 mostrarStatus('Produto removido.', 'bg-red-500');
+                salvarLocalmente(); // Salva no local storage após remover
             }
         }
         
@@ -642,4 +644,4 @@
         };
     </script>
 </body>
-  </html>
+</html>
