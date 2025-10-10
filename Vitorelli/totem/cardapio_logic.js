@@ -8,73 +8,47 @@ const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
 
 const cardapioContainer = document.getElementById('cardapio-container');
 const dadosConfiguracao = {}; 
-let carrinho = {}; 
+let carrinho = {}; // { produtoId: { item: {}, quantidade: 0 } }
 
 // ===============================================
-// FUNÇÕES DE UTILIDADE E WHATSAPP
+// FUNÇÕES DE UI DO CARRINHO (DRAWER)
 // ===============================================
 
-function criarMensagemWhatsApp() {
-    let mensagem = `Olá, gostaria de fazer um pedido!\n\n*Meu Pedido:*\n`;
-    let total = 0;
-
-    const itensCarrinho = Object.values(carrinho);
-
-    if (itensCarrinho.length === 0) {
-        return "Olá, gostaria de fazer um pedido, mas meu carrinho está vazio!";
-    }
-
-    itensCarrinho.forEach(itemCarrinho => {
-        const { item, quantidade } = itemCarrinho;
-        const subtotal = quantidade * item.preco;
-        total += subtotal;
-        
-        mensagem += `\n- ${quantidade}x ${item.nome} (R$ ${subtotal.toFixed(2).replace('.', ',')})`;
-    });
-
-    mensagem += `\n\n*Total do Pedido: R$ ${total.toFixed(2).replace('.', ',')}*`;
-    
-    // Adiciona a mensagem de pagamento configurada no CMS
-    if (dadosConfiguracao.institucional && dadosConfiguracao.institucional.msgPagamento) {
-        mensagem += `\n\n${dadosConfiguracao.institucional.msgPagamento}`;
-    }
-
-    return encodeURIComponent(mensagem);
+function openCart() {
+    document.getElementById('cart-drawer').classList.add('open');
+    document.getElementById('cart-overlay').classList.add('active');
+    renderizarCarrinho(); // Garante que o conteúdo está atualizado ao abrir
 }
 
-function abrirWhatsApp() {
-    const tel = dadosConfiguracao.institucional.telPrincipal || '5511999998888'; // Use um número padrão se não configurado
-    const mensagem = criarMensagemWhatsApp();
-    window.open(`https://api.whatsapp.com/send?phone=${tel}&text=${mensagem}`, '_blank');
+function closeCart() {
+    document.getElementById('cart-drawer').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('active');
 }
 
-
 // ===============================================
-// FUNÇÕES DE CARREGAMENTO DE DADOS
+// FUNÇÕES DE CARREGAMENTO DE DADOS (CORRIGIDO)
 // ===============================================
 
 async function carregarDados() {
     try {
-        // Exibe o loading e o status inicial
         const statusLoja = document.getElementById('status-loja');
         statusLoja.textContent = 'Carregando Cardápio...';
         
         const response = await fetch(JSONBIN_URL);
         
         if (!response.ok) {
-            // Se falhar o GET, mostra o erro do servidor
             throw new Error(`Falha ao buscar dados: ${response.status} ${response.statusText}`);
         }
 
         const result = await response.json();
         
-        // 🚨 Lendo a estrutura correta: result.record.data
-        // Se a chave "data" não existir, usa o próprio record (compatibilidade)
+        // 🚨 CORREÇÃO: Lendo a estrutura correta: result.record.data
         const dataRecord = result.record.data || result.record;
         
+        // Limpa e atribui novos dados
+        Object.keys(dadosConfiguracao).forEach(key => delete dadosConfiguracao[key]);
         Object.assign(dadosConfiguracao, dataRecord);
 
-        // Se o objeto de configuração estiver vazio, significa que o Bin está vazio ou a leitura falhou.
         if (Object.keys(dadosConfiguracao).length === 0 || !dadosConfiguracao.institucional) {
              throw new Error("Dados de configuração inválidos ou Bin vazio.");
         }
@@ -89,7 +63,10 @@ async function carregarDados() {
 }
 
 function aplicarConfiguracoes() {
-    const { institucional, operacionais, layout } = dadosConfiguracao;
+    // 🚨 CORREÇÃO DE SEGURANÇA: Garante que as variáveis existem
+    const institucional = dadosConfiguracao.institucional || {};
+    const operacionais = dadosConfiguracao.operacionais || {};
+    const layout = dadosConfiguracao.layout || {};
     
     // Aplica layout e estilos dinâmicos (CSS Variables)
     document.documentElement.style.setProperty('--cor-primaria', layout.corPrimaria || '#007bff');
@@ -100,7 +77,7 @@ function aplicarConfiguracoes() {
     
     // Aplica dados institucionais e status
     document.title = institucional.nome || 'Cardápio Digital';
-    document.getElementById('loja-nome').textContent = institucional.nome || 'Nome da Loja';
+    document.getElementById('loja-nome').textContent = institucional.nome || 'Nome da Loja'; // CORRIGIDO AQUI
     
     const logoElement = document.getElementById('loja-logo');
     if (logoElement) {
@@ -110,19 +87,18 @@ function aplicarConfiguracoes() {
 
     // Atualiza status da loja
     const statusLoja = document.getElementById('status-loja');
-    statusLoja.textContent = operacionais.status.toUpperCase();
-    statusLoja.className = `status-badge ${operacionais.status}`;
-
-    // Atualiza o botão do WhatsApp
-    document.getElementById('whatsapp-button').onclick = abrirWhatsApp;
+    const status = operacionais.status || 'fechado';
+    statusLoja.textContent = status.toUpperCase();
+    statusLoja.className = `status-badge ${status}`;
 }
 
 
 // ===============================================
-// FUNÇÕES DE RENDERIZAÇÃO
+// FUNÇÕES DE RENDERIZAÇÃO DO CARDÁPIO
 // ===============================================
 
 function renderizarCardapio(produtos) {
+    // ... (Esta função permanece inalterada)
     if (produtos.length === 0) {
         cardapioContainer.innerHTML = '<p class="text-center p-8 text-white">Nenhum produto disponível no momento.</p>';
         return;
@@ -141,12 +117,10 @@ function renderizarCardapio(produtos) {
             cardapioContainer.appendChild(tituloCategoria);
         }
 
-        // Cria o card do produto
         const card = document.createElement('div');
         card.className = `product-card ${produto.disponivel ? 'disponivel' : 'indisponivel'}`;
         card.id = `prod-${produto.id}`;
         
-        // Se não estiver disponível, não permite adicionar
         const btnAdd = produto.disponivel 
             ? `<button class="btn-add" onclick="adicionarAoCarrinho('${produto.id}')"><i class="fas fa-plus"></i> Adicionar</button>`
             : `<button class="btn-indisponivel" disabled>Indisponível</button>`;
@@ -166,13 +140,81 @@ function renderizarCardapio(produtos) {
     });
 }
 
+
 // ===============================================
-// FUNÇÕES DE CARRINHO (Simples)
+// FUNÇÕES DE LÓGICA DO CARRINHO (COMANDA INTELIGENTE)
 // ===============================================
+
+function calcularTotais() {
+    let subtotal = 0;
+    let totalItens = 0;
+
+    const itensCarrinho = Object.values(carrinho);
+    
+    itensCarrinho.forEach(itemCarrinho => {
+        subtotal += itemCarrinho.quantidade * itemCarrinho.item.preco;
+        totalItens += itemCarrinho.quantidade;
+    });
+
+    const taxaServicoPercentual = (dadosConfiguracao.layout?.taxaServico || 0) / 100;
+    const valorTaxaServico = subtotal * taxaServicoPercentual;
+    const totalGeral = subtotal + valorTaxaServico;
+
+    return { subtotal, valorTaxaServico, totalGeral, totalItens };
+}
+
+function renderizarCarrinho() {
+    const lista = document.getElementById('cart-items-list');
+    const { subtotal, valorTaxaServico, totalGeral, totalItens } = calcularTotais();
+    const taxaServicoPercentual = dadosConfiguracao.layout?.taxaServico || 0;
+    
+    lista.innerHTML = '';
+    
+    // 1. Renderiza os itens
+    const itensCarrinho = Object.values(carrinho);
+    if (itensCarrinho.length === 0) {
+        lista.innerHTML = '<p class="text-center text-gray-500 p-4">Seu carrinho está vazio.</p>';
+    } else {
+        itensCarrinho.forEach(itemCarrinho => {
+            const { item, quantidade } = itemCarrinho;
+            const subtotalItem = quantidade * item.preco;
+            
+            const itemHtml = document.createElement('div');
+            itemHtml.className = 'cart-item';
+            itemHtml.innerHTML = `
+                <div class="item-details">
+                    <h4 class="font-semibold">${item.nome}</h4>
+                    <span class="text-sm text-gray-500">R$ ${item.preco.toFixed(2).replace('.', ',')} / und</span>
+                </div>
+                <div class="item-controls">
+                    <button onclick="mudarQuantidade('${item.id}', -1)"><i class="fas fa-minus"></i></button>
+                    <span class="item-qty">${quantidade}</span>
+                    <button onclick="mudarQuantidade('${item.id}', 1)"><i class="fas fa-plus"></i></button>
+                    <span class="font-bold text-red-500 ml-3">R$ ${subtotalItem.toFixed(2).replace('.', ',')}</span>
+                </div>
+            `;
+            lista.appendChild(itemHtml);
+        });
+    }
+
+    // 2. Renderiza o resumo no footer
+    document.getElementById('subtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+    document.getElementById('taxa-servico').textContent = `R$ ${valorTaxaServico.toFixed(2).replace('.', ',')}`;
+    document.getElementById('total-geral').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+    document.getElementById('cart-count').textContent = totalItens;
+    document.getElementById('taxa-perc').textContent = taxaServicoPercentual;
+    
+    // Atualiza o botão fixo
+    const whatsappButton = document.getElementById('whatsapp-button');
+    whatsappButton.className = `whatsapp-fixed ${totalItens > 0 ? 'bg-red-500' : 'bg-green-600'}`;
+    whatsappButton.innerHTML = totalItens > 0 
+        ? `<i class="fas fa-shopping-basket"></i> Abrir Comanda (${totalItens})`
+        : `<i class="fab fa-whatsapp"></i> Fazer Pedido`; // Mensagem inicial
+}
 
 function adicionarAoCarrinho(id) {
     const produto = dadosConfiguracao.cardapio.find(p => p.id === id);
-    if (!produto) return;
+    if (!produto || !produto.disponivel) return;
 
     if (carrinho[id]) {
         carrinho[id].quantidade += 1;
@@ -180,9 +222,61 @@ function adicionarAoCarrinho(id) {
         carrinho[id] = { item: produto, quantidade: 1 };
     }
     
-    // Apenas para mostrar que funciona, você implementaria a visualização do carrinho aqui
-    console.log('Carrinho Atualizado:', carrinho);
-    alert(`"${produto.nome}" adicionado. Total no carrinho: ${Object.keys(carrinho).length} itens.`);
+    renderizarCarrinho();
+    openCart(); 
+}
+
+function mudarQuantidade(id, delta) {
+    if (!carrinho[id]) return;
+
+    carrinho[id].quantidade += delta;
+
+    if (carrinho[id].quantidade <= 0) {
+        delete carrinho[id];
+    }
+    
+    renderizarCarrinho();
+}
+
+function enviarPedido(tipo) {
+    const { subtotal, totalItens } = calcularTotais();
+    
+    if (totalItens === 0) {
+        alert("Seu carrinho está vazio. Adicione itens antes de prosseguir.");
+        return;
+    }
+
+    const tel = dadosConfiguracao.institucional.telPrincipal || '5511999998888';
+    
+    let mensagem = `*🚨 NOVO PEDIDO (${tipo.toUpperCase()})*\n\n`;
+    
+    // Detalhamento dos Itens
+    Object.values(carrinho).forEach(itemCarrinho => {
+        const { item, quantidade } = itemCarrinho;
+        const subtotalItem = quantidade * item.preco;
+        mensagem += `- ${quantidade}x ${item.nome} (R$ ${subtotalItem.toFixed(2).replace('.', ',')})\n`;
+    });
+    
+    // Resumo de Totais
+    const taxaServicoPercentual = (dadosConfiguracao.layout?.taxaServico || 0);
+    const valorTaxaServico = subtotal * (taxaServicoPercentual / 100);
+    const totalGeral = subtotal + valorTaxaServico;
+
+    mensagem += `\n*Subtotal: R$ ${subtotal.toFixed(2).replace('.', ',')}*`;
+    if (valorTaxaServico > 0) {
+         mensagem += `\n*Taxa de Serviço (${taxaServicoPercentual}%): R$ ${valorTaxaServico.toFixed(2).replace('.', ',')}*`;
+    }
+    mensagem += `\n*TOTAL GERAL: R$ ${totalGeral.toFixed(2).replace('.', ',')}*\n`;
+    
+    mensagem += `\n*Modalidade:* ${tipo.toUpperCase()}`;
+    
+    // Adiciona a mensagem de pagamento configurada no CMS
+    if (dadosConfiguracao.institucional && dadosConfiguracao.institucional.msgPagamento) {
+        mensagem += `\n\n*Informações Extras:*\n${dadosConfiguracao.institucional.msgPagamento}`;
+    }
+
+    // Abre o WhatsApp
+    window.open(`https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(mensagem)}`, '_blank');
 }
 
 // Inicializa o carregamento dos dados
