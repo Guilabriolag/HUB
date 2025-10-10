@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Configuração</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .btn-delete:hover {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center hidden">
+        <div class="text-white text-center">
+            <i class="fas fa-spinner fa-spin text-4xl text-blue-400"></i>
+            <p class="mt-4 text-lg" id="loading-message">Carregando dados, aguarde...</p>
+        </div>
+    </div>
+    
+    <header class="sticky top-0 z-40 bg-white shadow-lg p-4 flex justify-between items-center border-b border-gray-200">
+        <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-wrench mr-2 text-blue-600"></i> LabSystem CMS</h1>
+        <div class="space-x-2">
+            <button onclick="carregarDados()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition duration-150">
+                <i class="fas fa-sync-alt mr-1"></i> Recarregar (JSONBin)
+            </button>
+            <button onclick="salvarLocalmente()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition duration-150">
+                <i class="fas fa-save mr-1"></i> Salvar Localmente
+            </button>
+            <button onclick="publicarDados()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-extrabold transition duration-150">
+                <i class="fas fa-cloud-upload-alt mr-1"></i> PUBLICAR (PUT)
+            </button>
+        </div>
+    </header>
+    
+    <div id="status-message" class="py-2 text-center text-sm font-semibold text-white transition-all duration-300">
+        Pronto para configurar.
+    </div>
+
+    <main class="p-4 md:p-8 max-w-6xl mx-auto">
+        
+        <form id="cms-form" class="space-y-8">
+            
+            <section class="bg-yellow-50 p-6 rounded-xl shadow-lg border-t-4 border-yellow-600">
+                <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-key mr-2 text-yellow-600"></i> 0. Configuração de Acesso JSONBin</h2>
+                <p class="text-sm text-gray-600 mb-4">Insira o seu Bin ID e a Chave Mestra (Master Key) para autorizar a publicação de dados. *Estas chaves são salvas apenas no seu navegador.*</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="config-binId" class="block text-sm font-medium text-gray-700">Bin ID (Ex: 68e8478a43b1c97be960ce0c)</label>
+                        <input type="text" id="config-binId" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Insira o ID do Bin" required>
+                    </div>
+                    <div>
+                        <label for="config-masterKey" class="block text-sm font-medium text-gray-700">Chave Mestra (X-Master-Key)</label>
+                        <input type="text" id="config-masterKey" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Insira sua Chave Mestra (começa com $2a$10$...)" required>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500">
+                <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-building mr-2 text-blue-500"></i> 1. Dados Institucionais</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="institucional-nome" class="block text-sm font-medium text-gray-700">Nome da Loja</label>
+                        <input type="text" id="institucional-nome" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Minha Lanchonete Premium">
+                    </div>
+                    <div>
+                        <label for="institucional-urlLogo" class="block text-sm font-medium text-gray-700">URL do Logo (ex: Google Drive, Imgur)</label>
+                        <input type="url" id="institucional-urlLogo" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="https://exemplo.com/logo.png">
+                    </div>
+                    <div>
+                        <label for="institucional-telPrincipal" class="block text-sm font-medium text-gray-700">WhatsApp Principal (apenas números)</label>
+                        <input type="number" id="institucional-telPrincipal" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="5511999998888">
+                    </div>
+                    <div class="md:col-span-2">
+                         <label for="institucional-msgPagamento" class="block text-sm font-medium text-gray-700">Mensagem Adicional de Pagamento (opcional, aparece no WhatsApp)</label>
+                         <textarea id="institucional-msgPagamento" rows="2" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Aceitamos cartão na entrega. Pix é o CNPJ 00.000.000/0001-00."></textarea>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-500">
+                 <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-clock mr-2 text-yellow-500"></i> 2. Operação e Cobertura</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label for="operacionais-status" class="block text-sm font-medium text-gray-700">Status da Loja</label>
+                        <select id="operacionais-status" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                            <option value="aberto">ABERTO (Aceitando Pedidos)</option>
+                            <option value="fechado">FECHADO (Não Aceita Pedidos)</option>
+                            <option value="pausa">PAUSA (Temporariamente Indisponível)</option>
+                        </select>
+                    </div>
+                    <div>
+                         <label for="operacionais-horarioAbertura" class="block text-sm font-medium text-gray-700">Horário de Abertura (HH:MM)</label>
+                         <input type="time" id="operacionais-horarioAbertura" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="18:00">
+                    </div>
+                    <div>
+                         <label for="operacionais-horarioFechamento" class="block text-sm font-medium text-gray-700">Horário de Fechamento (HH:MM)</label>
+                         <input type="time" id="operacionais-horarioFechamento" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="23:30">
+                    </div>
+                 </div>
+                 
+                 <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-3">Áreas de Cobertura e Taxas</h3>
+                 <div id="cobertura-container" class="space-y-3">
+                     </div>
+                 <button type="button" onclick="adicionarCobertura()" class="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 text-sm font-medium">
+                     <i class="fas fa-plus mr-1"></i> Adicionar Bairro/Taxa
+                 </button>
+            </section>
+            
+            <section class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500">
+                <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-paint-brush mr-2 text-purple-500"></i> 3. Layout e Regras</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="layout-corPrimaria" class="block text-sm font-medium text-gray-700">Cor Principal (Botões/Destaque)</label>
+                        <input type="color" id="layout-corPrimaria" class="mt-1 block w-full h-10 border border-gray-300 rounded-md" value="#007bff">
+                    </div>
+                    <div>
+                        <label for="layout-corSecundaria" class="block text-sm font-medium text-gray-700">Cor Secundária (Alertas)</label>
+                        <input type="color" id="layout-corSecundaria" class="mt-1 block w-full h-10 border border-gray-300 rounded-md" value="#ffc107">
+                    </div>
+                    <div>
+                        <label for="layout-corFundo" class="block text-sm font-medium text-gray-700">Cor de Fundo da Página</label>
+                        <input type="color" id="layout-corFundo" class="mt-1 block w-full h-10 border border-gray-300 rounded-md" value="#f3f4f6">
+                    </div>
+                    <div>
+                        <label for="layout-fonte" class="block text-sm font-medium text-gray-700">Fonte (Nome CSS)</label>
+                        <input type="text" id="layout-fonte" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Inter, sans-serif" value="Inter, sans-serif">
+                    </div>
+                    <div class="md:col-span-4">
+                        <label for="layout-backgroundUrl" class="block text-sm font-medium text-gray-700">URL de Imagem de Fundo (opcional)</label>
+                        <input type="url" id="layout-backgroundUrl" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Deixe em branco para usar cor de fundo">
+                    </div>
+                    <div>
+                        <label for="layout-taxaServico" class="block text-sm font-medium text-gray-700">Taxa de Serviço (%)</label>
+                        <input type="number" id="layout-taxaServico" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="0" min="0" max="100">
+                    </div>
+                    <div>
+                        <label for="layout-minimoPedido" class="block text-sm font-medium text-gray-700">Valor Mínimo Pedido (R$)</label>
+                        <input type="number" id="layout-minimoPedido" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" value="0.00" step="0.01" min="0">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="layout-urlMusica" class="block text-sm font-medium text-gray-700">URL da Música de Fundo (opcional)</label>
+                        <input type="url" id="layout-urlMusica" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="https://exemplo.com/musica.mp3">
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-500">
+                <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-hamburger mr-2 text-red-500"></i> 4. Gestão do Cardápio</h2>
+                
+                <div class="mb-4 flex justify-end">
+                    <button type="button" onclick="openProductModal()" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 font-medium">
+                        <i class="fas fa-plus mr-1"></i> Adicionar Novo Produto
+                    </button>
+                </div>
+                
+                <div id="cardapio-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <p id="empty-cardapio-message" class="col-span-full text-center text-gray-500">Nenhum produto cadastrado ainda. Clique em "Adicionar Novo Produto".</p>
+                    </div>
+            </section>
+            
+        </form>
+    </main>
+    
+    <div id="product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 overflow-y-auto hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl m-4 p-6 w-full max-w-lg transform transition-all">
+            <h3 class="text-xl font-bold mb-4 text-red-500" id="modal-title">Novo Produto</h3>
+            <form id="product-form" class="space-y-4">
+                <input type="hidden" id="product-id">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nome</label>
+                    <input type="text" id="product-nome" class="mt-1 w-full p-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Preço (R$)</label>
+                    <input type="number" id="product-preco" class="mt-1 w-full p-2 border rounded-md" step="0.01" required min="0.01">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Descrição</label>
+                    <textarea id="product-descricao" rows="2" class="mt-1 w-full p-2 border rounded-md"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Categoria</label>
+                        <input type="text" id="product-categoria" class="mt-1 w-full p-2 border rounded-md" placeholder="Ex: Pizzas Salgadas">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Modo</label>
+                        <select id="product-modo" class="mt-1 w-full p-2 border rounded-md">
+                            <option value="Delivery">Delivery</option>
+                            <option value="Retirada">Retirada</option>
+                            <option value="Ambos">Ambos</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">URL da Imagem</label>
+                    <input type="url" id="product-urlImagem" class="mt-1 w-full p-2 border rounded-md">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="product-disponivel" class="w-4 h-4 text-red-600 border-gray-300 rounded">
+                        <label for="product-disponivel" class="text-sm font-medium text-gray-700">Disponível</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="product-estoque" class="text-sm font-medium text-gray-700">Estoque</label>
+                        <input type="number" id="product-estoque" class="w-20 p-1 border rounded-md text-sm" value="999" min="0">
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 font-bold">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        // ===========================================
+        // 1. CONFIGURAÇÃO DE CONSTANTES
+        // ===========================================
+        const LOCAL_STORAGE_KEY = 'CMS_DATA_V9';
+        const LOCAL_CREDENTIALS_KEY = 'CMS_CREDENTIALS'; 
+        
+        let CARDAPIO_DATA = [];
+        let EDITING_PRODUCT_ID = null;
+
+        function getCredentials() {
+            const binId = document.getElementById('config-binId').value.trim();
+            const masterKey = document.getElementById('config-masterKey').value.trim();
+            const jsonBinUrl = `https://api.jsonbin.io/v3/b/${binId}`;
+            
+            return { binId, masterKey, jsonBinUrl };
+        }
+
+        // ===========================================
+        // 2. GESTÃO DO LAYOUT E UI
+        // ===========================================
+
+        function mostrarStatus(message, bgColor) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = `py-2 text-center text-sm font-semibold text-white transition-all duration-300 ${bgColor}`;
+            setTimeout(() => {
+                statusElement.className = 'py-2 text-center text-sm font-semibold text-white transition-all duration-300';
+                statusElement.textContent = 'Pronto.';
+            }, 3000);
+        }
+
+        // ===========================================
+        // 3. GESTÃO DO ARMAZENAMENTO (Coleta/Aplica/Salva)
+        // ===========================================
+
+        function coletarDados() {
+            // Coleta Cobertura
+            const cobertura = [];
+            document.querySelectorAll('#cobertura-container > div').forEach(item => {
+                const bairro = item.querySelector('[data-type="bairro"]').value.trim();
+                const taxa = parseFloat(item.querySelector('[data-type="taxa"]').value) || 0;
+                if (bairro) {
+                    cobertura.push({ bairro, taxa });
+                }
+            });
+
+            // Coleta Credenciais
+            const credentials = {
+                binId: document.getElementById('config-binId').value,
+                masterKey: document.getElementById('config-masterKey').value 
+            };
+
+
+            return {
+                credentials: credentials, // Inclui credenciais para salvamento local
+                data: { // Dados que vão para o Bin remoto
+                    institucional: {
+                        nome: document.getElementById('institucional-nome').value,
+                        urlLogo: document.getElementById('institucional-urlLogo').value,
+                        telPrincipal: document.getElementById('institucional-telPrincipal').value,
+                        msgPagamento: document.getElementById('institucional-msgPagamento').value
+                    },
+                    operacionais: {
+                        status: document.getElementById('operacionais-status').value,
+                        horarioAbertura: document.getElementById('operacionais-horarioAbertura').value,
+                        horarioFechamento: document.getElementById('operacionais-horarioFechamento').value,
+                        cobertura: cobertura
+                    },
+                    layout: {
+                        corPrimaria: document.getElementById('layout-corPrimaria').value,
+                        corSecundaria: document.getElementById('layout-corSecundaria').value,
+                        corFundo: document.getElementById('layout-corFundo').value,
+                        backgroundUrl: document.getElementById('layout-backgroundUrl').value,
+                        fonte: document.getElementById('layout-fonte').value,
+                        taxaServico: parseFloat(document.getElementById('layout-taxaServico').value) || 0,
+                        minimoPedido: parseFloat(document.getElementById('layout-minimoPedido').value) || 0.00,
+                        urlMusica: document.getElementById('layout-urlMusica').value
+                    },
+                    cardapio: CARDAPIO_DATA
+                }
+            };
+        }
+
+        // Aplica os dados carregados ao formulário
+        function aplicarDadosAoFormulario(data) {
+            if (!data) return;
+
+            // Institucional
+            document.getElementById('institucional-nome').value = data.institucional.nome || '';
+            document.getElementById('institucional-urlLogo').value = data.institucional.urlLogo || '';
+            document.getElementById('institucional-telPrincipal').value = data.institucional.telPrincipal || '';
+            document.getElementById('institucional-msgPagamento').value = data.institucional.msgPagamento || '';
+
+            // Operacional
+            document.getElementById('operacionais-status').value = data.operacionais.status || 'fechado';
+            document.getElementById('operacionais-horarioAbertura').value = data.operacionais.horarioAbertura || '18:00';
+            document.getElementById('operacionais-horarioFechamento').value = data.operacionais.horarioFechamento || '23:30';
+            
+            // Layout
+            document.getElementById('layout-corPrimaria').value = data.layout.corPrimaria || '#007bff';
+            document.getElementById('layout-corSecundaria').value = data.layout.corSecundaria || '#ffc107';
+            document.getElementById('layout-corFundo').value = data.layout.corFundo || '#f3f4f6';
+            document.getElementById('layout-backgroundUrl').value = data.layout.backgroundUrl || '';
+            document.getElementById('layout-fonte').value = data.layout.fonte || 'Inter, sans-serif';
+            document.getElementById('layout-taxaServico').value = data.layout.taxaServico || 0;
+            document.getElementById('layout-minimoPedido').value = data.layout.minimoPedido || 0.00;
+            document.getElementById('layout-urlMusica').value = data.layout.urlMusica || '';
+            
+            // Cobertura
+            document.getElementById('cobertura-container').innerHTML = '';
+            (data.operacionais.cobertura || []).forEach(item => adicionarCobertura(item.bairro, item.taxa));
+
+            // Cardápio
+            CARDAPIO_DATA = data.cardapio || [];
+            renderizarCardapio();
+        }
+
+        // Carrega as credenciais salvas localmente
+        function carregarCredenciais() {
+            const localCreds = localStorage.getItem(LOCAL_CREDENTIALS_KEY);
+            if (localCreds) {
+                const creds = JSON.parse(localCreds);
+                document.getElementById('config-binId').value = creds.binId || '';
+                document.getElementById('config-masterKey').value = creds.masterKey || '';
+            }
+        }
+
+        // Salva os dados APENAS no Local Storage, incluindo credenciais
+        function salvarLocalmente() {
+            const { credentials, data } = coletarDados();
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+            localStorage.setItem(LOCAL_CREDENTIALS_KEY, JSON.stringify(credentials));
+            mostrarStatus('💾 Dados e Credenciais salvos localmente!', 'bg-blue-500');
+        }
+
+        // ===========================================
+        // 4. INTEGRAÇÃO JSONBIN (GET / PUT)
+        // ===========================================
+
+        async function carregarDados() {
+            const { binId, jsonBinUrl } = getCredentials();
+            
+            if (!binId) {
+                document.getElementById('loading-message').textContent = 'Falta o Bin ID. Carregando dados locais...';
+                carregarDadosLocais();
+                return;
+            }
+
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            try {
+                document.getElementById('loading-message').textContent = 'Carregando dados do JSONBin.io...';
+                
+                const response = await fetch(jsonBinUrl + '/latest', {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const data = result.record.data || result.record; // Lida com a nova ou antiga estrutura
+
+                    aplicarDadosAoFormulario(data);
+                    mostrarStatus('✅ Dados carregados do JSONBin com sucesso!', 'bg-green-500');
+                    salvarLocalmente(); 
+                    
+                } else {
+                    throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                }
+                
+            } catch (e) {
+                console.warn('⚠️ Falha ao carregar dados do JSONBin. Tentando Local Storage...', e);
+                carregarDadosLocais();
+            } finally {
+                 document.getElementById('loading-overlay').classList.add('hidden');
+            }
+        }
+        
+        function carregarDadosLocais() {
+            document.getElementById('loading-message').textContent = 'Falha no remoto. Carregando dados locais...';
+            const localData = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (localData) {
+                 aplicarDadosAoFormulario(JSON.parse(localData));
+                 mostrarStatus('💾 Dados carregados do cache local (offline)!', 'bg-blue-500');
+            } else {
+                 aplicarDadosAoFormulario({});
+                 mostrarStatus('❌ Nenhum dado encontrado. Comece a configurar.', 'bg-red-500');
+            }
+        }
+
+        async function publicarDados() {
+            const { credentials, data: dataToSave } = coletarDados();
+            const { binId, masterKey, jsonBinUrl } = getCredentials();
+
+            if (!binId || !masterKey) {
+                 alert('❌ ERRO DE CONFIGURAÇÃO: Por favor, preencha o Bin ID e a Chave Mestra na Seção 0.');
+                 return;
+            }
+
+            if (dataToSave.cardapio.length === 0) {
+                if (!confirm('⚠️ ALERTA: O Cardápio está vazio. Deseja publicar assim mesmo?')) {
+                    return;
+                }
+            }
+
+            try {
+                mostrarStatus('Publicando remotamente via PUT...', 'bg-yellow-500');
+
+                const response = await fetch(jsonBinUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': masterKey 
+                    },
+                    body: JSON.stringify(dataToSave)
+                });
+
+                if (response.ok) {
+                    salvarLocalmente(); 
+                    mostrarStatus('✅ Publicado (Local e Remoto) com Sucesso!', 'bg-green-500');
+                    carregarDados();
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(`Erro na API (${response.status}): ${errorText}`);
+                }
+
+            } catch (error) {
+                console.error('Erro ao publicar os dados:', error);
+                mostrarStatus(`❌ ERRO: Falha ao Publicar Remotamente.`, 'bg-red-500');
+                alert(`Erro ao publicar. Mensagem: ${error.message}. Confirme se o Bin ID e a Chave Mestra estão corretos.`);
+            }
+        }
+        
+        // ===========================================
+        // 5. GESTÃO DO CARDÁPIO (UI)
+        // ===========================================
+
+        function renderizarCardapio() {
+            const container = document.getElementById('cardapio-container');
+            container.innerHTML = '';
+            
+            if (CARDAPIO_DATA.length === 0) {
+                 document.getElementById('empty-cardapio-message').classList.remove('hidden');
+                 return;
+            }
+            document.getElementById('empty-cardapio-message').classList.add('hidden');
+
+            CARDAPIO_DATA.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `card-${item.id}`;
+                card.className = 'bg-gray-50 p-4 rounded-lg shadow-md border-l-4 border-red-400 hover:shadow-lg transition duration-200 flex flex-col justify-between';
+                
+                const statusColor = item.disponivel ? 'text-green-600' : 'text-gray-500';
+                const statusText = item.disponivel ? 'Disponível' : 'Indisponível';
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-lg font-bold text-gray-900">${item.nome}</h4>
+                            <span class="text-xl font-extrabold text-red-500">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2 line-clamp-2">${item.descricao || 'Sem descrição.'}</p>
+                        <div class="text-xs text-gray-500 flex justify-between">
+                            <span>${item.categoria} / ${item.modo}</span>
+                            <span class="${statusColor} font-semibold">${statusText}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                        <button type="button" onclick="editarProduto('${item.id}')" class="flex-1 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-150">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button type="button" onclick="removerProduto('${item.id}')" class="py-1 text-sm text-red-500 border border-red-500 rounded hover:bg-red-500 hover:text-white transition duration-150 w-1/4">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        // 🚨 CORREÇÃO PRINCIPAL: Garante que o evento de submit do formulário de produto está funcionando
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validação adicional de segurança (embora o 'required' do HTML já ajude)
+            if (!document.getElementById('product-nome').value || !document.getElementById('product-preco').value) {
+                mostrarStatus('Erro: Nome e Preço são obrigatórios.', 'bg-red-500');
+                return;
+            }
+
+            const newProduct = {
+                id: document.getElementById('product-id').value || `prod-${Date.now()}`,
+                nome: document.getElementById('product-nome').value,
+                preco: parseFloat(document.getElementById('product-preco').value),
+                descricao: document.getElementById('product-descricao').value,
+                categoria: document.getElementById('product-categoria').value,
+                modo: document.getElementById('product-modo').value,
+                urlImagem: document.getElementById('product-urlImagem').value,
+                disponivel: document.getElementById('product-disponivel').checked,
+                estoque: parseInt(document.getElementById('product-estoque').value) || 999
+            };
+
+            const index = CARDAPIO_DATA.findIndex(p => p.id === newProduct.id);
+            
+            if (index !== -1) {
+                CARDAPIO_DATA[index] = newProduct;
+                mostrarStatus(`Produto "${newProduct.nome}" atualizado.`, 'bg-blue-500');
+            } else {
+                CARDAPIO_DATA.push(newProduct);
+                mostrarStatus(`Produto "${newProduct.nome}" adicionado.`, 'bg-red-500');
+            }
+
+            renderizarCardapio();
+            closeProductModal();
+        });
+
+        function openProductModal(product = null) {
+            const modal = document.getElementById('product-modal');
+            const form = document.getElementById('product-form');
+            form.reset();
+            
+            if (product) {
+                document.getElementById('modal-title').textContent = 'Editar Produto';
+                document.getElementById('product-id').value = product.id;
+                document.getElementById('product-nome').value = product.nome;
+                document.getElementById('product-preco').value = product.preco;
+                document.getElementById('product-descricao').value = product.descricao;
+                document.getElementById('product-categoria').value = product.categoria;
+                document.getElementById('product-modo').value = product.modo;
+                document.getElementById('product-urlImagem').value = product.urlImagem;
+                document.getElementById('product-disponivel').checked = product.disponivel;
+                document.getElementById('product-estoque').value = product.estoque;
+                EDITING_PRODUCT_ID = product.id;
+            } else {
+                document.getElementById('modal-title').textContent = 'Novo Produto';
+                document.getElementById('product-id').value = '';
+                document.getElementById('product-disponivel').checked = true;
+                document.getElementById('product-estoque').value = 999;
+                EDITING_PRODUCT_ID = null;
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+            document.getElementById('product-modal').classList.remove('flex');
+            EDITING_PRODUCT_ID = null;
+        }
+
+        function editarProduto(id) {
+            const product = CARDAPIO_DATA.find(p => p.id === id);
+            if (product) {
+                openProductModal(product);
+            }
+        }
+
+        function removerProduto(id) {
+            if (confirm('Tem certeza que deseja remover este produto do cardápio?')) {
+                CARDAPIO_DATA = CARDAPIO_DATA.filter(p => p.id !== id);
+                renderizarCardapio();
+                mostrarStatus('Produto removido.', 'bg-red-500');
+            }
+        }
+        
+        // ===========================================
+        // 6. GESTÃO DE COBERTURA (UI)
+        // ===========================================
+
+        function adicionarCobertura(bairro = '', taxa = 0.00) {
+            const container = document.getElementById('cobertura-container');
+            const newId = `cobertura-${Date.now()}`;
+            
+            const item = document.createElement('div');
+            item.id = newId;
+            item.className = 'flex space-x-3 items-end';
+            item.innerHTML = `
+                <div class="flex-1">
+                    <label for="${newId}-bairro" class="block text-sm font-medium text-gray-700">Nome do Bairro</label>
+                    <input type="text" id="${newId}-bairro" data-type="bairro" value="${bairro}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Ex: Centro">
+                </div>
+                <div class="w-24">
+                    <label for="${newId}-taxa" class="block text-sm font-medium text-gray-700">Taxa (R$)</label>
+                    <input type="number" id="${newId}-taxa" data-type="taxa" value="${taxa.toFixed(2)}" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" step="0.01" min="0">
+                </div>
+                <button type="button" onclick="removerCobertura('${newId}')" class="btn-delete p-2 bg-gray-200 text-gray-600 rounded-md transition duration-150">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(item);
+        }
+
+        function removerCobertura(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.remove();
+            }
+        }
+
+
+        // ===========================================
+        // 7. INICIALIZAÇÃO
+        // ===========================================
+        window.onload = () => {
+            carregarCredenciais();
+            
+            if (document.getElementById('cobertura-container').children.length === 0) {
+                adicionarCobertura('Centro', 5.00);
+            }
+            
+            carregarDados();
+        };
+    </script>
+</body>
+  </html>
