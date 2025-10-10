@@ -20,11 +20,50 @@
     <main id="cardapio-container">
         <p class="text-center p-8 text-white">Carregando...</p>
         </main>
+    
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="drawer-header">
+            <h2 class="text-xl font-bold"><i class="fas fa-shopping-cart mr-2"></i> Seu Pedido</h2>
+            <button onclick="closeCart()" class="text-gray-500 hover:text-gray-900 text-2xl">&times;</button>
+        </div>
+        
+        <div id="cart-items-list" class="cart-items">
+            <p class="text-center text-gray-500 p-4">Seu carrinho está vazio.</p>
+        </div>
+        
+        <div class="drawer-footer">
+            <div id="cart-summary" class="mb-3">
+                <div class="flex justify-between font-semibold mb-1">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Taxa de Serviço (<span id="taxa-perc">0</span>%):</span>
+                    <span id="taxa-servico">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between font-extrabold text-lg mt-2 pt-2 border-t border-gray-200">
+                    <span>TOTAL:</span>
+                    <span id="total-geral" class="text-red-500">R$ 0,00</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <button onclick="enviarPedido('delivery')" class="w-full py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition">
+                    <i class="fas fa-motorcycle mr-1"></i> Delivery (Avançar)
+                </button>
+                <button onclick="enviarPedido('retirada')" class="w-full py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition">
+                    <i class="fas fa-store mr-1"></i> Retirada (Avançar)
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <a href="#" id="whatsapp-button" class="whatsapp-fixed" data-tel="" target="_blank">
-        <i class="fab fa-whatsapp"></i> Fazer Pedido
-    </a>
-
+    <div id="cart-overlay" class="overlay" onclick="closeCart()"></div>
+    
+    <button onclick="openCart()" id="whatsapp-button" class="whatsapp-fixed">
+        <i class="fas fa-shopping-basket"></i> Abrir Comanda (<span id="cart-count">0</span>)
+    </button>
+    
     <script src="cardapio_logic.js"></script>
 </body>
 </html>
