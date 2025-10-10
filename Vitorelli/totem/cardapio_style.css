@@ -5,6 +5,7 @@
     --cor-fundo: #f3f4f6; /* Cinza claro padrão */
     --cor-texto-claro: #fff;
     --cor-texto-escuro: #333;
+    --cor-botao-carrinho: #25D366; /* NOVO: Cor configurável no CMS */
 }
 
 * { 
@@ -19,7 +20,7 @@ body {
     background-color: var(--cor-fundo);
     background-size: cover;
     background-attachment: fixed;
-    padding: 20px 20px 80px 20px; /* Espaço para o botão do WhatsApp */
+    padding: 20px 20px 80px 20px; /* Espaço para o botão flutuante */
 }
 
 /* --- Cabeçalho --- */
@@ -38,9 +39,8 @@ header {
     align-items: center;
 }
 
-/* CORRIGIDO: Removido o círculo da logo */
 .loja-logo {
-    width: 150px; /* Aumentado para melhor visualização sem círculo */
+    width: 150px; 
     height: auto;
     object-fit: contain;
     margin-bottom: 10px;
@@ -74,7 +74,7 @@ h1 {
     color: var(--cor-texto-escuro);
 }
 
-/* --- Menu de Categorias (NOVO) --- */
+/* --- Menu de Categorias --- */
 .category-menu {
     max-width: 900px;
     margin: 0 auto 30px auto;
@@ -113,7 +113,7 @@ h1 {
 }
 
 
-/* --- Títulos de Categoria --- */
+/* --- Títulos de Categoria e Card de Produto (Sem Alteração) --- */
 .categoria-titulo {
     font-size: 1.8em;
     color: var(--cor-primaria);
@@ -124,7 +124,6 @@ h1 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* --- Card de Produto (Sem Alteração) --- */
 #cardapio-container {
     max-width: 900px;
     margin: 0 auto;
@@ -213,12 +212,12 @@ h1 {
     font-weight: bold;
 }
 
-/* --- Botão Fixo do Carrinho (Sem Alteração) --- */
+/* --- Botão Fixo do Carrinho (flutuante) --- */
 .whatsapp-fixed {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #25D366; 
+    background-color: var(--cor-botao-carrinho); 
     color: white;
     padding: 15px 20px;
     border-radius: 30px;
@@ -233,27 +232,16 @@ h1 {
 }
 
 .whatsapp-fixed:hover {
-    background-color: #1DA851;
+    filter: brightness(0.9);
 }
 
-.whatsapp-fixed.bg-red-500 {
-    background-color: #EF4444; 
-}
-.whatsapp-fixed.bg-red-500:hover {
-    background-color: #DC2626;
-}
-
-.whatsapp-fixed i {
-    margin-right: 8px;
-}
-
-/* --- Estilos do Carrinho (Drawer) (Sem Alteração) --- */
-.cart-drawer {
+/* --- Estilos do Drawer (Substitui cart-drawer) --- */
+.order-drawer {
     position: fixed;
     top: 0;
     right: 0;
     width: 100%;
-    max-width: 380px; 
+    max-width: 450px; 
     height: 100%;
     background: white;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
@@ -264,7 +252,7 @@ h1 {
     flex-direction: column;
 }
 
-.cart-drawer.open {
+.order-drawer.open {
     transform: translateX(0); 
 }
 
@@ -274,17 +262,21 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
-.cart-items {
-    flex-grow: 1;
+/* Controla o layout interno do drawer */
+#cart-summary-area {
+    flex-shrink: 0;
+}
+
+#order-options-step {
+    flex-shrink: 0;
+}
+
+.form-step {
+    flex-grow: 1; /* Permite que o formulário cresça e seja scrollable */
     overflow-y: auto;
-    padding: 20px;
-}
-
-.drawer-footer {
-    padding: 20px;
-    border-top: 1px solid #eee;
 }
 
 .overlay {
@@ -305,6 +297,11 @@ h1 {
     visibility: visible;
 }
 
+/* Estilos de preview de itens no carrinho */
+.cart-items-preview {
+    max-height: 150px;
+    overflow-y: auto;
+}
 .cart-item {
     display: flex;
     align-items: center;
@@ -313,35 +310,21 @@ h1 {
     border-bottom: 1px dashed #eee;
 }
 
-.cart-item:last-child {
-    border-bottom: none;
-}
-
-.item-details {
-    flex-grow: 1;
-}
-
-.item-controls {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.item-controls button {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    background: #f8f8f8;
+/* Estilos para as opções de pagamento */
+.payment-option-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.1s;
-}
-.item-controls button:hover {
-    background: #eee;
+    transition: all 0.2s;
 }
 
-.item-qty {
-    font-weight: bold;
-    width: 25px;
-    text-align: center;
+.payment-option-card:hover {
+    background-color: #f7f7f7;
+}
+
+.payment-option-card.selected {
+    border-color: var(--cor-primaria);
+    background-color: #e6f0ff; /* Light blue background for selection */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
