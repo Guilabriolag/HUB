@@ -23,49 +23,100 @@
 
     <main id="cardapio-container">
         <p class="text-center p-8 text-white">Carregando...</p>
-        </main>
+    </main>
     
-    <div id="cart-drawer" class="cart-drawer">
+    <div id="order-drawer" class="order-drawer">
         <div class="drawer-header">
             <h2 class="text-xl font-bold"><i class="fas fa-shopping-cart mr-2"></i> Seu Pedido</h2>
-            <button onclick="closeCart()" class="text-gray-500 hover:text-gray-900 text-2xl">&times;</button>
+            <button onclick="closeOrderDrawer()" class="text-gray-500 hover:text-gray-900 text-2xl">&times;</button>
         </div>
         
-        <div id="cart-items-list" class="cart-items">
-            <p class="text-center text-gray-500 p-4">Seu carrinho está vazio.</p>
+        <div id="cart-summary-area" class="p-4 border-b border-gray-200">
+            <div id="cart-items-list" class="cart-items-preview">
+                <p class="text-center text-gray-500 p-4">Seu carrinho está vazio.</p>
+            </div>
+            <div id="cart-summary" class="mt-3">
+                </div>
         </div>
         
-        <div class="drawer-footer">
-            <div id="cart-summary" class="mb-3">
-                <div class="flex justify-between font-semibold mb-1">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">R$ 0,00</span>
+        <div id="order-options-step" class="p-4 space-y-3">
+            <button onclick="selectOrderType('retirada')" class="w-full py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition">
+                <i class="fas fa-store mr-1"></i> Retirada (Buscar no Local)
+            </button>
+            <button onclick="selectOrderType('delivery')" class="w-full py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition">
+                <i class="fas fa-motorcycle mr-1"></i> Delivery (Receber em Casa)
+            </button>
+        </div>
+        
+        <form id="form-retirada" class="form-step hidden p-4 overflow-y-auto">
+            <h3 class="text-lg font-bold mb-4 border-b pb-2">Detalhes da Retirada</h3>
+            <input type="hidden" id="retirada-tipo" value="retirada">
+
+            <div class="mb-4">
+                 <label for="retirada-nome" class="block text-sm font-medium text-gray-700">Seu Nome (opcional)</label>
+                 <input type="text" id="retirada-nome" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Nome para o pedido">
+            </div>
+
+            <h4 class="text-md font-semibold mt-6 mb-3">Forma de Pagamento</h4>
+            <div class="space-y-3" id="retirada-pagamento-options">
                 </div>
-                <div class="flex justify-between text-sm text-gray-600">
-                    <span>Taxa de Serviço (<span id="taxa-perc">0</span>%):</span>
-                    <span id="taxa-servico">R$ 0,00</span>
+            
+            <div class="mt-6 flex space-x-2">
+                <button type="button" onclick="resetOrderStep()" class="flex-1 py-3 bg-gray-500 text-white rounded-lg font-bold hover:bg-gray-600 transition">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="submit" class="flex-1 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition">
+                    <i class="fab fa-whatsapp"></i> Finalizar Pedido
+                </button>
+            </div>
+        </form>
+        
+        <form id="form-delivery" class="form-step hidden p-4 overflow-y-auto">
+            <h3 class="text-lg font-bold mb-4 border-b pb-2">Detalhes da Entrega</h3>
+            <input type="hidden" id="delivery-tipo" value="delivery">
+
+            <div class="mb-4">
+                 <label for="delivery-nome" class="block text-sm font-medium text-gray-700">Seu Nome *</label>
+                 <input type="text" id="delivery-nome" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required placeholder="Nome completo">
+            </div>
+            <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="col-span-2">
+                    <label for="delivery-endereco" class="block text-sm font-medium text-gray-700">Rua/Avenida *</label>
+                    <input type="text" id="delivery-endereco" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required placeholder="Rua principal">
                 </div>
-                <div class="flex justify-between font-extrabold text-lg mt-2 pt-2 border-t border-gray-200">
-                    <span>TOTAL:</span>
-                    <span id="total-geral" class="text-red-500">R$ 0,00</span>
+                 <div class="col-span-1">
+                    <label for="delivery-numero" class="block text-sm font-medium text-gray-700">Nº *</label>
+                    <input type="text" id="delivery-numero" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required placeholder="123">
                 </div>
             </div>
             
-            <div class="space-y-3">
-                <button onclick="enviarPedido('delivery')" class="w-full py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition">
-                    <i class="fas fa-motorcycle mr-1"></i> Delivery (Avançar)
+            <div class="mb-4">
+                <label for="delivery-bairro" class="block text-sm font-medium text-gray-700">Selecione o Bairro *</label>
+                <select id="delivery-bairro" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required onchange="updateDeliveryTax()">
+                     <option value="" data-taxa="0.00">Selecione seu Bairro</option>
+                     </select>
+                <p id="taxa-entrega-info" class="text-sm text-gray-500 mt-1">Taxa de Entrega: R$ 0,00</p>
+            </div>
+
+            <h4 class="text-md font-semibold mt-6 mb-3 border-t pt-3">Forma de Pagamento</h4>
+            <div class="space-y-3" id="delivery-pagamento-options">
+                </div>
+
+            <div class="mt-6 flex space-x-2">
+                <button type="button" onclick="resetOrderStep()" class="flex-1 py-3 bg-gray-500 text-white rounded-lg font-bold hover:bg-gray-600 transition">
+                    <i class="fas fa-arrow-left"></i> Voltar
                 </button>
-                <button onclick="enviarPedido('retirada')" class="w-full py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition">
-                    <i class="fas fa-store mr-1"></i> Retirada (Avançar)
+                <button type="submit" class="flex-1 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition">
+                    <i class="fab fa-whatsapp"></i> Finalizar Pedido
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 
-    <div id="cart-overlay" class="overlay" onclick="closeCart()"></div>
+    <div id="order-overlay" class="overlay" onclick="closeOrderDrawer()"></div>
     
-    <button onclick="openCart()" id="whatsapp-button" class="whatsapp-fixed">
-        <i class="fas fa-shopping-basket"></i> Abrir Comanda (<span id="cart-count">0</span>)
+    <button onclick="openOrderDrawer()" id="cart-floating-button" class="whatsapp-fixed">
+        <i class="fas fa-shopping-basket"></i> Comanda (<span id="cart-count">0</span>)
     </button>
     
     <script src="cardapio_logic.js"></script>
