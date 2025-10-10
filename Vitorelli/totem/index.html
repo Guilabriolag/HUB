@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title id="loja-nome">Cardápio Digital</title>
+    <title id="loja-title">Cardápio Digital</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="cardapio_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -12,10 +12,14 @@
     <header>
         <div class="header-content">
             <img id="loja-logo" src="placeholder_logo.png" alt="Logo da Loja" class="loja-logo">
-            <h1 id="loja-nome">Nome da Loja</h1>
+            <h1 id="header-loja-nome">Nome da Loja</h1> 
         </div>
         <div id="status-loja" class="status-badge"></div>
     </header>
+    
+    <nav id="category-menu" class="category-menu">
+        <p class="text-center text-gray-400">Carregando categorias...</p>
+    </nav>
 
     <main id="cardapio-container">
         <p class="text-center p-8 text-white">Carregando...</p>
