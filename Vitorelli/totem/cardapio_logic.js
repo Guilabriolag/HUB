@@ -2,7 +2,7 @@
 // CONFIGURAÇÃO CRÍTICA JSONBIN.io
 // ===========================================
 // *** PREENCHA COM SEUS DADOS! ***
-const BIN_ID = "SEU_BIN_ID_AQUI"; // <-- ID do Bin (O mesmo do CMS)
+const BIN_ID = "68e8478a43b1c97be960ce0c"; // <-- ID do Bin (O mesmo do CMS)
 const ACCESS_KEY = "SUA_CHAVE_DE_ACESSO_AQUI"; // <-- Sua Chave de Acesso (Leitura). Deixe "" se o Bin for público.
 
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
