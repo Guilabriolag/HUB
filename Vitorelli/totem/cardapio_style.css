@@ -15,7 +15,62 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    /* Garante que a rolagem funcione bem em mobile */
+    overflow-x: hidden; 
 }
+
+/* --- RESPONSIVIDADE DA LOGO (NOVO) --- */
+#loja-logo {
+    max-width: 180px; /* Tamanho máximo padrão para Desktop */
+    height: auto;
+    transition: max-width 0.3s;
+}
+
+/* Ajuste para Tablets (Ex: 768px ou menos) */
+@media (max-width: 768px) {
+    #loja-logo {
+        max-width: 140px; 
+    }
+}
+/* Ajuste para Celulares (Ex: 480px ou menos) */
+@media (max-width: 480px) {
+    #loja-logo {
+        max-width: 110px; 
+    }
+}
+/* --- FIM DA RESPONSIVIDADE DA LOGO --- */
+
+
+/* --- CORREÇÃO DO BOTÃO DA COMANDA (NOVO) --- */
+#cart-button {
+    position: fixed;
+    bottom: 20px; /* Posição ajustada */
+    right: 20px; /* Posição ajustada */
+    width: 65px; /* Tamanho ligeiramente maior para facilitar o toque */
+    height: 65px; 
+    background-color: var(--cor-botao-carrinho);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra mais visível */
+    z-index: 1000; /* ALTÍSSIMO z-index para garantir que esteja acima de TUDO e seja clicável */
+    transition: transform 0.2s, background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+#cart-button:hover {
+    background-color: #1eab53; /* Verde mais escuro ao passar o mouse */
+    transform: scale(1.05);
+}
+
+#cart-button:active {
+    transform: scale(0.95);
+}
+/* --- FIM DA CORREÇÃO DO BOTÃO DA COMANDA --- */
+
 
 /* --- Estilização do Cardápio --- */
 .category-menu {
@@ -127,7 +182,7 @@ body {
 }
 
 /* =============================================== */
-/* --- NOVO E ESTILIZAÇÃO DO DRAWER DO PEDIDO (COMANDA) --- */
+/* --- ESTILIZAÇÃO DO DRAWER DO PEDIDO (COMANDA) --- */
 /* =============================================== */
 
 /* Estrutura Base */
@@ -154,12 +209,11 @@ body {
     top: 0;
     right: 0;
     width: 100%;
-    max-width: 480px; /* Levemente maior */
+    max-width: 480px; 
     height: 100%;
     background: #fff;
-    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3); /* Sombra mais forte */
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3); 
     transform: translateX(100%);
-    /* Transição mais suave e rápida para a abertura */
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     z-index: 50;
     display: flex;
@@ -178,7 +232,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0; /* Não encolhe */
+    flex-shrink: 0; 
 }
 
 .drawer-header h2 {
@@ -190,7 +244,7 @@ body {
     flex-grow: 1;
     overflow-y: auto;
     padding: 25px;
-    background-color: #f9fafb; /* Light gray background for body */
+    background-color: #f9fafb; 
 }
 
 .drawer-footer {
@@ -206,7 +260,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px dashed #e5e7eb; /* Linha tracejada clean */
+    border-bottom: 1px dashed #e5e7eb; 
 }
 
 .cart-item:last-child {
@@ -345,7 +399,7 @@ body {
 .btn-finalizar-pedido {
     width: 100%;
     padding: 15px;
-    background-color: #10b981; /* Tailwind green-500 (pode ser ajustado) */
+    background-color: #10b981; 
     color: white;
     font-weight: 700;
     border-radius: 0.5rem;
@@ -355,5 +409,5 @@ body {
 }
 
 .btn-finalizar-pedido:hover {
-    background-color: #059669; /* Tailwind green-600 */
+    background-color: #059669; 
 }
