@@ -1,32 +1,27 @@
-// ===============================================
-// VARIÁVEIS DE CONFIGURAÇÃO E DADOS MOCK (SIMULADOS)
-// * Em produção, estes dados viriam de uma API/Banco de Dados
-// ===============================================
+// ===========================================
+// CONFIGURAÇÃO CRÍTICA JSONBIN.io
+// ===========================================
+// *** PREENCHA COM SEUS DADOS! ***
+const BIN_ID = "SEU_BIN_ID_AQUI"; // <-- ID do Bin (O mesmo do CMS)
+const ACCESS_KEY = "SUA_CHAVE_DE_ACESSO_AQUI"; // <-- Sua Chave de Acesso (Leitura). Deixe "" se o Bin for público.
 
-// Chaves do LocalStorage que serão definidas pelo CMS Admin (index1.html)
+const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+// ===========================================
+// VARIÁVEIS DE ESTADO GLOBAL (Serão populadas pelo JSONBin)
+// ===========================================
 const LS_KEYS = {
     PRIMARY_COLOR: 'totem_cor_primaria',
     SECONDARY_COLOR: 'totem_cor_secundaria',
     HEADER_COLOR: 'totem_header_color',
-    STORE_STATUS: 'totem_store_status' // Ex: 'aberto' ou 'fechado'
+    STORE_STATUS: 'totem_store_status'
 };
 
-// Estrutura de Bairros e Taxas (Exemplo)
-const BAIRROS = {
-    'Centro': 5.00,
-    'Vila Nova': 8.00,
-    'Jardim América': 10.00,
-    'Retirada': 0.00 // Bairro especial para Retirada
-};
-
-// MOCK de Produtos (Substitua por sua lógica real de carregamento)
-const DATA_PRODUTOS = [
-    { id: 1, categoria: 'Pizzas Salgadas', nome: 'Pizza Margherita', preco: 45.00, descricao: 'Molho de tomate, mussarela e manjericão.', imagem: 'img/margherita.jpg', disponivel: true },
-    { id: 2, categoria: 'Pizzas Salgadas', nome: 'Pizza Calabresa', preco: 42.00, descricao: 'Calabresa fatiada, cebola e azeitonas.', imagem: 'img/calabresa.jpg', disponivel: true },
-    { id: 3, categoria: 'Bebidas', nome: 'Coca-Cola 2L', preco: 12.00, descricao: 'Refrigerante de cola gelado.', imagem: 'img/coca.jpg', disponivel: true },
-    { id: 4, categoria: 'Pizzas Doces', nome: 'Pizza Brigadeiro', preco: 50.00, descricao: 'Massa fina, chocolate e granulado.', imagem: 'img/brigadeiro.jpg', disponivel: true },
-    { id: 5, categoria: 'Bebidas', nome: 'Água Mineral', preco: 4.00, descricao: 'Sem gás.', imagem: 'img/agua.jpg', disponivel: false }, // Exemplo de produto indisponível
-];
+let DADOS_INSTITUCIONAIS = {};
+let DADOS_LAYOUT = {};
+let DADOS_OPERACIONAIS = {};
+let CARDAPIO_DATA = [];
+let COBERTURA_DATA = [];
 
 // Carrinho de Pedidos (Estado Global)
 let cart = [];
@@ -35,47 +30,118 @@ let deliveryTax = 0;
 
 
 // ===============================================
-// FUNÇÕES DE TEMAS E ESTILOS (Lê do CMS)
+// FUNÇÕES DE CARREGAMENTO REMOTO JSONBIN (GET)
 // ===============================================
 
-/**
- * Carrega as cores do LocalStorage (definidas pelo CMS) e aplica ao CSS.
- * Também gerencia o fundo do cabeçalho de forma dinâmica.
- */
+async function carregarDadosDoCardapio() {
+    try {
+        const headers = {};
+        if (ACCESS_KEY && ACCESS_KEY.length > 0) {
+            // Essa linha é CRÍTICA se seu Bin for PRIVADO
+            headers['X-Access-Key'] = ACCESS_KEY; 
+        }
+
+        const response = await fetch(JSONBIN_URL + '/latest', {
+            method: 'GET',
+            headers: headers,
+            // ESSENCIAL para garantir que o navegador não use cache antigo
+            cache: 'no-store' 
+        });
+
+        if (!response.ok) {
+            throw new Error(`Falha ao carregar dados. Status: ${response.status}. Verifique as chaves.`);
+        }
+
+        const result = await response.json();
+        // Acessa o objeto principal de dados
+        const data = result.record.data || result.record; 
+
+        // 1. POPULAÇÃO DAS VARIÁVEIS GLOBAIS
+        DADOS_INSTITUCIONAIS = data.institucional || {};
+        DADOS_OPERACIONAIS = data.operacionais || {};
+        DADOS_LAYOUT = data.layout || {};
+        CARDAPIO_DATA = data.cardapio || [];
+        COBERTURA_DATA = DADOS_OPERACIONAIS.cobertura || []; // Array de {bairro, taxa}
+        
+        // 2. ATUALIZAÇÃO DO LOCAL STORAGE (para tema e status)
+        localStorage.setItem(LS_KEYS.PRIMARY_COLOR, DADOS_LAYOUT.corPrimaria || '#007bff');
+        localStorage.setItem(LS_KEYS.SECONDARY_COLOR, DADOS_LAYOUT.corSecundaria || '#ffc107');
+        localStorage.setItem(LS_KEYS.HEADER_COLOR, DADOS_LAYOUT.corCabecalho || '#FFFFFF');
+        localStorage.setItem(LS_KEYS.STORE_STATUS, DADOS_OPERACIONAIS.status || 'fechado');
+        
+        // 3. ATUALIZAÇÃO DE ELEMENTOS INICIAIS
+        document.getElementById('store-name-title').textContent = DADOS_INSTITUCIONAIS.nome || 'Cardápio Digital';
+        document.getElementById('store-name-header').textContent = DADOS_INSTITUCIONAIS.nome || 'Cardápio Digital';
+        
+        // 4. RENDERIZAÇÃO
+        loadAndApplyTheme(); 
+        
+        const initialCategory = CARDAPIO_DATA.filter(p => p.disponivel)[0]?.categoria || null;
+        if (initialCategory) {
+            renderCategoryMenu(initialCategory);
+        } else {
+             document.getElementById('cardapio-container').innerHTML = '<p class="text-center p-8 text-gray-500">Cardápio vazio ou sem produtos disponíveis no momento.</p>';
+             renderCategoryMenu(null);
+        }
+        
+        updateCartUI(); 
+        
+    } catch (error) {
+        console.error('❌ Erro de Carregamento:', error);
+        document.getElementById('cardapio-container').innerHTML = `
+            <div class="text-center bg-red-100 p-6 rounded-lg my-10 border border-red-300">
+                <p class="text-red-700 font-bold mb-2">ERRO CRÍTICO DE CONEXÃO!</p>
+                <p class="text-sm text-red-600">Não foi possível carregar os dados. Verifique se o BIN_ID e ACCESS_KEY estão corretos e se o Bin está ativo.</p>
+            </div>
+        `;
+    }
+}
+
+// ===============================================
+// FUNÇÕES DE TEMAS E ESTILOS (Lê do CMS/LocalStorage)
+// ===============================================
+
 function loadAndApplyTheme() {
     const root = document.documentElement;
     const corPrimaria = localStorage.getItem(LS_KEYS.PRIMARY_COLOR) || '#007bff';
     const corSecundaria = localStorage.getItem(LS_KEYS.SECONDARY_COLOR) || '#ffc107';
-    const corHeader = localStorage.getItem(LS_KEYS.HEADER_COLOR);
+    const corHeader = localStorage.getItem(LS_KEYS.HEADER_COLOR) || '#FFFFFF'; // Lendo do Storage
     const status = localStorage.getItem(LS_KEYS.STORE_STATUS) || 'fechado';
     
     // Aplica as variáveis CSS globais
     root.style.setProperty('--cor-primaria', corPrimaria);
     root.style.setProperty('--cor-secundaria', corSecundaria);
 
-    // LÓGICA ESPECÍFICA PARA O CABEÇALHO (O Foco do seu pedido)
+    // LÓGICA ESPECÍFICA PARA O CABEÇALHO
     const headerElement = document.querySelector('.main-header');
-    if (corHeader) {
-        if (corHeader === 'transparent') {
-            headerElement.style.backgroundColor = 'rgba(255, 255, 255, 0.0)';
-            headerElement.style.boxShadow = 'none';
+    if (headerElement) {
+        if (corHeader.toUpperCase() === 'TRANSPARENTE') {
+            headerElement.style.backgroundColor = 'transparent';
+            headerElement.classList.remove('shadow-md', 'bg-white');
+            headerElement.classList.add('shadow-none');
         } else {
-            // Se for uma cor sólida
             headerElement.style.backgroundColor = corHeader;
-            // headerElement.style.boxShadow pode ser mantido ou ajustado
+            headerElement.classList.remove('shadow-none', 'bg-transparent');
+            headerElement.classList.add('shadow-md');
         }
     }
 
     // Atualiza o Status da Loja
     const statusElement = document.getElementById('status-loja');
+    let statusText = 'FECHADO';
+    let statusClasses = 'bg-red-500';
+
+    if (status === 'aberto') {
+        statusText = 'ABERTO';
+        statusClasses = 'bg-green-500';
+    } else if (status === 'pausa') {
+        statusText = 'PAUSA';
+        statusClasses = 'bg-yellow-500';
+    }
+    
     if (statusElement) {
-        statusElement.textContent = status.toUpperCase();
-        statusElement.className = 'status-badge px-3 py-1 rounded-full text-xs font-semibold';
-        if (status === 'aberto') {
-            statusElement.classList.add('bg-green-500', 'text-white');
-        } else {
-            statusElement.classList.add('bg-red-500', 'text-white');
-        }
+        statusElement.textContent = statusText;
+        statusElement.className = `status-badge px-3 py-1 rounded-full text-xs font-semibold ${statusClasses} text-white`;
     }
 }
 
@@ -84,18 +150,15 @@ function loadAndApplyTheme() {
 // FUNÇÕES DE RENDERIZAÇÃO DO CARDÁPIO
 // ===============================================
 
-/**
- * Renderiza o menu de categorias.
- * @param {string} activeCategory - Categoria atualmente ativa.
- */
-function renderCategoryMenu(activeCategory = 'Pizzas Salgadas') {
+function renderCategoryMenu(activeCategory) {
     const menuContainer = document.getElementById('category-menu');
     if (!menuContainer) return;
     
-    // Extrai categorias únicas
-    const categories = [...new Set(DATA_PRODUTOS.map(p => p.categoria))];
+    // Extrai categorias únicas dos produtos DISPONÍVEIS
+    const availableProducts = CARDAPIO_DATA.filter(p => p.disponivel);
+    const categories = [...new Set(availableProducts.map(p => p.categoria).filter(c => c))];
     
-    menuContainer.innerHTML = ''; // Limpa o menu
+    menuContainer.innerHTML = '';
     
     categories.forEach(category => {
         const button = document.createElement('button');
@@ -108,14 +171,11 @@ function renderCategoryMenu(activeCategory = 'Pizzas Salgadas') {
         menuContainer.appendChild(button);
     });
     
-    // Filtra os produtos para a categoria inicial
-    filterProducts(activeCategory);
+    if (activeCategory) {
+       filterProducts(activeCategory);
+    }
 }
 
-/**
- * Filtra e renderiza os produtos de uma categoria.
- * @param {string} category - A categoria a ser exibida.
- */
 function filterProducts(category) {
     // 1. Atualiza o estado visual dos botões de categoria
     document.querySelectorAll('.category-button').forEach(btn => {
@@ -126,7 +186,7 @@ function filterProducts(category) {
     });
 
     // 2. Filtra os produtos
-    const filteredProducts = DATA_PRODUTOS.filter(p => p.categoria === category);
+    const filteredProducts = CARDAPIO_DATA.filter(p => p.categoria === category);
     const cardapioContainer = document.getElementById('cardapio-container');
     if (!cardapioContainer) return;
 
@@ -139,11 +199,11 @@ function filterProducts(category) {
             const isAvailable = product.disponivel;
             const buttonClass = isAvailable ? 'btn-add' : 'btn-indisponivel';
             const buttonText = isAvailable ? `<i class="fas fa-plus mr-1"></i> Adicionar` : 'Indisponível';
-            const cardClass = isAvailable ? '' : 'indisponivel';
+            const cardClass = isAvailable ? '' : 'indisponivel opacity-50 cursor-not-allowed';
             
             html += `
-                <div class="product-card ${cardClass}" data-product-id="${product.id}" onclick="${isAvailable ? `addToCart(${product.id})` : ''}">
-                    <img class="product-img" src="${product.imagem}" alt="${product.nome}" onerror="this.src='placeholder.png'">
+                <div class="product-card ${cardClass}" data-product-id="${product.id}" onclick="${isAvailable ? `addToCart('${product.id}')` : ''}">
+                    <img class="product-img" src="${product.urlImagem || 'placeholder.png'}" alt="${product.nome}" onerror="this.src='https://via.placeholder.com/100?text=Sem+Foto'">
                     <div class="product-info">
                         <h3 class="text-lg font-semibold text-gray-800">${product.nome}</h3>
                         <p class="product-description">${product.descricao}</p>
@@ -165,12 +225,9 @@ function filterProducts(category) {
 // FUNÇÕES DE GERENCIAMENTO DO CARRINHO
 // ===============================================
 
-/**
- * Adiciona um produto ao carrinho ou aumenta sua quantidade.
- * @param {number} productId - ID do produto.
- */
 function addToCart(productId) {
-    const product = DATA_PRODUTOS.find(p => p.id === productId);
+    // Procura o produto no array de dados vindo do JSONBin
+    const product = CARDAPIO_DATA.find(p => p.id === productId);
     if (!product || !product.disponivel) return;
 
     const existingItem = cart.find(item => item.id === productId);
@@ -189,37 +246,24 @@ function addToCart(productId) {
     updateCartUI();
 }
 
-/**
- * Atualiza a quantidade de um item no carrinho.
- * @param {number} productId - ID do produto.
- * @param {number} change - +1 para aumentar, -1 para diminuir.
- */
 function updateCartItemQty(productId, change) {
     const itemIndex = cart.findIndex(item => item.id === productId);
     if (itemIndex > -1) {
         cart[itemIndex].qty += change;
         
         if (cart[itemIndex].qty <= 0) {
-            cart.splice(itemIndex, 1); // Remove se a quantidade for 0
+            cart.splice(itemIndex, 1);
         }
         
         updateCartUI();
     }
 }
 
-/**
- * Remove completamente um item do carrinho.
- * @param {number} productId - ID do produto.
- */
 function removeCartItem(productId) {
     cart = cart.filter(item => item.id !== productId);
     updateCartUI();
 }
 
-
-/**
- * Atualiza a interface do carrinho (lista de itens, contagem e resumo).
- */
 function updateCartUI() {
     const cartList = document.getElementById('cart-items-list');
     const cartCount = document.getElementById('cart-count');
@@ -230,6 +274,8 @@ function updateCartUI() {
     cartCount.textContent = totalQty;
     
     // 2. Renderiza a lista de itens
+    // ... (Mantida a lógica do usuário)
+
     if (cart.length === 0) {
         cartList.innerHTML = `<p class="text-center text-gray-500 p-4">Seu carrinho está vazio.</p>`;
     } else {
@@ -240,24 +286,35 @@ function updateCartUI() {
                     <span class="text-sm text-gray-500">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
                 </div>
                 <div class="item-controls">
-                    <button onclick="updateCartItemQty(${item.id}, -1)" class="w-7 h-7 rounded-full text-lg"><i class="fas fa-minus"></i></button>
+                    <button onclick="updateCartItemQty('${item.id}', -1)" class="w-7 h-7 rounded-full text-lg"><i class="fas fa-minus"></i></button>
                     <span class="item-qty">${item.qty}</span>
-                    <button onclick="updateCartItemQty(${item.id}, 1)" class="w-7 h-7 rounded-full text-lg"><i class="fas fa-plus"></i></button>
-                    <button onclick="removeCartItem(${item.id})" class="w-7 h-7 rounded-full text-red-500 hover:text-white hover:bg-red-500"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="updateCartItemQty('${item.id}', 1)" class="w-7 h-7 rounded-full text-lg"><i class="fas fa-plus"></i></button>
+                    <button onclick="removeCartItem('${item.id}')" class="w-7 h-7 rounded-full text-red-500 hover:text-white hover:bg-red-500"><i class="fas fa-trash-alt"></i></button>
                 </div>
             </div>
         `).join('');
     }
-
+    
     // 3. Renderiza o resumo de totais
     const subtotal = cart.reduce((sum, item) => sum + (item.preco * item.qty), 0);
-    const totalGeral = subtotal + deliveryTax;
+    
+    const taxaServico = DADOS_LAYOUT.taxaServico || 0;
+    const valorTaxaServico = subtotal * (taxaServico / 100);
+    
+    const totalParcial = subtotal + valorTaxaServico;
+    const totalGeral = totalParcial + deliveryTax;
     
     cartSummary.innerHTML = `
         <div class="flex justify-between text-md text-gray-600 mb-1">
             <span>Subtotal:</span>
             <span>R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
         </div>
+        ${taxaServico > 0 ? `
+            <div class="flex justify-between text-md text-gray-600 mb-1">
+                <span>Taxa de Serviço (${taxaServico}%):</span>
+                <span>R$ ${valorTaxaServico.toFixed(2).replace('.', ',')}</span>
+            </div>
+        ` : ''}
         ${currentOrderType === 'delivery' ? `
             <div class="flex justify-between text-md text-red-500 mb-2">
                 <span>Taxa de Entrega:</span>
@@ -270,12 +327,11 @@ function updateCartUI() {
         </div>
     `;
 
-    // Garante que o Drawer só apareça se houver itens
     if (cart.length > 0) {
-        document.getElementById('cart-button').style.display = 'flex';
+        document.getElementById('cart-button').classList.remove('hidden');
     } else {
-        document.getElementById('cart-button').style.display = 'none';
-        closeOrderDrawer(); // Fecha o drawer se o carrinho esvaziar
+        document.getElementById('cart-button').classList.add('hidden');
+        closeOrderDrawer();
     }
 }
 
@@ -284,75 +340,76 @@ function updateCartUI() {
 // FUNÇÕES DE GERENCIAMENTO DO DRAWER DE PEDIDO
 // ===============================================
 
-/** Abre o painel lateral do pedido. */
 function openOrderDrawer() {
     if (cart.length === 0) return;
     document.getElementById('order-drawer').classList.add('open');
     document.getElementById('order-overlay').classList.add('active');
-    
-    // Garante que o primeiro passo seja exibido ao abrir
     resetOrderStep();
 }
 
-/** Fecha o painel lateral do pedido. */
 function closeOrderDrawer() {
     document.getElementById('order-drawer').classList.remove('open');
     document.getElementById('order-overlay').classList.remove('active');
 }
 
-/** Esconde todos os passos e mostra o inicial. */
 function resetOrderStep() {
     currentOrderType = null;
     deliveryTax = 0;
     document.getElementById('order-options-step').classList.remove('hidden');
     document.getElementById('form-retirada').classList.add('hidden');
     document.getElementById('form-delivery').classList.add('hidden');
-    updateCartUI(); // Recalcula o total sem taxa
+    updateCartUI();
 }
 
-/**
- * Seleciona o tipo de pedido e avança para o formulário correspondente.
- * @param {string} type - 'retirada' ou 'delivery'.
- */
 function selectOrderType(type) {
     if (cart.length === 0) return;
+    
+    // Verificação de Mínimo de Pedido
+    const subtotal = cart.reduce((sum, item) => sum + (item.preco * item.qty), 0);
+    const minimoPedido = DADOS_LAYOUT.minimoPedido || 0;
+    if (minimoPedido > 0 && subtotal < minimoPedido) {
+        alert(`O valor mínimo do pedido é R$ ${minimoPedido.toFixed(2).replace('.', ',')}. Seu subtotal atual é R$ ${subtotal.toFixed(2).replace('.', ',')}.`);
+        return;
+    }
     
     currentOrderType = type;
     document.getElementById('order-options-step').classList.add('hidden');
 
-    // Esconde/Mostra os formulários
     if (type === 'retirada') {
         document.getElementById('form-delivery').classList.add('hidden');
         document.getElementById('form-retirada').classList.remove('hidden');
     } else if (type === 'delivery') {
         document.getElementById('form-retirada').classList.add('hidden');
         document.getElementById('form-delivery').classList.remove('hidden');
-        renderBairroOptions(); // Renderiza as opções de bairro
-        updateDeliveryTax(); // Inicializa a taxa de entrega
+        renderBairroOptions(); 
+        updateDeliveryTax();
     }
 }
 
-/** Renderiza a lista de bairros no formulário de Delivery. */
 function renderBairroOptions() {
     const select = document.getElementById('delivery-bairro');
     if (!select) return;
     
     select.innerHTML = '<option value="">Selecione seu Bairro...</option>';
     
-    Object.keys(BAIRROS).forEach(bairro => {
-        if (bairro !== 'Retirada') { // Exclui a opção Retirada
+    // Itera sobre o array COBERTURA_DATA vindo do JSONBin
+    COBERTURA_DATA.forEach(item => {
+        if (item.bairro.toLowerCase() !== 'retirada') {
             const option = document.createElement('option');
-            option.value = bairro;
-            option.textContent = `${bairro} (R$ ${BAIRROS[bairro].toFixed(2).replace('.', ',')})`;
+            option.value = item.bairro;
+            option.textContent = `${item.bairro} (R$ ${item.taxa.toFixed(2).replace('.', ',')})`;
             select.appendChild(option);
         }
     });
 }
 
-/** Atualiza a taxa de entrega e o total do carrinho. */
 function updateDeliveryTax() {
     const selectedBairro = document.getElementById('delivery-bairro').value;
-    deliveryTax = BAIRROS[selectedBairro] || 0;
+    
+    // Encontra a taxa no array COBERTURA_DATA
+    const selectedCoverage = COBERTURA_DATA.find(item => item.bairro === selectedBairro);
+    
+    deliveryTax = selectedCoverage ? selectedCoverage.taxa : 0;
     
     const infoElement = document.getElementById('taxa-entrega-info');
     infoElement.textContent = `Taxa de Entrega: R$ ${deliveryTax.toFixed(2).replace('.', ',')}`;
@@ -360,28 +417,17 @@ function updateDeliveryTax() {
     updateCartUI();
 }
 
-// ===============================================
-// INICIALIZAÇÃO E LISTENERS DE EVENTOS
-// ===============================================
-
-/** Função principal de inicialização */
-function init() {
-    loadAndApplyTheme();
-    renderCategoryMenu();
-    updateCartUI();
-    
-    // Adiciona listener para submissão dos formulários (Simulação de Envio)
-    document.getElementById('form-retirada').addEventListener('submit', handleFormSubmit);
-    document.getElementById('form-delivery').addEventListener('submit', handleFormSubmit);
-
-    // Esconde o botão da comanda se o carrinho estiver vazio na inicialização
-    document.getElementById('cart-button').style.display = 'none';
-}
-
-/** Lida com o envio do formulário (simulando envio para WhatsApp) */
 function handleFormSubmit(event) {
     event.preventDefault();
     
+    // Verificação de Loja Aberta
+    const storeStatus = localStorage.getItem(LS_KEYS.STORE_STATUS);
+    if (storeStatus !== 'aberto') {
+        alert("A loja está fechada ou em pausa e não está aceitando pedidos no momento.");
+        return;
+    }
+    
+    // Montagem da Mensagem (Mantida a lógica do usuário)
     let mensagem = "";
     let nomeCliente = "";
 
@@ -397,39 +443,60 @@ function handleFormSubmit(event) {
         mensagem = `*PEDIDO PARA ENTREGA*\nCliente: ${nomeCliente}\nEndereço: ${endereco}, ${numero} - ${bairro}\nTaxa: R$ ${deliveryTax.toFixed(2).replace('.', ',')}\n\n`;
     }
 
-    // Detalhes dos Itens
     mensagem += `*ITENS DO PEDIDO (${cart.length} itens distintos)*:\n`;
     cart.forEach(item => {
         mensagem += `• ${item.qty}x ${item.nome} (R$ ${(item.preco * item.qty).toFixed(2).replace('.', ',')})\n`;
     });
     
     const subtotal = cart.reduce((sum, item) => sum + (item.preco * item.qty), 0);
-    const totalGeral = subtotal + deliveryTax;
+    const taxaServico = DADOS_LAYOUT.taxaServico || 0;
+    const valorTaxaServico = subtotal * (taxaServico / 100);
+    const totalGeral = subtotal + valorTaxaServico + deliveryTax;
 
     mensagem += `\n*RESUMO DE VALORES:*\n`;
     mensagem += `Subtotal: R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+    if (taxaServico > 0) {
+         mensagem += `Taxa de Serviço (${taxaServico}%): R$ ${valorTaxaServico.toFixed(2).replace('.', ',')}\n`;
+    }
     if (currentOrderType === 'delivery') {
         mensagem += `Taxa de Entrega: R$ ${deliveryTax.toFixed(2).replace('.', ',')}\n`;
     }
     mensagem += `TOTAL GERAL: R$ ${totalGeral.toFixed(2).replace('.', ',')}\n`;
 
+    // Informação de pagamento
+    if (DADOS_INSTITUCIONAIS.msgPagamento) {
+        mensagem += `\n*INFORMAÇÃO DE PAGAMENTO:*\n${DADOS_INSTITUCIONAIS.msgPagamento}\n`;
+    }
+
     // Monta o link do WhatsApp
-    const whatsappNumber = '5511999999999'; // Coloque o número do seu WhatsApp aqui
+    const whatsappNumber = DADOS_INSTITUCIONAIS.telPrincipal || '5511999999999'; 
     const encodedMessage = encodeURIComponent(mensagem);
     const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
     
-    // Abre a URL
     window.open(whatsappURL, '_blank');
 
-    // Limpa o carrinho e fecha o drawer
     cart = [];
     currentOrderType = null;
     deliveryTax = 0;
     updateCartUI();
     closeOrderDrawer();
-    alert(`Pedido de ${nomeCliente} enviado com sucesso!`);
+    alert(`Pedido de ${nomeCliente} enviado com sucesso! Aguarde a confirmação no WhatsApp.`);
 }
 
 
-// Inicia o script quando a página estiver totalmente carregada
+// ===============================================
+// INICIALIZAÇÃO
+// ===============================================
+
+function init() {
+    // 1. CARREGA DADOS REMOTOS E RENDERIZA O TEMA/MENU
+    carregarDadosDoCardapio();
+    
+    // 2. ADICIONA LISTENERS
+    document.getElementById('cart-button').addEventListener('click', openOrderDrawer);
+    document.getElementById('order-overlay').addEventListener('click', closeOrderDrawer);
+    document.getElementById('form-retirada').addEventListener('submit', handleFormSubmit);
+    document.getElementById('form-delivery').addEventListener('submit', handleFormSubmit);
+}
+
 document.addEventListener('DOMContentLoaded', init);
