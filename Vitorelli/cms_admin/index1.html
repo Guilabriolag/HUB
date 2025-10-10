@@ -1,4 +1,4 @@
-<!DOCTYPE-html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -49,7 +49,7 @@
             
             <section class="bg-yellow-50 p-6 rounded-xl shadow-lg border-t-4 border-yellow-600">
                 <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-key mr-2 text-yellow-600"></i> 0. Configuração de Acesso JSONBin</h2>
-                <p class="text-sm text-gray-600 mb-4">Insira o seu Bin ID e a Chave Mestra (Master Key) para autorizar a publicação de dados.
+                <p class="text-sm text-gray-600 mb-4">Insira o seu **Bin ID** e a **Chave Mestra (X-Master-Key)** para autorizar a publicação de dados.
                 *Estas chaves são salvas apenas no seu navegador.*</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -290,14 +290,13 @@
                 const hexFieldId = pickerId + 'Hex';
                 const hexField = document.getElementById(hexFieldId);
                 
-                if (hexValue.toUpperCase() === 'TRANSPARENTE' || hexValue.toUpperCase() === 'TRANSPARENTE') {
+                if (hexValue.toUpperCase() === 'TRANSPARENTE') {
                     picker.value = '#FFFFFF'; 
                     if (hexField) hexField.value = 'TRANSPARENTE';
                 } else if (/^#([0-9A-F]{3}){1,2}$/i.test(hexValue)) {
                     picker.value = hexValue.toUpperCase();
                     if (hexField) hexField.value = hexValue.toUpperCase();
                 } else if (pickerId.includes('corCabecalho') && hexValue.toUpperCase() === 'TRANSPARENTE') {
-                    // Permite que o campo HEX receba 'TRANSPARENTE' sem quebrar o picker
                     picker.value = '#FFFFFF';
                 }
             } catch (e) {
@@ -374,7 +373,7 @@
         function salvarCoresLocalmente() {
             const corPrimaria = document.getElementById('layout-corPrimaria').value.toUpperCase();
             const corSecundaria = document.getElementById('layout-corSecundaria').value.toUpperCase();
-            const corCabecalho = document.getElementById('layout-corCabecalhoHex').value.toUpperCase(); // Usa o campo de texto que armazena "TRANSPARENTE"
+            const corCabecalho = document.getElementById('layout-corCabecalhoHex').value.toUpperCase(); 
             const status = document.getElementById('operacionais-status').value;
             
             localStorage.setItem(PRIMARY_COLOR_KEY, corPrimaria);
@@ -387,18 +386,18 @@
         function aplicarDadosAoFormulario(data) {
             if (!data) return;
             
-            // Institucional (simplificado)
+            // Institucional 
             document.getElementById('institucional-nome').value = data.institucional?.nome || '';
             document.getElementById('institucional-urlLogo').value = data.institucional?.urlLogo || '';
             document.getElementById('institucional-telPrincipal').value = data.institucional?.telPrincipal || '';
             document.getElementById('institucional-msgPagamento').value = data.institucional?.msgPagamento || '';
             
-            // Operacional (simplificado)
+            // Operacional 
             document.getElementById('operacionais-status').value = data.operacionais?.status || 'fechado';
             document.getElementById('operacionais-horarioAbertura').value = data.operacionais?.horarioAbertura || '18:00';
             document.getElementById('operacionais-horarioFechamento').value = data.operacionais?.horarioFechamento || '23:30';
             
-            // Layout (simplificado)
+            // Layout 
             document.getElementById('layout-corPrimaria').value = data.layout?.corPrimaria || '#007bff';
             document.getElementById('layout-corSecundaria').value = data.layout?.corSecundaria || '#ffc107';
             document.getElementById('layout-corFundo').value = data.layout?.corFundo || '#f3f4f6';
@@ -512,27 +511,32 @@
 
             try {
                 mostrarStatus('Publicando remotamente via PUT...', 'bg-yellow-500');
+                
+                // --- PONTO CRÍTICO: PUT REQUEST ---
                 const response = await fetch(jsonBinUrl, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Master-Key': masterKey 
+                        'X-Master-Key': masterKey // DEVE SER A CHAVE MESTRA
                     },
-                    body: JSON.stringify(dataToSave)
+                    body: JSON.stringify(dataToSave) // ENVIA O JSON COMPLETO
                 });
+                
                 if (response.ok) {
                     salvarLocalmente(); 
                     mostrarStatus('✅ Publicado (Local e Remoto) com Sucesso!', 'bg-green-500');
                     carregarDados();
                 } else {
+                    // Trata erro de forma explícita
                     const errorText = await response.text();
-                    throw new Error(`Erro na API (${response.status}): ${errorText}`);
+                    console.error('Erro de API JSONBin:', errorText);
+                    throw new Error(`Erro na API (${response.status}): ${errorText.substring(0, 100)}...`);
                 }
 
             } catch (error) {
                 console.error('Erro ao publicar os dados:', error);
                 mostrarStatus(`❌ ERRO: Falha ao Publicar Remotamente.`, 'bg-red-500');
-                alert(`Erro ao publicar. Mensagem: ${error.message}. Confirme se o Bin ID e a Chave Mestra estão corretos.`);
+                alert(`Erro ao publicar. Verifique sua Chave Mestra e Bin ID (Seção 0). Mensagem: ${error.message}`);
             }
         }
         
@@ -720,4 +724,4 @@
         };
     </script>
 </body>
-                        </html>
+    </html>
