@@ -15,38 +15,55 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    /* Garante que a rolagem funcione bem em mobile */
     overflow-x: hidden; 
 }
 
-/* --- RESPONSIVIDADE DA LOGO (NOVO) --- */
-#loja-logo {
-    max-width: 180px; /* Tamanho máximo padrão para Desktop */
-    height: auto;
-    transition: max-width 0.3s;
+/* Estilos para o cabeçalho principal */
+.main-header {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaço entre a logo e o texto */
+    padding: 20px 24px;
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Ajuste para Tablets (Ex: 768px ou menos) */
-@media (max-width: 768px) {
-    #loja-logo {
-        max-width: 140px; 
-    }
+/* --- RESPONSIVIDADE DA LOGO (REFORÇADA) --- */
+#loja-logo {
+    /* Define o tamanho base da logo em desktop */
+    max-height: 50px; 
+    max-width: 180px; 
+    width: auto;
+    height: auto;
+    object-fit: contain; 
+    transition: all 0.3s;
 }
-/* Ajuste para Celulares (Ex: 480px ou menos) */
-@media (max-width: 480px) {
+
+/* Ajuste para Celulares (Ex: 640px ou menos) */
+@media (max-width: 640px) {
+    /* O cabeçalho se torna vertical em telas pequenas, empilhando logo e texto */
+    .main-header {
+        flex-direction: column; 
+        text-align: center;
+        gap: 10px; /* Reduz o espaçamento */
+        padding: 15px 15px;
+    }
+    
+    /* A logo diminui para telas menores */
     #loja-logo {
-        max-width: 110px; 
+        max-height: 40px; 
+        max-width: 130px; 
     }
 }
 /* --- FIM DA RESPONSIVIDADE DA LOGO --- */
 
 
-/* --- CORREÇÃO DO BOTÃO DA COMANDA (NOVO) --- */
+/* --- CORREÇÃO DO BOTÃO DA COMANDA --- */
 #cart-button {
     position: fixed;
-    bottom: 20px; /* Posição ajustada */
-    right: 20px; /* Posição ajustada */
-    width: 65px; /* Tamanho ligeiramente maior para facilitar o toque */
+    bottom: 20px; 
+    right: 20px; 
+    width: 65px; 
     height: 65px; 
     background-color: var(--cor-botao-carrinho);
     color: white;
@@ -54,15 +71,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra mais visível */
-    z-index: 1000; /* ALTÍSSIMO z-index para garantir que esteja acima de TUDO e seja clicável */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+    z-index: 1000; /* Prioridade máxima de clique */
     transition: transform 0.2s, background-color 0.2s;
     border: none;
     cursor: pointer;
 }
 
 #cart-button:hover {
-    background-color: #1eab53; /* Verde mais escuro ao passar o mouse */
+    background-color: #1eab53; 
     transform: scale(1.05);
 }
 
@@ -82,13 +99,13 @@ body {
     border: none;
     padding: 10px 15px;
     font-weight: 600;
-    color: #4b5563; /* Tailwind gray-600 */
+    color: #4b5563; 
     transition: all 0.2s;
-    border-bottom: 3px solid transparent; /* Para o efeito de ativação */
+    border-bottom: 3px solid transparent; 
 }
 
 .category-button:hover {
-    color: #111827; /* Tailwind gray-900 */
+    color: #111827; 
 }
 
 .category-button.active {
@@ -97,20 +114,20 @@ body {
 }
 
 .categoria-titulo {
-    font-size: 1.75rem; /* text-3xl */
-    font-weight: 700; /* font-bold */
-    color: #1f2937; /* Tailwind gray-800 */
+    font-size: 1.75rem; 
+    font-weight: 700; 
+    color: #1f2937; 
     margin-top: 2rem;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e5e7eb; /* Tailwind gray-200 */
+    border-bottom: 2px solid #e5e7eb; 
 }
 
 /* --- Estilização do Produto (Card) --- */
 .product-card {
     transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
     cursor: pointer;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem; 
     overflow: hidden;
     display: flex;
     flex-direction: row;
@@ -120,7 +137,7 @@ body {
 
 .product-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
 }
 
 .product-card.indisponivel {
@@ -141,8 +158,8 @@ body {
 }
 
 .product-description {
-    color: #6b7280; /* Tailwind gray-500 */
-    font-size: 0.875rem; /* text-sm */
+    color: #6b7280; 
+    font-size: 0.875rem; 
     margin-bottom: 0.5rem;
 }
 
@@ -154,7 +171,7 @@ body {
 }
 
 .product-price {
-    font-size: 1.25rem; /* text-xl */
+    font-size: 1.25rem; 
     font-weight: 700;
     color: var(--cor-primaria);
 }
@@ -169,11 +186,11 @@ body {
 }
 
 .btn-add:hover {
-    background-color: #1eab53; /* Um verde mais escuro */
+    background-color: #1eab53; 
 }
 
 .btn-indisponivel {
-    background-color: #9ca3af; /* Tailwind gray-400 */
+    background-color: #9ca3af; 
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
@@ -192,7 +209,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Fundo mais escuro */
+    background: rgba(0, 0, 0, 0.6); 
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s;
