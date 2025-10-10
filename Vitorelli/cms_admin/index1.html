@@ -129,6 +129,10 @@
                         <input type="color" id="layout-corFundo" class="mt-1 block w-full h-10 border border-gray-300 rounded-md" value="#f3f4f6">
                     </div>
                     <div>
+                        <label for="layout-corBotaoCarrinho" class="block text-sm font-medium text-gray-700">Cor Botão Comanda (Flutuante)</label>
+                        <input type="color" id="layout-corBotaoCarrinho" class="mt-1 block w-full h-10 border border-gray-300 rounded-md" value="#25D366">
+                    </div>
+                    <div>
                         <label for="layout-fonte" class="block text-sm font-medium text-gray-700">Fonte (Nome CSS)</label>
                         <input type="text" id="layout-fonte" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Inter, sans-serif" value="Inter, sans-serif">
                     </div>
@@ -304,7 +308,8 @@
                         fonte: document.getElementById('layout-fonte').value,
                         taxaServico: parseFloat(document.getElementById('layout-taxaServico').value) || 0,
                         minimoPedido: parseFloat(document.getElementById('layout-minimoPedido').value) || 0.00,
-                        urlMusica: document.getElementById('layout-urlMusica').value
+                        urlMusica: document.getElementById('layout-urlMusica').value,
+                        corBotaoCarrinho: document.getElementById('layout-corBotaoCarrinho').value // NOVO
                     },
                     cardapio: CARDAPIO_DATA
                 }
@@ -335,6 +340,7 @@
             document.getElementById('layout-taxaServico').value = data.layout.taxaServico || 0;
             document.getElementById('layout-minimoPedido').value = data.layout.minimoPedido || 0.00;
             document.getElementById('layout-urlMusica').value = data.layout.urlMusica || '';
+            document.getElementById('layout-corBotaoCarrinho').value = data.layout.corBotaoCarrinho || '#25D366'; // NOVO
             
             // Cobertura
             document.getElementById('cobertura-container').innerHTML = '';
@@ -342,7 +348,6 @@
 
             // Cardápio
             CARDAPIO_DATA = data.cardapio || [];
-            // Chamada de renderização corrigida
             renderizarCardapio();
         }
 
@@ -465,12 +470,11 @@
         // 5. GESTÃO DO CARDÁPIO (UI)
         // ===========================================
 
-        // CORRIGIDO: Esta função agora deve garantir que o container é limpo e repopulado
         function renderizarCardapio() {
             const container = document.getElementById('cardapio-container');
             const emptyMessage = document.getElementById('empty-cardapio-message');
             
-            // Limpa o container, mas mantém a mensagem de 'vazio' para controle
+            // 1. Limpa todos os filhos
             container.innerHTML = ''; 
 
             if (CARDAPIO_DATA.length === 0) {
@@ -478,7 +482,8 @@
                  container.appendChild(emptyMessage);
                  return;
             }
-            emptyMessage.classList.add('hidden'); // Esconde a mensagem se houver dados
+            // 2. Garante que a mensagem de vazio está escondida se houver dados
+            emptyMessage.classList.add('hidden'); 
 
             CARDAPIO_DATA.forEach(item => {
                 const card = document.createElement('div');
@@ -543,7 +548,8 @@
                 mostrarStatus(`Produto "${newProduct.nome}" adicionado.`, 'bg-red-500');
             }
 
-            renderizarCardapio();
+            // CORRIGIDO: Garante a re-renderização e salvamento imediato
+            renderizarCardapio(); 
             closeProductModal();
             salvarLocalmente(); 
         });
@@ -593,6 +599,8 @@
         function removerProduto(id) {
             if (confirm('Tem certeza que deseja remover este produto do cardápio?')) {
                 CARDAPIO_DATA = CARDAPIO_DATA.filter(p => p.id !== id);
+                
+                // CORRIGIDO: Garante a re-renderização e salvamento imediato
                 renderizarCardapio();
                 mostrarStatus('Produto removido.', 'bg-red-500');
                 salvarLocalmente(); 
