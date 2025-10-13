@@ -1,0 +1,192 @@
+/* =============================================== */
+/* ESTILOS CUSTOMIZADOS PARA O TEMA E LAYOUT (TELA DO CARDÁPIO) */
+/* =============================================== */
+:root {
+    /* Estas variáveis são definidas pelo JS, se não existirem, usam o fallback */
+    --cor-primaria: #007bff; 
+    --cor-secundaria: #ffc107; 
+    --cor-fundo: #f3f4f6;
+    --cor-botao-carrinho: #25D366;
+}
+
+body {
+    font-family: var(--fonte);
+    background-color: var(--cor-fundo);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow-x: hidden; 
+    /* Adiciona padding no topo para o conteúdo não ser coberto pelos headers fixos */
+    padding-top: 150px; /* AUMENTADO para acomodar Header e Menu */
+}
+
+/* --- CABEÇALHO FIXO E TRANSPARENTE (FORÇADO) --- */
+.main-header {
+    position: fixed !important; /* FORÇA POSIÇÃO FIXA */
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza a Logo */
+    gap: 20px;
+    padding: 10px 24px; 
+    background-color: rgba(255, 255, 255, 0.0) !important; /* FORÇA TRANSPARÊNCIA TOTAL */
+    box-shadow: none !important; /* Remove qualquer sombra */
+    z-index: 20; 
+    /* backdrop-filter: blur(0px); Removido para garantir transparência total */
+}
+
+#header-loja-nome, #status-loja {
+    display: none; 
+}
+
+/* --- BARRA DE MENU FIXA --- */
+.category-menu-wrapper {
+    position: fixed !important; /* FORÇA POSIÇÃO FIXA */
+    top: 70px; /* Posição correta após o header */
+    left: 0;
+    right: 0;
+    background-color: #ffffff; /* Fundo branco para a barra de menu */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    z-index: 15;
+}
+
+.category-menu {
+    border-bottom: none; 
+    padding: 10px 24px; 
+}
+
+/* --- RESPONSIVIDADE DA LOGO (AUMENTADA) --- */
+#loja-logo {
+    max-height: 70px !important; /* LOGO MAIOR NO DESKTOP */
+    max-width: 220px !important; 
+    width: auto;
+    height: auto;
+    object-fit: contain; 
+    transition: all 0.3s;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding-top: 120px; /* Ajuste para mobile */
+    }
+    .category-menu-wrapper {
+        top: 60px; /* Altura do header em mobile */
+    }
+    #loja-logo {
+        max-height: 50px !important; /* LOGO MAIOR NO MOBILE */
+        max-width: 160px !important; 
+    }
+}
+/* --- FIM DA RESPONSIVIDADE DA LOGO --- */
+
+
+/* --- BOTÕES DA CATEGORIA COM COR SECUNDÁRIA E EFEITO FLUTUANTE (FORÇADO) --- */
+.category-button {
+    background-color: var(--cor-secundaria) !important; /* FORÇA COR SECUNDÁRIA */
+    color: #1f2937; 
+    border: none;
+    padding: 8px 15px;
+    font-weight: 600;
+    border-radius: 9999px; 
+    transition: all 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+    flex-shrink: 0; 
+    border-bottom: none; 
+}
+
+.category-button:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); 
+    transform: translateY(-2px); 
+}
+
+.category-button.active {
+    background-color: var(--cor-primaria) !important; /* Ativo usa a Cor Primária */
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+}
+/* ------------------------------------------------------------------------- */
+
+
+/* --- BOTÃO DA COMANDA --- */
+#cart-button {
+    position: fixed;
+    bottom: 20px; 
+    right: 20px; 
+    width: 65px; 
+    height: 65px; 
+    background-color: var(--cor-botao-carrinho);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+    z-index: 1000; 
+    transition: transform 0.2s, background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+/* ... restante dos estilos ... */
+.categoria-titulo {
+    font-size: 1.75rem; 
+    font-weight: 700; 
+    color: #1f2937; 
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb; 
+}
+.product-card {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    cursor: pointer;
+    border-radius: 0.75rem; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    background-color: white; 
+}
+.product-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.product-price {
+    font-size: 1.25rem; 
+    font-weight: 700;
+    color: var(--cor-primaria);
+}
+.btn-add {
+    background-color: var(--cor-botao-carrinho);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.order-overlay {
+    z-index: 49;
+}
+.order-drawer {
+    z-index: 50;
+}
+.drawer-header {
+    background-color: var(--cor-primaria);
+    color: white;
+}
+.payment-option-card.selected {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+.btn-finalizar-pedido {
+    background-color: #10b981; 
+}
+.hidden {
+    display: none !important;
+}
+</style>
