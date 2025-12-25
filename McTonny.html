@@ -1,1 +1,173 @@
-02
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            --yellow: #FFBC0D;
+            --red: #DB0007;
+            --white: #ffffff;
+            --green: #25d366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* Configuração do Fundo com Filtro 0.33 */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiZl1L_GUxSnW2SBMcChsfViUS_eviLezZiHj-EZhH0cwEP4nv2JsUTdCZKQk0bv0NrzIn2vxO8-MGYpICfo1pHAQv8wpU0SkimX5WCvBxrvdygWkZro62UAtAER0e62qsn-corewoc0s2mRf959lhbfcfjV29QNoBH7AU7PPlHEaxQAYGV4qnCZipXUlKX/s678/images%20(52).jpeg') center/cover no-repeat;
+            filter: brightness(0.33); /* Claridade ajustada conforme solicitado */
+            z-index: 1;
+        }
+
+        /* Container Principal do Splash */
+        .splash-container {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Logo em 300px e Pop-up */
+        .logo-main {
+            width: 300px; /* Tamanho solicitado */
+            height: auto;
+            margin-bottom: 25px;
+            filter: drop-shadow(0px 0px 15px rgba(0,0,0,0.5));
+        }
+
+        .welcome-box h3 {
+            color: var(--yellow);
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+        }
+
+        .welcome-box p {
+            color: var(--white);
+            font-size: 1.1rem;
+            margin-bottom: 45px;
+            font-weight: 400;
+        }
+
+        /* Botões de Ação */
+        .actions {
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .btn-splash {
+            padding: 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-splash:active {
+            transform: scale(0.95);
+        }
+
+        .btn-cardapio {
+            background-color: var(--red);
+            color: var(--white);
+            border: 2px solid var(--yellow);
+        }
+
+        .btn-cardapio:hover {
+            background-color: #f50000;
+            box-shadow: 0 0 20px rgba(219, 0, 7, 0.6);
+        }
+
+        .btn-atendente {
+            background-color: var(--green);
+            color: var(--white);
+        }
+
+        .btn-atendente:hover {
+            background-color: #1ebe57;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.5);
+        }
+
+        /* Efeito de brilho sutil nos botões */
+        .btn-splash::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.2);
+            transition: 0.5s;
+            pointer-events: none;
+        }
+
+        .btn-splash:hover::after {
+            left: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-overlay"></div>
+
+    <main class="splash-container">
+        <div class="animate__animated animate__zoomIn">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEid451Ko1owcmZXRDAw47z-UD237K9HuBrGhVI_-1CBasexYPIMsobb7ZNKdaS8AfJqot4vuGP0amIOzfA5Dyfqm7PM7LBML4vqfAWnoaP3zsAj7kXI3Z58WiUdLqoJQUfqgayntHJ1agfD3lMEcwnw-1tWoF1GQwGBNXNy5JULv2c_FhcYr8oR69dkczN_/s1536/copilot_image_1766540362692.jpeg" 
+                 alt="McTonny Logo" class="logo-main">
+        </div>
+
+        <div class="welcome-box animate__animated animate__fadeInUp animate__delay-1s">
+            <h3>Seja bem-vindo</h3>
+            <p>O hambúrguer que você respeita!</p>
+        </div>
+
+        <div class="actions animate__animated animate__fadeInUp animate__delay-1s">
+            <a href="McCardapio.html" class="btn-splash btn-cardapio">
+                📖 VER CARDÁPIO
+            </a>
+            
+            <a href="https://wa.me/5511943198316?text=Olá! Gostaria de fazer um pedido ou tirar uma dúvida." 
+               target="_blank" class="btn-splash btn-atendente">
+                💬 ATENDIMENTO
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>
