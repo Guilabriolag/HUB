@@ -20,7 +20,6 @@
             --font-secundaria: 'Montserrat', sans-serif;
         }
 
-        /* Adiciona box-sizing para evitar problemas de layout */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -63,7 +62,6 @@
             transform: translateY(-2px);
         }
         
-        /* Cabeçalho Público */
         header {
             padding: 20px 0;
             display: flex;
@@ -77,7 +75,6 @@
             height: 40px;
         }
 
-        /* Seção Principal (Hero) */
         .hero-section {
             text-align: center;
             padding: 80px 20px;
@@ -86,18 +83,17 @@
 
         .hero-section h1 {
             font-family: var(--font-secundaria);
-            font-size: clamp(2rem, 5vw, 3rem); /* Fonte responsiva */
+            font-size: clamp(2rem, 5vw, 3rem);
             margin: 0;
         }
 
         .hero-section p {
             max-width: 600px;
             margin: 20px auto 0;
-            font-size: clamp(1rem, 2vw, 1.1rem); /* Fonte responsiva */
+            font-size: clamp(1rem, 2vw, 1.1rem);
             color: #555;
         }
 
-        /* Galeria de Projetos */
         .gallery-section {
             padding: 60px 0;
         }
@@ -114,7 +110,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer; /* Adicionado para indicar que é clicável */
         }
 
         .project-card:hover {
@@ -143,6 +138,7 @@
             font-size: 0.9rem;
             color: #777;
             margin: 0 0 20px;
+            min-height: 45px;
         }
 
         .card-content a.btn {
@@ -154,7 +150,6 @@
             font-weight: 600;
         }
 
-        /* CTA Section */
         .cta-section {
             background-color: var(--amarelo);
             text-align: center;
@@ -167,13 +162,6 @@
             margin: 0 0 15px;
         }
 
-        .cta-section p {
-            font-size: 1.1rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
-        }
-
-        /* Rodapé */
         footer {
             background-color: var(--cinza-escuro);
             color: #888;
@@ -195,48 +183,41 @@
     <section class="hero-section">
         <div class="container">
             <h1>Nossos Empreendimentos</h1>
-            <p>Conheça alguns dos projetos que criamos em parceria com nossos clientes, transformando suas visões em realidade digital e interativa.</p>
+            <p>Conheça os projetos reais desenvolvidos pela LABRIOLAG, focados em inovação e experiência digital.</p>
         </div>
     </section>
 
     <section class="gallery-section">
         <div class="container">
             <div class="gallery-grid">
+                
                 <div class="project-card">
-                    <img src="https://placehold.co/600x400/2962ff/fff?text=Padaria+do+Ze" alt="Padaria do Zé">
+                    <img src="https://placehold.co/600x400/0066FF/fff?text=VITORELLI" alt="Vitorelli">
                     <div class="card-content">
-                        <h3>Padaria do Zé</h3>
-                        <p>Um site institucional com catálogo de produtos e blog para receitas.</p>
-                        <a href="#" class="btn">Ver Projeto</a>
+                        <h3>Vitorelli</h3>
+                        <p>Landing page elegante com design focado em conversão e identidade visual marcante.</p>
+                        <a href="https://guilabriolag.github.io/VITORELLI/" target="_blank" class="btn">Ver Projeto</a>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <img src="https://placehold.co/600x400/FFCC00/000?text=MimoGame" alt="MimoGame">
+                    <img src="https://placehold.co/600x400/FFCC00/000?text=McTonny" alt="McTonny">
                     <div class="card-content">
-                        <h3>MimoGame</h3>
-                        <p>Um jogo digital de tabuleiro, criado para engajar clientes de forma divertida.</p>
-                        <a href="#" class="btn">Ver Projeto</a>
+                        <h3>McTonny</h3>
+                        <p>Interface moderna desenvolvida para o setor alimentício, otimizando a vitrine de produtos.</p>
+                        <a href="https://guilabriolag.github.io/McTonny" target="_blank" class="btn">Ver Projeto</a>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <img src="https://placehold.co/600x400/000/fff?text=GAST%C3%83O" alt="GASTÃO">
+                    <img src="https://placehold.co/600x400/1a1a1a/fff?text=LabSystem" alt="LabSystem">
                     <div class="card-content">
-                        <h3>GASTÃO</h3>
-                        <p>Plataforma para gestão de agendamentos e automação de serviços.</p>
-                        <a href="#" class="btn">Ver Projeto</a>
+                        <h3>LabSystem</h3>
+                        <p>Sistema de gestão inteligente voltado para automação de processos e controle interno.</p>
+                        <a href="https://guilabriolag.github.io/LabSystem" target="_blank" class="btn">Ver Projeto</a>
                     </div>
                 </div>
 
-                <div class="project-card">
-                    <img src="https://placehold.co/600x400/2962ff/fff?text=Imob_Lab" alt="Imob_Lab">
-                    <div class="card-content">
-                        <h3>Imob_Lab</h3>
-                        <p>Ferramenta completa para corretores de imóveis com tours 3D interativos.</p>
-                        <a href="#" class="btn">Ver Projeto</a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
