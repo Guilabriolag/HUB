@@ -10,26 +10,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .text-gradient { background: linear-gradient(to right, #128C7E, #25D366); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
         .bg-whatsapp { background-color: #25D366; }
         .bg-dark-green { background-color: #075E54; }
         
         /* Carrossel Infinito */
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-250px * 3)); } }
-        .slider { height: 120px; overflow: hidden; position: relative; width: 100%; }
-        .slide-track { animation: scroll 15s linear infinite; display: flex; width: calc(250px * 6); }
-        .slide { width: 250px; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
-        .slide img { max-height: 70px; filter: grayscale(100%); transition: 0.5s; opacity: 0.5; border-radius: 15px; }
-        .slide img:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
+        .slider { height: 140px; overflow: hidden; position: relative; width: 100%; }
+        .slide-track { animation: scroll 20s linear infinite; display: flex; width: calc(250px * 6); }
+        .slide { width: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        
+        /* Logos com estado colorido via JS */
+        .slide img { max-height: 80px; filter: grayscale(100%); transition: all 0.6s ease; opacity: 0.4; border-radius: 15px; }
+        .logos-active img { filter: grayscale(0%) !important; opacity: 1 !important; transform: scale(1.05); }
+        .slide img:hover { transform: scale(1.1) !important; opacity: 1 !important; filter: grayscale(0%) !important; }
+
+        /* Seta Indicadora Animada */
+        #click-indicator { display: none; color: #25D366; font-size: 2rem; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         /* FAQ Chat Style */
         .chat-bg { background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color: #e5ddd5; }
         .bubble { max-width: 80%; padding: 12px; margin: 8px 0; border-radius: 12px; font-size: 0.9rem; position: relative; }
-        .bubble-in { background: white; align-self: flex-start; border-top-left-radius: 0; }
-        .bubble-out { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; }
+        .bubble-in { background: white; align-self: flex-start; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .bubble-out { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
-        /* Modal Iframe */
         #demoModal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.95); }
     </style>
 </head>
@@ -40,36 +45,47 @@
         <iframe id="demoFrame" src="" class="w-full h-full border-none"></iframe>
     </div>
 
-    <section class="relative pt-20 pb-32 px-6 overflow-hidden">
+    <nav class="p-6 flex justify-center bg-white shadow-sm">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" 
+             alt="LabZap Logo" class="h-16 animate__animated animate__fadeIn">
+    </nav>
+
+    <section class="relative pt-12 pb-24 px-6">
         <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
             <div class="animate__animated animate__fadeInLeft">
-                <span class="text-whatsapp font-black tracking-widest uppercase text-sm">Adeus, bagunça no WhatsApp</span>
+                <span class="text-whatsapp font-black tracking-widest uppercase text-sm">O fim da confusão no seu delivery</span>
                 <h1 class="text-5xl md:text-7xl font-black text-slate-900 leading-tight mt-4">
                     Pare de <span class="text-red-500">anotar</span> e comece a <span class="text-whatsapp">vender.</span>
                 </h1>
                 <p class="text-xl text-slate-600 mt-8 leading-relaxed">
-                    Você não precisa de um site. Você precisa que o seu cliente faça o pedido sozinho e ele chegue <strong>mastigado</strong> no seu celular. Sem erros, sem áudios longos, sem perder tempo.
+                    Você não precisa de um site complexo. Você precisa que o seu cliente faça o pedido sozinho e ele chegue <strong>pronto para a cozinha</strong> no seu celular.
                 </p>
                 <div class="mt-10 flex flex-wrap gap-4">
-                    <a href="comprar.html" class="bg-dark-green text-white px-10 py-5 rounded-full font-black text-lg shadow-2xl hover:bg-whatsapp transition-all">ATIVAR MINHA VITRINE</a>
-                    <a href="#cases" class="border-2 border-slate-200 px-10 py-5 rounded-full font-bold text-lg hover:bg-slate-50 transition-all">Ver Exemplos</a>
+                    <a href="comprar.html" class="bg-dark-green text-white px-10 py-5 rounded-full font-black text-lg shadow-2xl hover:bg-whatsapp transition-all">ATIVAR MEU LABZAP</a>
+                    <button onclick="activateExamples()" class="border-2 border-slate-200 px-10 py-5 rounded-full font-bold text-lg hover:bg-slate-50 transition-all flex items-center gap-2">
+                        Ver Exemplos <i class="fas fa-eye"></i>
+                    </button>
                 </div>
             </div>
             <div class="relative animate__animated animate__zoomIn">
                 <div class="absolute inset-0 bg-whatsapp/10 blur-[100px] rounded-full"></div>
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
-                     class="w-full max-w-md mx-auto relative z-10 drop-shadow-2xl rotate-3">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgRCJdCD1EtjJLwrht8nZSPhvZJ11fyBkVGj_QVik2UHwPMlmYZGZP1SBjuAfL-fMXH62TZ6ttYGDnJJ3rhsyUfS1g87LKKDaE5NoOPrp1j2TER-Oz2hL_4aC9QcuA4r7Ekm34ScSqa3hskdHoVpdd68tiqp0YeFPKxG_HUKQ7Ue6ZETAP-scQ3fN0p-jbo/s1024/image_1766818375988.jpeg" 
+                     class="w-full max-w-lg mx-auto relative z-10 drop-shadow-2xl rounded-3xl border-8 border-white">
             </div>
         </div>
     </section>
 
     <section id="cases" class="py-20 bg-slate-50 border-y border-slate-100">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-black italic tracking-tighter uppercase">Tecnologia que move negócios</h2>
-                <p class="text-slate-500">Clique nas marcas para testar a experiência real</p>
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="mb-12">
+                <h2 class="text-3xl font-black italic tracking-tighter uppercase">Empresas que escalaram com LabZap</h2>
+                <div id="click-indicator" class="mt-4">
+                    <p class="text-sm font-black mb-2 uppercase">Toque na logo para testar!</p>
+                    <i class="fas fa-arrow-down"></i>
+                </div>
             </div>
-            <div class="slider">
+            
+            <div class="slider" id="logoSlider">
                 <div class="slide-track">
                     <div class="slide" onclick="openDemo('https://guilabriolag.github.io/PONTOX/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg"></div>
                     <div class="slide" onclick="openDemo('https://guilabriolag.github.io/VITORELLI/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png"></div>
@@ -83,32 +99,28 @@
     </section>
 
     <section class="py-24 px-6 bg-white">
-        <div class="max-w-5xl mx-auto">
-            <h2 class="text-4xl font-black text-center mb-20">Como sua vida muda com o LabZap?</h2>
-            
-            <div class="grid md:grid-cols-2 gap-16">
-                <div class="space-y-8">
-                    <h3 class="text-xl font-bold text-red-500 uppercase tracking-widest italic">A Bagunça Atual</h3>
-                    <div class="p-6 bg-red-50 rounded-3xl border-l-8 border-red-500 opacity-60">
-                        <p class="text-sm font-bold text-red-900">"Manda foto do cardápio?"</p>
-                        <p class="text-xs text-red-700 mt-2">Você para o que está fazendo, procura a foto, manda, e o cliente demora 10 minutos para responder.</p>
-                    </div>
-                    <div class="p-6 bg-red-50 rounded-3xl border-l-8 border-red-500 opacity-60">
-                        <p class="text-sm font-bold text-red-900">"Qual o valor da entrega pro Centro?"</p>
-                        <p class="text-xs text-red-700 mt-2">Você tem que consultar uma tabela manual enquanto o pedido esfria ou outro cliente espera.</p>
-                    </div>
+        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16">
+            <div class="space-y-8">
+                <h3 class="text-xl font-bold text-red-500 uppercase italic">Como é hoje:</h3>
+                <div class="p-6 bg-red-50 rounded-3xl border-l-8 border-red-500">
+                    <p class="font-bold">Tempo desperdiçado</p>
+                    <p class="text-sm text-red-700 mt-2">Você para a produção para responder "qual o preço?" ou "manda o cardápio?".</p>
                 </div>
+                <div class="p-6 bg-red-50 rounded-3xl border-l-8 border-red-500">
+                    <p class="font-bold">Pedidos errados</p>
+                    <p class="text-sm text-red-700 mt-2">Áudios confusos e mensagens picadas geram erros na cozinha e prejuízo.</p>
+                </div>
+            </div>
 
-                <div class="space-y-8">
-                    <h3 class="text-xl font-bold text-whatsapp uppercase tracking-widest italic">O Efeito LabZap</h3>
-                    <div class="p-6 bg-green-50 rounded-3xl border-l-8 border-whatsapp animate__animated animate__fadeIn">
-                        <p class="text-sm font-bold text-green-900">Link na Bio do Instagram</p>
-                        <p class="text-xs text-green-700 mt-2">O cliente clica, escolhe os adicionais, coloca o endereço e o frete já soma sozinho. Autonomia total.</p>
-                    </div>
-                    <div class="p-6 bg-green-50 rounded-3xl border-l-8 border-whatsapp animate__animated animate__fadeIn">
-                        <p class="text-sm font-bold text-green-900">Pedido "Cozinha-Ready"</p>
-                        <p class="text-xs text-green-700 mt-2">Você recebe uma mensagem organizada: Nome, Itens, Forma de Pagamento e Endereço. É só imprimir e preparar.</p>
-                    </div>
+            <div class="space-y-8">
+                <h3 class="text-xl font-bold text-whatsapp uppercase italic">Com LabZap:</h3>
+                <div class="p-6 bg-green-50 rounded-3xl border-l-8 border-whatsapp">
+                    <p class="font-bold">Venda 24h no Piloto Automático</p>
+                    <p class="text-sm text-green-700 mt-2">Seu cliente escolhe, monta o pedido e o frete calcula sozinho via link.</p>
+                </div>
+                <div class="p-6 bg-green-50 rounded-3xl border-l-8 border-whatsapp">
+                    <p class="font-bold">WhatsApp Organizado</p>
+                    <p class="text-sm text-green-700 mt-2">O pedido chega formatado: Nome, Itens, Endereço e Pagamento. Só preparar.</p>
                 </div>
             </div>
         </div>
@@ -116,40 +128,37 @@
 
     <section class="py-24 chat-bg px-6">
         <div class="max-w-xl mx-auto flex flex-col">
-            <div class="text-center mb-8">
-                <span class="bg-dark-green text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Dúvidas Frequentes</span>
-            </div>
-            
-            <div class="bubble bubble-in animate__animated animate__fadeInLeft">O sistema cobra comissão por venda?</div>
-            <div class="bubble bubble-out animate__animated animate__fadeInRight"><strong>Zero comissão.</strong> O lucro é todo seu. Você só paga a licença anual ou o suporte mensal.</div>
-            
-            <div class="bubble bubble-in animate__animated animate__fadeInLeft mt-4">Preciso instalar algum programa no computador?</div>
-            <div class="bubble bubble-out animate__animated animate__fadeInRight">Não. O LabZap é 100% online. Você acessa as vendas pelo seu próprio WhatsApp em qualquer lugar do mundo.</div>
-            
-            <div class="bubble bubble-in animate__animated animate__fadeInLeft mt-4">Funciona para quem entrega via motoboy próprio?</div>
-            <div class="bubble bubble-out animate__animated animate__fadeInRight">Perfeito! Nós configuramos seus bairros e taxas. O cliente já sabe quanto vai pagar antes mesmo de te chamar.</div>
+            <div class="bubble bubble-in">Vou ter que pagar porcentagem por venda?</div>
+            <div class="bubble bubble-out"><strong>Nunca.</strong> O LabZap é seu. O lucro fica 100% no seu bolso.</div>
+            <div class="bubble bubble-in mt-4">Preciso ter computador?</div>
+            <div class="bubble bubble-out">Não! Você gerencia tudo pelo celular. Se você usa WhatsApp, sabe usar o LabZap.</div>
         </div>
     </section>
 
-    <section class="py-24 bg-dark-green text-white text-center px-6">
-        <h2 class="text-4xl md:text-6xl font-black mb-8 italic tracking-tighter">Chega de perder dinheiro no WhatsApp.</h2>
-        <p class="text-xl text-white/70 mb-12 max-w-2xl mx-auto">Sua vitrine digital profissional pronta em 48 horas.</p>
-        <a href="comprar.html" class="inline-block bg-whatsapp text-white px-16 py-6 rounded-full text-2xl font-black shadow-2xl hover:scale-105 transition-all">
-            ESCOLHER MEU PLANO AGORA
-        </a>
-    </section>
-
     <footer class="py-12 bg-white text-center border-t border-slate-100">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="w-12 mx-auto mb-4 grayscale opacity-50">
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">© 2025 LabZap by Labriolag</p>
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" class="h-10 mx-auto mb-4 grayscale opacity-50">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">© 2025 LabZap • Tecnologia Labriolag</p>
     </footer>
 
     <script>
+        function activateExamples() {
+            // Rola até a seção
+            document.getElementById('cases').scrollIntoView({ behavior: 'smooth' });
+            
+            // Ativa as logos coloridas e a seta
+            setTimeout(() => {
+                document.getElementById('logoSlider').classList.add('logos-active');
+                document.getElementById('click-indicator').style.display = 'block';
+                document.getElementById('click-indicator').classList.add('animate__animated', 'animate__fadeInDown');
+            }, 500);
+        }
+
         function openDemo(url) {
             document.getElementById('demoFrame').src = url;
             document.getElementById('demoModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
+
         function closeDemo() {
             document.getElementById('demoFrame').src = '';
             document.getElementById('demoModal').style.display = 'none';
