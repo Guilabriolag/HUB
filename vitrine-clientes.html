@@ -3,238 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABRIOLAG | Vitrine de Clientes</title>
+    <title>LABRIOLAG | Vitrine de Inovação</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Paleta de Cores e Estilos Base */
         :root {
             --azul-eletrico: #0066FF;
             --amarelo: #FFCC00;
             --preto: #000000;
             --branco: #FFFFFF;
             --cinza-escuro: #1a1a1a;
-            --font-principal: 'Poppins', sans-serif;
-            --font-secundaria: 'Montserrat', sans-serif;
+            --wp-green: #25D366;
         }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+
+        /* --- LOGICA DO FLIP CARD NO POPUP --- */
+        .flip-container { perspective: 1000px; width: 100%; max-width: 400px; height: 500px; margin: auto; }
+        .flip-inner { 
+            position: relative; width: 100%; height: 100%; 
+            transition: transform 0.6s; transform-style: preserve-3d; 
+        }
+        .is-flipped { transform: rotateY(180deg); }
+        .flip-front, .flip-back { 
+            position: absolute; width: 100%; height: 100%; 
+            backface-visibility: hidden; border-radius: 20px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px;
+        }
+        .flip-front { background: white; }
+        .flip-back { background: white; transform: rotateY(180deg); }
+
+        /* --- TOAST --- */
+        #toast {
+            visibility: hidden; min-width: 300px; background-color: #333; color: #fff;
+            text-align: center; border-radius: 15px; padding: 20px; position: fixed;
+            z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        #toast.show { visibility: visible; animation: fadeInUp 0.5s; }
+
+        /* --- OVERLAY POPUP --- */
+        #overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            z-index: 90; backdrop-filter: blur(5px); align-items: center; justify-content: center;
         }
 
-        body {
-            font-family: var(--font-principal);
-            background-color: var(--branco);
-            color: var(--preto);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
+        /* --- IFRAME FULLSCREEN --- */
+        #iframeContainer {
+            display: none; position: fixed; inset: 0; background: white; z-index: 200;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        a {
-            text-decoration: none;
-            color: var(--preto);
-            transition: color 0.3s ease;
-        }
-        
-        button {
-            background-color: var(--azul-eletrico);
-            color: var(--branco);
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #0052cc;
-            transform: translateY(-2px);
-        }
-        
-        header {
-            padding: 20px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            background-color: var(--branco);
-        }
-
-        .logo img {
-            height: 40px;
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 80px 20px;
-            background-color: #f0f2f5;
-        }
-
-        .hero-section h1 {
-            font-family: var(--font-secundaria);
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin: 0;
-        }
-
-        .hero-section p {
-            max-width: 600px;
-            margin: 20px auto 0;
-            font-size: clamp(1rem, 2vw, 1.1rem);
-            color: #555;
-        }
-
-        .gallery-section {
-            padding: 60px 0;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .project-card {
-            background-color: var(--branco);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .project-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .card-content {
-            padding: 20px;
-            text-align: left;
-        }
-
-        .card-content h3 {
-            font-family: var(--font-secundaria);
-            margin: 0 0 10px;
-        }
-
-        .card-content p {
-            font-size: 0.9rem;
-            color: #777;
-            margin: 0 0 20px;
-            min-height: 45px;
-        }
-
-        .card-content a.btn {
-            display: inline-block;
-            background-color: var(--azul-eletrico);
-            color: var(--branco);
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 600;
-        }
-
-        .cta-section {
-            background-color: var(--amarelo);
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .cta-section h2 {
-            font-family: var(--font-secundaria);
-            font-size: 2rem;
-            margin: 0 0 15px;
-        }
-
-        footer {
-            background-color: var(--cinza-escuro);
-            color: #888;
-            padding: 20px 0;
-            text-align: center;
-        }
+        @keyframes fadeInUp { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">
-            <a href="#">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Logo LABRIOLAG">
-            </a>
-        </div>
+    <div id="iframeContainer">
+        <button onclick="closeIframe()" class="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full z-[210] font-bold">X</button>
+        <iframe id="mainIframe" src="" class="w-full h-full border-none"></iframe>
+    </div>
+
+    <div id="overlay" onclick="closeOverlay(event)">
+        <div id="modalContent" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <header class="bg-white py-6 shadow-sm flex justify-center">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Logo" class="h-10">
     </header>
 
-    <section class="hero-section">
-        <div class="container">
-            <h1>Nossos Empreendimentos</h1>
-            <p>Conheça os projetos reais desenvolvidos pela LABRIOLAG, focados em inovação e experiência digital.</p>
-        </div>
+    <section class="text-center py-20 bg-slate-50">
+        <h1 class="text-4xl font-bold font-['Montserrat'] uppercase tracking-tighter">Ecossistema Labriolag</h1>
+        <p class="text-gray-500 mt-4 max-w-xl mx-auto">Selecione uma de nossas divisões tecnológicas para explorar.</p>
     </section>
 
-    <section class="gallery-section">
-        <div class="container">
-            <div class="gallery-grid">
-                
-                <div class="project-card">
-                    <img src="https://placehold.co/600x400/0066FF/fff?text=VITORELLI" alt="Vitorelli">
-                    <div class="card-content">
-                        <h3>Vitorelli</h3>
-                        <p>Landing page elegante com design focado em conversão e identidade visual marcante.</p>
-                        <a href="https://guilabriolag.github.io/VITORELLI/" target="_blank" class="btn">Ver Projeto</a>
+    <section class="container mx-auto px-6 py-12">
+        <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+            
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-b-4 border-[#25D366] group cursor-pointer" onclick="openLabZapToast()">
+                <div class="p-8 text-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                        <i class="fab fa-whatsapp text-4xl text-[#25D366]"></i>
                     </div>
+                    <h3 class="text-2xl font-bold">LabZap</h3>
+                    <p class="text-gray-500 text-sm mt-2">Cardápios Digitais Inteligentes para WhatsApp.</p>
+                    <span class="inline-block mt-6 text-xs font-black text-green-600 uppercase tracking-widest">Acessar Projeto</span>
                 </div>
-
-                <div class="project-card">
-                    <img src="https://placehold.co/600x400/FFCC00/000?text=McTonny" alt="McTonny">
-                    <div class="card-content">
-                        <h3>McTonny</h3>
-                        <p>Interface moderna desenvolvida para o setor alimentício, otimizando a vitrine de produtos.</p>
-                        <a href="https://www.labriolag.shop/McTonny" target="_blank" class="btn">Ver Projeto</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <img src="https://placehold.co/600x400/1a1a1a/fff?text=LabSystem" alt="LabSystem">
-                    <div class="card-content">
-                        <h3>LabSystem</h3>
-                        <p>Sistema de gestão inteligente voltado para automação de processos e controle interno.</p>
-                        <a href="https://guilabriolag.github.io/LabSystem" target="_blank" class="btn">Ver Projeto</a>
-                    </div>
-                </div>
-
             </div>
+
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-b-4 border-blue-600 group cursor-pointer" onclick="openLabSystemToast()">
+                <div class="p-8 text-center">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="w-12">
+                    </div>
+                    <h3 class="text-2xl font-bold">LabSystem</h3>
+                    <p class="text-gray-500 text-sm mt-2">Sistemas de gestão e totens de autoatendimento.</p>
+                    <span class="inline-block mt-6 text-xs font-black text-blue-600 uppercase tracking-widest">Ver Detalhes</span>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <section class="cta-section">
-        <div class="container">
-            <h2>Quer transformar sua ideia em um projeto de sucesso?</h2>
-            <p>Seja o próximo a ter um empreendimento digital feito sob medida para você.</p>
-            <button onclick="window.location.href='login.html'">Fale Conosco</button>
-        </div>
-    </section>
+    <div id="toast"></div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 LABRIOLAG. Todos os direitos reservados.</p>
-        </div>
-    </footer>
-    
+    <script>
+        const overlay = document.getElementById('overlay');
+        const modalContent = document.getElementById('modalContent');
+        const toast = document.getElementById('toast');
+
+        // FUNÇÃO: LABZAP TOAST
+        function openLabZapToast() {
+            toast.innerHTML = `
+                <p class="font-bold mb-4">Bem-vindo ao LabZap</p>
+                <div class="flex gap-2 justify-center">
+                    <button onclick="showLabZapFlip()" class="bg-white !text-black py-2 px-4 rounded-xl text-xs">VER EXEMPLOS</button>
+                    <button onclick="goTo('https://guilabriolag.github.io/LabZap')" class="bg-[#25D366] py-2 px-4 rounded-xl text-xs">ACESSAR SITE</button>
+                </div>
+            `;
+            showToast();
+        }
+
+        // FUNÇÃO: LABSYSTEM TOAST
+        function openLabSystemToast() {
+            toast.innerHTML = `
+                <div class="text-left">
+                    <p class="font-bold text-yellow-400 mb-1 italic">PROJETO EM DESENVOLVIMENTO</p>
+                    <p class="text-xs mb-4">Aberto a colaboradores para teste grátis por 60 dias.</p>
+                    <div class="flex gap-2">
+                        <button onclick="window.location.href='https://wa.me/5511943198316'" class="bg-[#25D366] py-2 px-4 rounded-xl text-[10px]">CHAMAR NO ZAP</button>
+                        <button onclick="goTo('https://guilabriolag.github.io/LabSystem')" class="bg-blue-600 py-2 px-4 rounded-xl text-[10px]">ACESSAR</button>
+                    </div>
+                </div>
+            `;
+            showToast();
+        }
+
+        function showToast() {
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 4000);
+        }
+
+        // FUNÇÃO: FLIP CARD LABZAP (EXEMPLOS)
+        function showLabZapFlip() {
+            overlay.style.display = 'flex';
+            modalContent.innerHTML = `
+                <div class="flip-container" id="flipCard">
+                    <div class="flip-inner" id="flipInner">
+                        <div class="flip-front shadow-2xl">
+                            <h3 class="font-black text-xl mb-6">NOSSOS CASES</h3>
+                            <div class="space-y-4 w-full">
+                                <button onclick="openIframe('https://guilabriolag.github.io/PONTOX/')" class="w-full bg-slate-100 !text-slate-800 py-3 rounded-xl border border-slate-200">Ponto X</button>
+                                <button onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')" class="w-full bg-slate-100 !text-slate-800 py-3 rounded-xl border border-slate-200">Mc Tonny</button>
+                                <button onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')" class="w-full bg-slate-100 !text-slate-800 py-3 rounded-xl border border-slate-200">Vitorelli</button>
+                            </div>
+                            <button onclick="closeOverlay()" class="mt-8 text-gray-400 text-xs underline uppercase">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Trigger o flip após abrir (opcional, aqui abre na lista)
+        }
+
+        // FUNÇÕES DE NAVEGAÇÃO
+        function openIframe(url) {
+            document.getElementById('mainIframe').src = url;
+            document.getElementById('iframeContainer').style.display = 'block';
+        }
+
+        function closeIframe() {
+            document.getElementById('iframeContainer').style.display = 'none';
+            document.getElementById('mainIframe').src = '';
+        }
+
+        function closeOverlay(e) {
+            overlay.style.display = 'none';
+        }
+
+        function goTo(url) {
+            window.location.href = url;
+        }
+    </script>
 </body>
 </html>
