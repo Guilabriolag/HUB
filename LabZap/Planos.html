@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem HUB | Pedidos Automáticos no WhatsApp</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --wp-deep: #075E54;
+            --wp-teal: #128C7E;
+            --wp-green: #25D366;
+            --wp-light: #DCF8C6;
+            --wp-bg: #e5ddd5;
+        }
+
+        body { font-family: 'Poppins', sans-serif; background-color: #fdfdfd; overflow-x: hidden; }
+
+        /* --- CARROSSEL DE LOGOS --- */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-250px * 3)); }
+        }
+        .slider { height: 120px; margin: auto; overflow: hidden; position: relative; width: 100%; }
+        .slider .slide-track { animation: scroll 15s linear infinite; display: flex; width: calc(250px * 6); }
+        .slider .slide { height: 120px; width: 250px; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        .slider img { max-height: 80px; width: auto; filter: grayscale(100%); transition: 0.4s; opacity: 0.6; }
+        .slider img:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
+
+        /* --- EFEITO FLIP CARD 3D --- */
+        .flip-card { background-color: transparent; width: 100%; height: 500px; perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
+        .flip-card.active .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 2.5rem; display: flex; flex-direction: column; justify-content: center; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .flip-card-front { background: white; border-top: 10px solid var(--wp-green); }
+        .flip-card-back { background: var(--wp-deep); color: white; transform: rotateY(180deg); border: 2px solid var(--wp-green); }
+
+        /* --- FAQ CHAT --- */
+        .chat-wallpaper { background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color: var(--wp-bg); }
+        .msg { max-width: 85%; padding: 14px; margin: 10px 0; border-radius: 15px; font-size: 0.95rem; }
+        .msg-in { background: white; align-self: flex-start; border-top-left-radius: 0; }
+        .msg-out { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; }
+
+        /* --- POPUP IFRAME --- */
+        #popupDemo { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.9); }
+        .close-popup { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; z-index: 1001; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .btn-pulse { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+    </style>
+</head>
+<body>
+
+    <div id="popupDemo">
+        <span class="close-popup" onclick="closeDemo()">&times;</span>
+        <iframe id="iframeDemo" src=""></iframe>
+    </div>
+
+    <section class="min-h-screen flex flex-col items-center justify-center bg-[#075e54] text-white text-center px-6 relative">
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" 
+             class="w-20 mb-8 rounded-full border-4 border-wp-green shadow-2xl animate__animated animate__fadeInDown">
+        
+        <h1 class="text-4xl md:text-7xl font-black leading-tight max-w-5xl animate__animated animate__fadeInUp">
+            Transforme visitantes em pedidos no WhatsApp <span class="text-wp-green italic">automaticamente</span>
+        </h1>
+        
+        <p class="text-xl text-gray-300 mt-8 max-w-3xl animate__animated animate__fadeInUp animate__delay-1s">
+            O cardápio digital inteligente que organiza sua demanda e envia o pedido mastigado para o seu celular.
+        </p>
+
+        <a href="https://wa.me/5511943198316" 
+           class="btn-pulse mt-12 bg-wp-green text-white px-12 py-6 rounded-full text-xl font-black shadow-2xl hover:scale-105 transition-all animate__animated animate__zoomIn animate__delay-2s">
+            QUERO MEU HUB AGORA <i class="fab fa-whatsapp ml-2"></i>
+        </a>
+    </section>
+
+    <div class="py-16 bg-white border-y border-gray-100">
+        <p class="text-center text-[10px] font-black text-gray-400 mb-8 uppercase tracking-[0.3em]">Clique nos logotipos para testar o sistema:</p>
+        <div class="slider">
+            <div class="slide-track">
+                <div class="slide" onclick="openDemo('https://guilabriolag.github.io/PONTOX/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg" class="rounded-xl"></div>
+                <div class="slide" onclick="openDemo('https://guilabriolag.github.io/VITORELLI/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png" class="rounded-xl"></div>
+                <div class="slide" onclick="openDemo('https://guilabriolag.github.io/MCTONNY/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEid451Ko1owcmZXRDAw47z-UD237K9HuBrGhVI_-1CBasexYPIMsobb7ZNKdaS8AfJqot4vuGP0amIOzfA5Dyfqm7PM7LBML4vqfAWnoaP3zsAj7kXI3Z58WiUdLqoJQUfqgayntHJ1agfD3lMEcwnw-1tWoF1GQwGBNXNy5JULv2c_FhcYr8oR69dkczN_/s1536/copilot_image_1766540362692.jpeg" class="rounded-xl"></div>
+                <div class="slide" onclick="openDemo('https://guilabriolag.github.io/PONTOX/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg" class="rounded-xl"></div>
+                <div class="slide" onclick="openDemo('https://guilabriolag.github.io/VITORELLI/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png" class="rounded-xl"></div>
+                <div class="slide" onclick="openDemo('https://guilabriolag.github.io/MCTONNY/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEid451Ko1owcmZXRDAw47z-UD237K9HuBrGhVI_-1CBasexYPIMsobb7ZNKdaS8AfJqot4vuGP0amIOzfA5Dyfqm7PM7LBML4vqfAWnoaP3zsAj7kXI3Z58WiUdLqoJQUfqgayntHJ1agfD3lMEcwnw-1tWoF1GQwGBNXNy5JULv2c_FhcYr8oR69dkczN_/s1536/copilot_image_1766540362692.jpeg" class="rounded-xl"></div>
+            </div>
+        </div>
+    </div>
+
+    <section id="planos" class="py-24 px-6 bg-white">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-5xl font-black text-wp-dark mb-4 tracking-tighter uppercase italic">OFERTA DE LANÇAMENTO</h2>
+            <p class="text-gray-400 mb-16 font-medium">Toque nos cards para detalhes e contratação.</p>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="flip-card" id="card1" onclick="this.classList.toggle('active')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <i class="fas fa-rocket text-5xl text-gray-300 mb-6"></i>
+                            <h3 class="text-3xl font-black text-wp-dark">Setup Estático</h3>
+                            <div class="mt-6 text-4xl font-black text-wp-green underline decoration-wavy">R$ 280,00</div>
+                            <p class="text-xs font-bold text-gray-400 mt-2">PAGAMENTO ANUAL</p>
+                            <span class="mt-8 text-wp-green font-bold text-sm animate-pulse">VER O QUE VEM NO PLANO <i class="fas fa-sync ml-2"></i></span>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-black mb-6 text-wp-green uppercase">Plano Independente:</h3>
+                            <ul class="text-left text-sm space-y-4 mb-8">
+                                <li><i class="fas fa-check text-wp-green mr-2"></i> <b>Zero Mensalidade</b></li>
+                                <li><i class="fas fa-check text-wp-green mr-2"></i> Link Próprio Exclusivo</li>
+                                <li><i class="fas fa-check text-wp-green mr-2"></i> Cardápio Online até 50 Itens</li>
+                                <li><i class="fas fa-check text-wp-green mr-2"></i> Cálculo de Frete Integrado</li>
+                                <li><i class="fas fa-check text-wp-green mr-2"></i> Suporte de Instalação 48h</li>
+                            </ul>
+                            <a href="https://wa.me/5511943198316" class="bg-wp-green w-full py-5 rounded-2xl font-black text-wp-dark hover:bg-white transition shadow-lg">CONTRATAR AGORA</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card" id="card2" onclick="this.classList.toggle('active')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="absolute top-6 right-6 bg-wp-green text-white px-4 py-1 rounded-full text-[10px] font-black animate-bounce tracking-widest">VIP</div>
+                            <i class="fas fa-crown text-5xl text-yellow-500 mb-6"></i>
+                            <h3 class="text-3xl font-black text-wp-dark">Setup Suporte</h3>
+                            <div class="mt-6 text-4xl font-black text-wp-green underline decoration-wavy">R$ 199,00</div>
+                            <p class="text-xs font-bold text-gray-400 mt-2">TAXA ÚNICA DE SETUP</p>
+                            <span class="mt-8 text-wp-green font-bold text-sm animate-pulse">VER O QUE VEM NO PLANO <i class="fas fa-sync ml-2"></i></span>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-black mb-6 text-wp-green uppercase">Gestão LabSystem:</h3>
+                            <ul class="text-left text-sm space-y-3 mb-8">
+                                <li><i class="fas fa-star text-yellow-500 mr-2"></i> <b>Tudo do Plano Estático</b></li>
+                                <li><i class="fas fa-star text-yellow-500 mr-2"></i> Atualizações Ilimitadas de Preços</li>
+                                <li><i class="fas fa-star text-yellow-500 mr-2"></i> Criação de Promoções Sazonais</li>
+                                <li><i class="fas fa-star text-yellow-500 mr-2"></i> Suporte Via Zap Prioritário</li>
+                                <li class="pt-4 border-t border-white/10 font-black text-center text-lg">MENSALIDADE: R$ 70,00</li>
+                            </ul>
+                            <a href="https://wa.me/5511943198316" class="bg-wp-green w-full py-5 rounded-2xl font-black text-wp-dark hover:bg-white transition shadow-lg">CONTRATAR AGORA</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 chat-wallpaper px-6">
+        <div class="max-w-2xl mx-auto flex flex-col">
+            <h2 class="text-center font-black text-wp-dark text-2xl mb-12">Perguntas Frequentes (Chat)</h2>
+            
+            <div class="msg msg-in animate__animated animate__fadeInLeft">O cliente precisa baixar App?</div>
+            <div class="msg msg-out"><b>Não!</b> Ele clica no link da sua Bio ou no Zap e o cardápio abre na hora.</div>
+            
+            <div class="msg msg-in mt-6">Como recebo o pagamento?</div>
+            <div class="msg msg-out">Direto no seu Pix ou Maquininha na entrega. O sistema não retém seu dinheiro e não cobra comissão!</div>
+        </div>
+    </section>
+
+    <footer class="bg-[#075e54] text-white/30 py-16 text-center text-[10px] font-bold tracking-[0.4em]">
+        © 2025 LabSystem HUB | Tecnologia para Delivery
+    </footer>
+
+    <script>
+        // Função para Abrir o Pop-up com Link do Colaborador
+        function openDemo(url) {
+            const popup = document.getElementById('popupDemo');
+            const iframe = document.getElementById('iframeDemo');
+            iframe.src = url;
+            popup.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Trava scroll
+        }
+
+        // Função para Fechar
+        function closeDemo() {
+            const popup = document.getElementById('popupDemo');
+            const iframe = document.getElementById('iframeDemo');
+            iframe.src = "";
+            popup.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Destrava scroll
+        }
+
+        // Auto-Flip nos Cards após 5 segundos
+        setTimeout(() => {
+            const c1 = document.getElementById('card1');
+            const c2 = document.getElementById('card2');
+            c1.classList.add('active');
+            setTimeout(() => {
+                c1.classList.remove('active');
+                c2.classList.add('active');
+                setTimeout(() => c2.classList.remove('active'), 3000);
+            }, 3000);
+        }, 5000);
+    </script>
+
+</body>
+</html>
