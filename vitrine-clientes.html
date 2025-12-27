@@ -3,196 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABRIOLAG | HUB de Inovação</title>
+    <title>LABRIOLAG | Ecossistema Digital</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        :root {
-            --azul-eletrico: #0066FF;
-            --amarelo: #FFCC00;
-            --whatsapp: #25D366;
-            --preto: #000000;
-            --branco: #FFFFFF;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #fbfbfb; overflow-x: hidden; }
+        
+        /* Carrossel Infinito */
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-250px * 3)); } }
+        .slider { height: 100px; overflow: hidden; position: relative; width: 100%; background: white; border-bottom: 1px solid #eee; }
+        .slide-track { animation: scroll 20s linear infinite; display: flex; width: calc(250px * 6); }
+        .slide { width: 250px; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        .slide img { max-height: 50px; filter: grayscale(100%); transition: 0.4s; opacity: 0.5; }
+        .slide img:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
 
-        body { font-family: 'Poppins', sans-serif; }
+        /* Estilo Toast/Pop-up */
+        .toast-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; backdrop-filter: blur(8px); }
+        .toast-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        
+        /* Flip Animation para o Toast do LabZap */
+        .flip-container { perspective: 1000px; height: 350px; }
+        .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-active { transform: rotateY(180deg); }
+        .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+        .flip-back { transform: rotateY(180deg); background: #f8f9fa; }
 
-        /* Estilo do Modal/Toast */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .toast-card {
-            width: 90%;
-            max-width: 400px;
-            perspective: 1000px;
-        }
-
-        .toast-inner {
-            position: relative;
-            width: 100%;
-            height: 350px;
-            text-align: center;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-        }
-
-        .toast-card.flipped .toast-inner { transform: rotateY(180deg); }
-
-        .toast-front, .toast-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 20px;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .toast-back { transform: rotateY(180deg); background: #f8f9fa; }
-
-        iframe { width: 100%; height: 100%; border: none; position: fixed; top: 0; left: 0; z-index: 2000; display: none; }
-        .close-iframe { position: fixed; top: 20px; right: 20px; z-index: 2001; display: none; background: red; color: white; padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+        /* Iframe Fullscreen */
+        #iframeModal { display: none; position: fixed; inset: 0; z-index: 10000; background: black; }
+        
+        .btn-gradient { background: linear-gradient(135deg, #0066FF, #00C2FF); color: white; transition: 0.3s; }
+        .btn-gradient:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,102,255,0.3); }
+        
+        .card-project { transition: 0.4s; border: 1px solid #f0f0f0; }
+        .card-project:hover { transform: translateY(-10px); border-color: #0066FF; }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-    <button class="close-iframe" id="closeIframeBtn" onclick="closeFullIframe()">FECHAR X</button>
-    <iframe id="fullIframe" src=""></iframe>
+    <div id="iframeModal">
+        <button onclick="closeIframe()" class="absolute top-5 right-5 z-[10001] bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-2xl font-bold">×</button>
+        <iframe id="mainIframe" src="" class="w-full h-full border-none"></iframe>
+    </div>
 
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="toast-card" id="toastCard">
-            <div class="toast-inner">
-                <div class="toast-front" id="toastFrontContent">
+    <div id="toastLabZap" class="toast-overlay">
+        <div class="toast-content animate__animated animate__zoomIn">
+            <div class="flip-container" id="zapFlip">
+                <div class="flip-inner" id="zapInner">
+                    <div class="flip-front">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" class="h-12 mb-6">
+                        <h3 class="font-black text-xl mb-4">O que deseja fazer?</h3>
+                        <button onclick="flipZap()" class="w-full mb-3 py-3 rounded-xl bg-green-500 text-white font-bold">VER EXEMPLOS</button>
+                        <button onclick="openExternal('https://labriolag.shop/LabZap')" class="w-full py-3 rounded-xl border-2 border-gray-100 font-bold">ACESSAR SITE</button>
+                        <button onclick="closeToast('toastLabZap')" class="mt-4 text-xs text-gray-400 underline">Fechar</button>
                     </div>
-                <div class="toast-back" id="toastBackContent">
-                    <h3 class="font-bold mb-4">Selecione um Exemplo:</h3>
-                    <div class="grid grid-cols-1 gap-2 w-full">
-                        <button onclick="openFullIframe('https://guilabriolag.github.io/PONTOX/')" class="bg-gray-100 text-black py-2 rounded-lg hover:bg-gray-200">Ponto X</button>
-                        <button onclick="openFullIframe('https://guilabriolag.github.io/MCTONNY/')" class="bg-gray-100 text-black py-2 rounded-lg hover:bg-gray-200">McTonny</button>
-                        <button onclick="openFullIframe('https://guilabriolag.github.io/VITORELLI/')" class="bg-gray-100 text-black py-2 rounded-lg hover:bg-gray-200">Vitorelli</button>
+                    <div class="flip-back">
+                        <h3 class="font-black mb-4">Selecione uma Demo:</h3>
+                        <div class="grid grid-cols-2 gap-4 w-full">
+                            <div onclick="openIframe('https://guilabriolag.github.io/PONTOX/')" class="p-2 border rounded-xl hover:bg-white cursor-pointer text-center text-xs font-bold uppercase">Ponto X</div>
+                            <div onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')" class="p-2 border rounded-xl hover:bg-white cursor-pointer text-center text-xs font-bold uppercase">Vitorelli</div>
+                            <div onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')" class="p-2 border rounded-xl hover:bg-white cursor-pointer text-center text-xs font-bold uppercase">Mc Tonny</div>
+                            <div onclick="flipZap()" class="p-2 border rounded-xl bg-gray-200 cursor-pointer text-center text-xs font-bold uppercase">Voltar</div>
+                        </div>
                     </div>
-                    <button onclick="flipToast()" class="mt-6 text-sm underline">Voltar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <header class="bg-white py-6 shadow-sm flex justify-center">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="Labriolag" class="h-12">
+    <div id="toastLabSystem" class="toast-overlay">
+        <div class="toast-content p-8 text-center animate__animated animate__zoomIn">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-tools text-2xl"></i>
+            </div>
+            <h3 class="font-black text-xl mb-2">Projeto em Desenvolvimento</h3>
+            <p class="text-sm text-gray-500 mb-6">Estamos selecionando colaboradores para testar <b>gratuitamente por 60 dias</b>.</p>
+            <button onclick="window.location.href='https://wa.me/5511943198316'" class="w-full mb-3 py-3 rounded-xl bg-blue-600 text-white font-bold">CHAMAR NO WHATSAPP</button>
+            <button onclick="openExternal('https://labriolag.shop/LabSystem')" class="w-full py-3 rounded-xl border-2 border-gray-100 font-bold uppercase text-xs">Acessar LabSystem</button>
+            <button onclick="closeToast('toastLabSystem')" class="mt-4 text-xs text-gray-400 underline">Fechar</button>
+        </div>
+    </div>
+
+    <header class="bg-white py-6 border-b border-gray-50 sticky top-0 z-50">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" 
+                 alt="Logo" class="h-10">
+            <a href="https://wa.me/5511943198316" class="text-sm font-bold bg-gray-900 text-white px-6 py-2 rounded-full">CONTATO</a>
+        </div>
     </header>
 
-    <section class="text-center py-20 bg-gray-100 px-6">
-        <h1 class="text-4xl font-bold mb-4">Nossos Empreendimentos</h1>
-        <p class="text-gray-600 max-w-2xl mx-auto">Soluções digitais inteligentes sob medida para o seu negócio.</p>
+    <div class="slider">
+        <div class="slide-track">
+            <div class="slide"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg"></div>
+            <div class="slide"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png"></div>
+            <div class="slide"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEid451Ko1owcmZXRDAw47z-UD237K9HuBrGhVI_-1CBasexYPIMsobb7ZNKdaS8AfJqot4vuGP0amIOzfA5Dyfqm7PM7LBML4vqfAWnoaP3zsAj7kXI3Z58WiUdLqoJQUfqgayntHJ1agfD3lMEcwnw-1tWoF1GQwGBNXNy5JULv2c_FhcYr8oR69dkczN_/s1536/copilot_image_1766540362692.jpeg"></div>
+            <div class="slide"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg"></div>
+            <div class="slide"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png"></div>
+            <div class="slide"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEid451Ko1owcmZXRDAw47z-UD237K9HuBrGhVI_-1CBasexYPIMsobb7ZNKdaS8AfJqot4vuGP0amIOzfA5Dyfqm7PM7LBML4vqfAWnoaP3zsAj7kXI3Z58WiUdLqoJQUfqgayntHJ1agfD3lMEcwnw-1tWoF1GQwGBNXNy5JULv2c_FhcYr8oR69dkczN_/s1536/copilot_image_1766540362692.jpeg"></div>
+        </div>
+    </div>
+
+    <section class="py-20 text-center px-6">
+        <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4 animate__animated animate__fadeInDown">ECROSSISTEMA LABRIOLAG</h1>
+        <p class="text-gray-500 max-w-2xl mx-auto">Tecnologia, Inovação e Resultados. Conheça nossas soluções especializadas para cada tipo de negócio.</p>
     </section>
 
-    <main class="container mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 max-w-5xl">
-        
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden group cursor-pointer border-b-8 border-green-500 transition-all hover:-translate-y-2" onclick="showLabZap()">
-            <div class="p-8 text-center">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" class="h-20 mx-auto mb-6">
-                <h3 class="text-2xl font-black mb-2 uppercase italic text-green-600">LabZap</h3>
-                <p class="text-sm text-gray-500">O cardápio inteligente que vende sozinho pelo WhatsApp.</p>
-                <button class="mt-6 bg-green-500 text-white w-full rounded-xl py-3 font-bold">GERENCIAR PEDIDOS</button>
+    <section class="container mx-auto px-6 pb-24">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="card-project bg-white rounded-[2.5rem] p-8 text-center flex flex-col items-center shadow-sm">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" class="h-16 mb-6">
+                <h3 class="text-2xl font-black mb-2">LabZap</h3>
+                <p class="text-sm text-gray-400 mb-8">Cardápios inteligentes e automação de pedidos via WhatsApp.</p>
+                <button onclick="showToast('toastLabZap')" class="btn-gradient w-full py-4 rounded-2xl font-black">EXPLORAR PROJETO</button>
             </div>
-        </div>
 
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden group cursor-pointer border-b-8 border-blue-600 transition-all hover:-translate-y-2" onclick="showLabSystem()">
-            <div class="p-8 text-center">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="h-20 mx-auto mb-6">
-                <h3 class="text-2xl font-black mb-2 uppercase italic text-blue-600">LabSystem</h3>
-                <p class="text-sm text-gray-500">Gestão completa e automação de processos internos.</p>
-                <button class="mt-6 bg-blue-600 text-white w-full rounded-xl py-3 font-bold">ACESSAR SISTEMA</button>
+            <div class="card-project bg-white rounded-[2.5rem] p-8 text-center flex flex-col items-center shadow-sm">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="h-16 mb-6">
+                <h3 class="text-2xl font-black mb-2">LabSystem</h3>
+                <p class="text-sm text-gray-400 mb-8">O cérebro digital para gestão e automação do seu negócio.</p>
+                <button onclick="showToast('toastLabSystem')" class="bg-gray-100 text-gray-900 w-full py-4 rounded-2xl font-black hover:bg-gray-200">GERENCIAR</button>
             </div>
+
+            <div class="card-project bg-white rounded-[2.5rem] p-8 text-center flex flex-col items-center shadow-sm">
+                <div class="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-2xl font-bold mb-6 italic">V</div>
+                <h3 class="text-2xl font-black mb-2">Vitorelli</h3>
+                <p class="text-sm text-gray-400 mb-8">Design de alto padrão para presença digital marcante.</p>
+                <button onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')" class="border-2 border-gray-100 w-full py-4 rounded-2xl font-black hover:bg-gray-50">VER SITE</button>
+            </div>
+
         </div>
+    </section>
 
-    </main>
-
-    <footer class="bg-black text-white py-10 text-center text-xs tracking-widest opacity-50">
-        © 2025 LABRIOLAG HUB • TODOS OS DIREITOS RESERVADOS
+    <footer class="bg-gray-950 text-white py-20 text-center">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" class="h-8 mx-auto mb-6 opacity-40">
+        <p class="text-xs font-bold text-gray-600 uppercase tracking-[0.4em]">© 2025 LABRIOLAG • Powered by Innovation</p>
     </footer>
 
     <script>
-        const overlay = document.getElementById('modalOverlay');
-        const card = document.getElementById('toastCard');
-        const front = document.getElementById('toastFrontContent');
-
-        function flipToast() {
-            card.classList.toggle('flipped');
-        }
-
-        function showLabZap() {
-            front.innerHTML = `
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" class="h-12 mb-4">
-                <h2 class="font-bold text-xl mb-6">Como deseja prosseguir?</h2>
-                <div class="flex flex-col gap-3 w-full">
-                    <button onclick="flipToast()" class="bg-green-500 text-white py-4 rounded-xl font-bold uppercase">Ver Exemplos Reais</button>
-                    <a href="https://labriolag.shop/LabZap" class="bg-gray-800 text-white py-4 rounded-xl font-bold uppercase block text-center">Acessar Painel</a>
-                    <button onclick="closeToast()" class="text-gray-400 text-xs mt-2">Fechar Janela</button>
-                </div>
-            `;
-            overlay.style.display = 'flex';
-        }
-
-        function showLabSystem() {
-            front.innerHTML = `
-                <div class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-[10px] font-bold mb-4">EM DESENVOLVIMENTO</div>
-                <h2 class="font-bold text-xl mb-4 text-blue-600">LabSystem Beta</h2>
-                <p class="text-xs text-gray-500 mb-6">Estamos selecionando colaboradores para teste gratuito por 60 dias.</p>
-                <div class="flex flex-col gap-3 w-full">
-                    <a href="https://wa.me/5511943198316?text=Quero ser colaborador LabSystem" class="bg-green-500 text-white py-4 rounded-xl font-bold uppercase flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i> Chamar no WhatsApp
-                    </a>
-                    <a href="https://labriolag.shop/LabSystem" class="bg-blue-600 text-white py-4 rounded-xl font-bold uppercase block text-center">Ir para LabSystem</a>
-                    <button onclick="closeToast()" class="text-gray-400 text-xs mt-2">Fechar Janela</button>
-                </div>
-            `;
-            overlay.style.display = 'flex';
-        }
-
-        function closeToast() {
-            overlay.style.display = 'none';
-            card.classList.remove('flipped');
-        }
-
-        function openFullIframe(url) {
-            const frame = document.getElementById('fullIframe');
-            const btn = document.getElementById('closeIframeBtn');
-            frame.src = url;
-            frame.style.display = 'block';
-            btn.style.display = 'block';
+        // Funções de Toast
+        function showToast(id) {
+            document.getElementById(id).style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
 
-        function closeFullIframe() {
-            const frame = document.getElementById('fullIframe');
-            const btn = document.getElementById('closeIframeBtn');
-            frame.src = '';
-            frame.style.display = 'none';
-            btn.style.display = 'none';
+        function closeToast(id) {
+            document.getElementById(id).style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Reseta o flip se fechar
+            if(id === 'toastLabZap') document.getElementById('zapInner').classList.remove('flip-active');
+        }
+
+        // Lógica Flip LabZap
+        function flipZap() {
+            document.getElementById('zapInner').classList.toggle('flip-active');
+        }
+
+        // Iframe Logic
+        function openIframe(url) {
+            const modal = document.getElementById('iframeModal');
+            const iframe = document.getElementById('mainIframe');
+            iframe.src = url;
+            modal.style.display = 'block';
+            closeToast('toastLabZap'); // Fecha o toast se estiver aberto
+        }
+
+        function closeIframe() {
+            const modal = document.getElementById('iframeModal');
+            document.getElementById('mainIframe').src = '';
+            modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        // Fechar modal ao clicar fora do card
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) closeToast();
-        });
+        function openExternal(url) {
+            window.location.href = url;
+        }
     </script>
 </body>
 </html>
