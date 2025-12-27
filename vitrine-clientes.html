@@ -13,14 +13,13 @@
         :root {
             --azul-lab: #0066FF;
             --verde-zap: #25D366;
-            --amarelo: #FFCC00;
             --preto: #0b0b0b;
             --branco: #FFFFFF;
             --cinza-fundo: #f8f9fa;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--branco); color: var(--preto); overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--branco); color: var(--preto); overflow-x: hidden; scroll-behavior: smooth; }
 
         /* --- HEADER --- */
         header { 
@@ -33,57 +32,58 @@
             border-bottom: 1px solid #eee;
         }
         .nav-container { width: 90%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo img { height: 45px; cursor: pointer; }
+        .logo img { height: 45px; cursor: pointer; transition: 0.3s; }
+        .logo img:hover { transform: scale(1.05); }
 
         /* --- HERO --- */
-        .hero { text-align: center; padding: 100px 20px; background: radial-gradient(circle at top right, #f0f7ff, #ffffff); }
-        .hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 900; line-height: 1; letter-spacing: -2px; }
+        .hero { text-align: center; padding: 80px 20px; background: radial-gradient(circle at top right, #f0f7ff, #ffffff); }
+        .hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(2.2rem, 7vw, 3.8rem); font-weight: 900; line-height: 1.1; letter-spacing: -1px; }
         .hero p { color: #666; max-width: 700px; margin: 20px auto; font-size: 1.1rem; }
 
         /* --- CARROSSEL INFINITO --- */
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-200px * 4)); } }
-        .slider { width: 100%; overflow: hidden; background: #fff; padding: 40px 0; border-y: 1px solid #f0f0f0; position: relative; }
-        .slide-track { display: flex; width: calc(200px * 8); animation: scroll 20s linear infinite; }
-        .slide { width: 200px; padding: 0 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; filter: grayscale(1); opacity: 0.5; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-250px * 4)); } }
+        .slider { width: 100%; overflow: hidden; background: #fff; padding: 40px 0; border-y: 1px solid #f0f0f0; }
+        .slide-track { display: flex; width: calc(250px * 8); animation: scroll 25s linear infinite; }
+        .slide { width: 250px; padding: 0 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.4s; filter: grayscale(1); opacity: 0.4; }
         .slide:hover { filter: grayscale(0); opacity: 1; transform: scale(1.1); }
-        .slide img { max-width: 100%; border-radius: 12px; }
+        .slide img { max-width: 140px; border-radius: 12px; }
 
-        /* --- PRODUTOS PRINCIPAIS (LabZap / LabSystem) --- */
-        .main-products { padding: 80px 0; background: var(--cinza-fundo); }
-        .grid-main { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .product-card { background: white; border-radius: 30px; padding: 40px; text-align: center; transition: 0.4s; border: 1px solid #eee; position: relative; overflow: hidden; }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
-        .product-card.zap { border-top: 8px solid var(--verde-zap); }
-        .product-card.system { border-top: 8px solid var(--azul-lab); }
-        .product-card img { height: 80px; margin-bottom: 20px; }
-        
-        /* --- TOASTS --- */
-        .toast-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .toast-card { background: white; padding: 40px; border-radius: 30px; max-width: 400px; width: 90%; text-align: center; position: relative; }
-        .toast-card h2 { font-weight: 900; margin-bottom: 15px; }
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; }
-        .btn-main { background: var(--azul-lab); color: white; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; }
-        .btn-sub { background: #f0f0f0; color: #333; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; }
+        /* --- PRODUTOS PRINCIPAIS --- */
+        .main-products { padding: 60px 0; background: var(--cinza-fundo); }
+        .grid-main { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; width: 90%; max-width: 1200px; margin: 0 auto; }
+        .product-card { background: white; border-radius: 25px; padding: 40px; text-align: center; transition: 0.4s; border: 1px solid #eee; cursor: pointer; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .product-card.zap { border-bottom: 6px solid var(--verde-zap); }
+        .product-card.system { border-bottom: 6px solid var(--azul-lab); }
+        .product-card img { height: 70px; margin-bottom: 20px; }
 
-        /* --- POPUP EXEMPLOS (FLIP) --- */
-        .flip-container { perspective: 1000px; display: none; }
-        .flip-card-inner { position: relative; width: 350px; height: 450px; transition: transform 0.8s; transform-style: preserve-3d; }
+        /* --- TOASTS & OVERLAYS --- */
+        .toast-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .toast-card { background: white; padding: 35px; border-radius: 30px; max-width: 420px; width: 92%; text-align: center; position: relative; }
+        .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 25px; }
+        .btn-main { background: var(--azul-lab); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; border:none; width: 100%; }
+        .btn-main:hover { background: #0052cc; transform: scale(1.02); }
+        .btn-sub { background: #f4f4f4; color: #333; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-sub:hover { background: #e8e8e8; }
+
+        /* --- FLIP CARD ANIMATION --- */
+        .flip-container { perspective: 1000px; width: 100%; max-width: 400px; display: none; }
+        .flip-card-inner { position: relative; width: 100%; height: 480px; transition: transform 0.8s; transform-style: preserve-3d; }
         .flip-active { transform: rotateY(180deg); }
-        .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; padding: 30px; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .flip-back { transform: rotateY(180deg); background: #f9f9f9; }
+        .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; background: white; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .flip-back { transform: rotateY(180deg); background: #fcfcfc; }
 
-        /* --- CASES (TABS ANIMADAS) --- */
-        .cases-section { padding: 100px 0; text-align: center; }
-        .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 50px; }
-        .case-item { background: #fff; border: 1px solid #eee; padding: 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
-        .case-item:hover { background: var(--azul-lab); color: white; }
-        .case-item img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; }
+        /* --- CASES --- */
+        .cases-section { padding: 80px 0; text-align: center; }
+        .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 40px; width: 90%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .case-item { background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; }
+        .case-item:hover { background: var(--azul-lab); color: white; border-color: var(--azul-lab); transform: scale(1.05); }
 
-        /* --- IFRAME FULLSCREEN --- */
+        /* --- IFRAME VIEWER --- */
         #iframeView { display: none; position: fixed; inset: 0; z-index: 2000; background: white; }
-        .close-iframe { position: absolute; top: 20px; right: 20px; background: black; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .close-iframe { position: absolute; top: 15px; right: 15px; background: #ff4444; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-        .tag-dev { background: #ff4444; color: white; font-size: 10px; padding: 4px 10px; border-radius: 50px; position: absolute; top: 20px; right: 20px; font-weight: bold; }
+        .tag-promo { background: #FFCC00; color: #000; font-size: 11px; padding: 5px 12px; border-radius: 50px; font-weight: 900; margin-bottom: 10px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -95,47 +95,51 @@
 
     <div id="toastZap" class="toast-overlay" onclick="closeToast(event)">
         <div class="toast-card animate__animated animate__zoomIn" onclick="event.stopPropagation()">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" style="height: 60px;">
-            <h2>LabZap</h2>
-            <p>Escolha como deseja prosseguir:</p>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" style="height: 55px; margin-bottom: 15px;">
+            <h2 style="font-weight: 900;">LabZap</h2>
+            <p style="font-size: 0.9rem; color: #666;">O sistema de delivery via WhatsApp que mais cresce no Brasil.</p>
             <div class="btn-group">
-                <div class="btn-main" onclick="openExemplosFlip()">VER EXEMPLOS REAIS</div>
-                <div class="btn-sub" onclick="window.location.href='https://labriolag.shop/LabZap'">ACESSAR LABZAP.SHOP</div>
-                <div class="text-xs text-gray-400 mt-2 cursor-pointer" onclick="closeToastDirect()">Fechar</div>
+                <button class="btn-main" onclick="openExemplosFlip()">VER EXEMPLOS REAIS</button>
+                <button class="btn-sub" onclick="window.location.href='https://labriolag.shop/LabZap'">ACESSAR LABZAP.SHOP</button>
+                <span class="text-[11px] text-gray-400 mt-2 cursor-pointer uppercase tracking-widest font-bold" onclick="closeToastDirect()">[ Fechar ]</span>
             </div>
         </div>
     </div>
 
     <div id="toastSystem" class="toast-overlay" onclick="closeToast(event)">
         <div class="toast-card animate__animated animate__zoomIn" onclick="event.stopPropagation()">
-            <span class="tag-dev italic">BETA</span>
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" style="height: 60px;">
-            <h2 class="mt-4">LabSystem</h2>
-            <p class="text-sm">Este projeto está em <b>desenvolvimento intensivo</b>. <br><br>Estamos aceitando colaboradores para testes gratuitos por 60 dias.</p>
+            <div class="tag-promo uppercase">Oferta de Lançamento</div>
+            <h2 style="font-weight: 900; font-size: 1.8rem;">LabSystem</h2>
+            <p style="font-size: 0.9rem; color: #444; margin-top: 10px;">
+                Gestão Inteligente para o seu negócio.<br>
+                <b>R$ 0,00 Taxa de Adesão</b> + <b>14 Dias Grátis</b>
+            </p>
             <div class="btn-group">
-                <div class="btn-main" onclick="window.location.href='https://wa.me/5511943198316?text=Quero+ser+colaborador+LabSystem'">CHAMAR NO WHATSAPP</div>
-                <div class="btn-sub" onclick="window.location.href='https://labriolag.shop/LabSystem'">ACESSAR PORTAL</div>
-                <div class="text-xs text-gray-400 mt-2 cursor-pointer" onclick="closeToastDirect()">Fechar</div>
+                <button class="btn-main" onclick="window.location.href='https://wa.me/5511943198316?text=Quero+testar+o+LabSystem+gratis'">QUERO TESTAR GRÁTIS</button>
+                <button class="btn-sub" onclick="window.location.href='https://labriolag.shop/LabSystem/Portaldevendas'">ACESSAR PORTAL DE VENDAS</button>
+                <span class="text-[11px] text-gray-400 mt-2 cursor-pointer uppercase tracking-widest font-bold" onclick="closeToastDirect()">[ Fechar ]</span>
             </div>
         </div>
     </div>
 
     <div id="popupExemplos" class="toast-overlay">
-        <div class="flip-container" style="display: block;">
+        <div class="flip-container" id="flipBox">
             <div class="flip-card-inner" id="flipInner">
                 <div class="flip-front">
-                    <i class="fas fa-sync fa-spin text-3xl text-blue-500"></i>
-                    <h2 class="mt-4">Carregando Vitrine...</h2>
+                    <div class="animate__animated animate__pulse animate__infinite">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png" class="h-12">
+                    </div>
+                    <h3 class="mt-6 font-bold tracking-tighter">PREPARANDO VITRINE...</h3>
                 </div>
                 <div class="flip-back">
-                    <h3 class="font-black mb-4">SELECIONE UM MODELO</h3>
-                    <div class="grid grid-cols-2 gap-4 w-full">
-                        <div class="case-item p-2 text-xs" onclick="openIframe('https://guilabriolag.github.io/PONTOX/')">PONTO X</div>
-                        <div class="case-item p-2 text-xs" onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')">VITORELLI</div>
-                        <div class="case-item p-2 text-xs" onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')">MC TONNY</div>
-                        <div class="case-item p-2 text-xs" onclick="openIframe('https://guilabriolag.github.io/MimoGames/index.html')">MIMO GAMES</div>
+                    <h3 class="font-black text-xl mb-6 uppercase italic">Nossos Cases</h3>
+                    <div class="grid grid-cols-2 gap-3 w-full">
+                        <div class="case-item py-4 px-2" onclick="openIframe('https://guilabriolag.github.io/PONTOX/')">PONTO X</div>
+                        <div class="case-item py-4 px-2" onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')">VITORELLI</div>
+                        <div class="case-item py-4 px-2" onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')">MC TONNY</div>
+                        <div class="case-item py-4 px-2" onclick="openIframe('https://guilabriolag.github.io/MimoGames/index.html')">MIMO GAMES</div>
                     </div>
-                    <button class="mt-8 text-red-500 font-bold" onclick="closeFlip()">FECHAR</button>
+                    <button class="mt-8 text-red-500 text-xs font-black tracking-widest uppercase" onclick="closeFlip()">Voltar</button>
                 </div>
             </div>
         </div>
@@ -146,94 +150,96 @@
             <div class="logo" onclick="window.location.href='https://labriolag.shop'">
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4CCXx5HndzfWbdX3MALYVdkY3QwYlAAFlBY84NL1DUQeDdBDBpA8dDjbZCrymY6llOcWIjAhzfq3mCUTFQTrNVY_b1ibeCYgKTeoT_VsCunxjFZQhpire6rIFZ-zOjfSZXskgkPOWTRce12GqDagAshgpsXEN8yFEr4m52YZDZNHnbiJCgOYi0oig_Yto/s756/20250918_001110.png" alt="LABRIOLAG">
             </div>
-            <button onclick="window.location.href='https://wa.me/5511943198316'" class="btn-main" style="padding: 10px 25px;">CONTATO <i class="fab fa-whatsapp"></i></button>
+            <button onclick="window.location.href='https://wa.me/5511943198316'" class="btn-main" style="width:auto; padding: 10px 20px; font-size: 13px;">WHATSAPP <i class="fab fa-whatsapp ml-1"></i></button>
         </div>
     </header>
 
     <section class="hero">
-        <h1 class="animate__animated animate__fadeInUp">Laboratório de Ideias Reais.</h1>
-        <p class="animate__animated animate__fadeInUp animate__delay-1s">Desenvolvemos softwares, sistemas de automação e experiências digitais sob medida para o seu negócio escalar.</p>
+        <h1 class="animate__animated animate__fadeInDown">Vitrine de Inovação.</h1>
+        <p class="animate__animated animate__fadeInUp animate__delay-1s">A LABRIOLAG transforma tecnologia em lucro. Conheça nossos sistemas próprios e projetos desenvolvidos para parceiros.</p>
     </section>
 
     <div class="slider">
-        <p class="text-center text-[10px] font-bold text-gray-300 mb-4 tracking-widest">PROJETOS EM DESTAQUE - TOQUE PARA INTERAGIR</p>
+        <p class="text-center text-[9px] font-black text-gray-300 mb-6 tracking-[0.3em] uppercase">Ecossistema Labriolag</p>
         <div class="slide-track">
             <div class="slide" onclick="showToast('zap')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png"></div>
             <div class="slide" onclick="showToast('system')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png"></div>
-            <div class="slide" onclick="openIframe('https://guilabriolag.github.io/MimoGames/index.html')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEioYj2y2u2S7O68i5E2zDqO19vY0m-K18w6zN49VlR119R0L0J0Y3z4H5v7L8M9N1O2P3Q4R5S6T7U8V9W0X1Y2Z3/s1600/mimogames.png" onerror="this.src='https://placehold.co/100x100?text=MimoGames'"></div>
             <div class="slide" onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIVywerTEx7Qorio908b4OTVv3x2yo2lPl38CVdhCxtJOK23tK_pRTy8-hcSIWtNLZ6ifuzf8WhXOmFqBkr2aOqR78JmGc_Wc5uRLHtLUAYenxGd26uMjEg5E0bMKp03cqXDwXuJ7yA_0LXYoUxIn6ye7Vn6Q5CnTv-oPnLAMz58zVaijoADv3cRQM5T3L/s1600/20250614_012036.png"></div>
+            <div class="slide" onclick="openIframe('https://guilabriolag.github.io/MimoGames/index.html')"><img src="https://placehold.co/200x80/0066ff/fff?text=MIMO+GAMES"></div>
             <div class="slide" onclick="showToast('zap')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png"></div>
             <div class="slide" onclick="showToast('system')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png"></div>
-            <div class="slide" onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg"></div>
-            <div class="slide" onclick="openIframe('https://guilabriolag.github.io/PONTOX/')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg"></div>
+            <div class="slide" onclick="openIframe('https://guilabriolag.github.io/PONTOX/')"><img src="https://placehold.co/200x80/000/fff?text=PONTO+X"></div>
+            <div class="slide" onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')"><img src="https://placehold.co/200x80/ff0000/fff?text=MC+TONNY"></div>
         </div>
     </div>
 
     <section class="main-products">
-        <div class="container" style="width: 90%; max-width: 1200px; margin: 0 auto;">
-            <div class="grid-main">
-                <div class="product-card zap" onclick="showToast('zap')">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png">
-                    <h3>LabZap</h3>
-                    <p>O cardápio digital inteligente que automatiza suas vendas no WhatsApp.</p>
-                    <button class="bg-whatsapp mt-4">CONHECER SOLUÇÃO</button>
-                </div>
-                <div class="product-card system" onclick="showToast('system')">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png">
-                    <h3>LabSystem</h3>
-                    <p>Gestão completa de processos e controle interno para empresas modernas.</p>
-                    <button class="bg-dark-green mt-4">SISTEMA BETA</button>
-                </div>
+        <div class="grid-main">
+            <div class="product-card zap" onclick="showToast('zap')">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtlw2mysuol2o-xD1FYtymB-g-Q3WFrRHAAnrzfpUAaaE3d5CQg9_i3WXFlyJwQBExfI7-p_vbwnxBsiJ0MM_mgkE9Khq1-A7lYOFEmUD-bjqQhtHwry_-Y_lBEcYss463dUHVFaQnJSvF2vIneuygK7ioHEEYUi4HQsSg5dI0e9aUbk9UHIoB2GJkhrVe/s766/20251227_034901.png">
+                <h3 class="font-black">LabZap</h3>
+                <p class="text-xs text-gray-500 mt-2">Venda automática pelo WhatsApp com cardápio inteligente.</p>
+            </div>
+            <div class="product-card system" onclick="showToast('system')">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png">
+                <h3 class="font-black">LabSystem</h3>
+                <p class="text-xs text-gray-500 mt-2">ERP completo para gestão de estoque, vendas e colaboradores.</p>
             </div>
         </div>
     </section>
 
     <section class="cases-section">
-        <div class="container" style="width: 90%; max-width: 1200px; margin: 0 auto;">
-            <h2 class="font-black text-3xl">Cases de Colaboradores</h2>
-            <p class="text-gray-400 mt-2">Toque para abrir o modelo do site em tempo real</p>
-            <div class="case-grid">
-                <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')">VITORELLI</div>
-                <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')">MC TONNY</div>
-                <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/PONTOX/')">PONTO X</div>
-                <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/MimoGames/index.html')">MIMO GAMES</div>
-            </div>
+        <h2 class="font-black text-3xl italic tracking-tighter">CASES DE SUCESSO</h2>
+        <p class="text-gray-400 text-sm mt-1">Toque para navegar nas demos reais</p>
+        <div class="case-grid">
+            <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/VITORELLI/')">VITORELLI</div>
+            <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/MCTONNY/')">MC TONNY</div>
+            <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/PONTOX/')">PONTO X</div>
+            <div class="case-item animate__animated animate__fadeInUp" onclick="openIframe('https://guilabriolag.github.io/MimoGames/index.html')">MIMO GAMES</div>
         </div>
     </section>
 
-    <footer class="py-10 bg-black text-center text-gray-600 text-[10px] font-bold tracking-widest">
-        © 2025 LABRIOLAG | TECHNOLOGY & INNOVATION
+    <footer class="py-12 bg-black text-center">
+        <p class="text-white/20 text-[10px] font-black tracking-[0.4em] uppercase">© 2025 LABRIOLAG | TECHNOLOGY HUB</p>
     </footer>
 
     <script>
         function showToast(type) {
+            document.body.style.overflow = 'hidden';
             if(type === 'zap') document.getElementById('toastZap').style.display = 'flex';
             if(type === 'system') document.getElementById('toastSystem').style.display = 'flex';
         }
 
         function closeToast(e) {
-            e.target.style.display = 'none';
+            if(e.target.classList.contains('toast-overlay')) {
+                closeToastDirect();
+            }
         }
 
         function closeToastDirect() {
             document.getElementById('toastZap').style.display = 'none';
             document.getElementById('toastSystem').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
         function openExemplosFlip() {
-            closeToastDirect();
+            document.getElementById('toastZap').style.display = 'none';
             const popup = document.getElementById('popupExemplos');
             popup.style.display = 'flex';
+            document.getElementById('flipBox').style.display = 'block';
+            
+            // Simula carregamento e faz o flip
             setTimeout(() => {
                 document.getElementById('flipInner').classList.add('flip-active');
-            }, 800);
+            }, 1200);
         }
 
         function closeFlip() {
             document.getElementById('flipInner').classList.remove('flip-active');
             setTimeout(() => {
                 document.getElementById('popupExemplos').style.display = 'none';
-            }, 400);
+                document.body.style.overflow = 'auto';
+            }, 500);
         }
 
         function openIframe(url) {
