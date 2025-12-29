@@ -1,123 +1,130 @@
-// --- CONTROLE DE UI E INICIALIZAÇÃO ---
+// --- CONFIGURAÇÃO INICIAL ---
 document.addEventListener('DOMContentLoaded', () => {
-    const userName = detectUser();
+    const userName = initApp();
     setupTabs();
     setupMobileMenu();
-    loadDraft(userName);
+    loadSavedData(userName);
 });
 
-// Detecta o nome do usuário pela URL (Pasta Pai)
-function detectUser() {
+function initApp() {
     const path = window.location.pathname;
-    const segments = path.split('/');
-    const cmsIndex = segments.indexOf('cms_admin');
-    const user = (cmsIndex > 0) ? segments[cmsIndex - 1] : "Usuario_Admin";
+    const parts = path.split('/');
+    const index = parts.indexOf('cms_admin');
+    const user = (index > 0) ? parts[index - 1] : "Usuario_Admin";
     
     document.getElementById('display-user').textContent = user;
-    document.getElementById('user-tag').textContent = `@${user.toLowerCase()}`;
-    document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${user}&background=6366f1&color=fff&bold=true&rounded=true`;
-    
     return user;
 }
 
-// Navegação entre abas
+// --- NAVEGAÇÃO ---
 function setupTabs() {
-    const buttons = document.querySelectorAll('.tab-btn');
+    const btns = document.querySelectorAll('.tab-btn');
     const sections = document.querySelectorAll('.tab-section');
 
-    buttons.forEach(btn => {
+    btns.forEach(btn => {
         btn.addEventListener('click', () => {
             const target = btn.dataset.tab;
-            
-            buttons.forEach(b => b.classList.remove('sidebar-active'));
+            btns.forEach(b => b.classList.remove('sidebar-active'));
             btn.classList.add('sidebar-active');
 
             sections.forEach(s => s.classList.add('hidden'));
             document.getElementById(target).classList.remove('hidden');
 
-            // Fecha menu no mobile após clique
-            if(window.innerWidth < 1024) closeMenu();
+            if(window.innerWidth < 1024) closeSidebar();
         });
     });
 }
 
-// Menu Mobile
 function setupMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
     const overlay = document.getElementById('overlay');
     
     toggle.addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('mobile-open');
-        overlay.classList.toggle('hidden');
+        document.getElementById('sidebar').classList.add('mobile-open');
+        overlay.classList.remove('hidden');
     });
 
-    overlay.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeSidebar);
 }
 
-function closeMenu() {
+function closeSidebar() {
     document.getElementById('sidebar').classList.remove('mobile-open');
     document.getElementById('overlay').classList.add('hidden');
 }
 
-// --- SISTEMA DE SALVAMENTO (LOCALSTORAGE) ---
+// --- LÓGICA DE DADOS (LOCALSTORAGE) ---
+let products = [];
 
 function saveDraft() {
     const user = document.getElementById('display-user').textContent;
-    const btn = document.getElementById('btn-save-draft');
-    
     const data = {
         binId: document.getElementById('bin-id').value,
         masterKey: document.getElementById('master-key').value,
-        storeName: document.getElementById('store-name').value,
-        whatsapp: document.getElementById('store-whatsapp').value,
-        address: document.getElementById('store-address').value,
-        pix: document.getElementById('pix-key').value,
-        updatedAt: new Date().toLocaleString()
+        products: products
     };
 
-    localStorage.setItem(`ls_draft_${user}`, JSON.stringify(data));
-
-    // Feedback visual
-    const originalText = btn.innerHTML;
-    btn.innerHTML = "✅ Dados Salvos!";
+    localStorage.setItem(`labsystem_${user}`, JSON.stringify(data));
+    
+    const btn = document.getElementById('btn-save-draft');
+    btn.innerHTML = "✅ Salvo Localmente";
     btn.classList.replace('bg-amber-500', 'bg-emerald-500');
-    btn.classList.add('pulse-save');
-
+    
     setTimeout(() => {
-        btn.innerHTML = originalText;
+        btn.innerHTML = "💾 Salvar Rascunho";
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
-        btn.classList.remove('pulse-save');
-    }, 2500);
+    }, 2000);
 }
 
-function loadDraft(user) {
-    const saved = localStorage.getItem(`ls_draft_${user}`);
+function loadSavedData(user) {
+    const saved = localStorage.getItem(`labsystem_${user}`);
     if(saved) {
         const data = JSON.parse(saved);
         document.getElementById('bin-id').value = data.binId || '';
         document.getElementById('master-key').value = data.masterKey || '';
-        document.getElementById('store-name').value = data.storeName || '';
-        document.getElementById('store-whatsapp').value = data.whatsapp || '';
-        document.getElementById('store-address').value = data.address || '';
-        document.getElementById('pix-key').value = data.pix || '';
-        console.log("Rascunho carregado com sucesso.");
+        products = data.products || [];
+        renderItems();
     }
 }
 
-// Sincronização (Feedback de Publicação)
+// --- GERENCIADOR DE ITENS ---
+function addItem() {
+    const name = prompt("Nome do produto:");
+    const price = prompt("Preço (Ex: 29.90):");
+    if(name && price) {
+        products.push({ id: Date.now(), name, price });
+        renderItems();
+    }
+}
+
+function deleteItem(id) {
+    products = products.filter(p => p.id !== id);
+    renderItems();
+}
+
+function renderItems() {
+    const list = document.getElementById('items-list');
+    list.innerHTML = products.map(p => `
+        <tr class="border-b border-slate-50 animate__animated animate__fadeIn">
+            <td class="py-4 font-semibold text-slate-700">${p.name}</td>
+            <td class="py-4 text-indigo-600 font-bold">R$ ${p.price}</td>
+            <td class="py-4 text-center">
+                <button onclick="deleteItem(${p.id})" class="text-red-400 hover:text-red-600 font-bold">Excluir</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// --- SYNC ---
 function syncData() {
     const btn = document.getElementById('btn-sync');
-    const originalText = btn.innerHTML;
-
+    btn.innerHTML = "🌀 SINCRONIZANDO...";
     btn.disabled = true;
-    btn.innerHTML = "🌀 PUBLICANDO...";
 
     setTimeout(() => {
-        btn.innerHTML = "🚀 SUCESSO NO TOTEM!";
+        btn.innerHTML = "🚀 DADOS NO AR!";
         btn.classList.replace('bg-indigo-600', 'bg-emerald-500');
-        
         setTimeout(() => {
-            btn.innerHTML = originalText;
+            btn.innerHTML = "🌐 PUBLICAR NO TOTEM";
             btn.classList.replace('bg-emerald-500', 'bg-indigo-600');
             btn.disabled = false;
         }, 3000);
@@ -125,7 +132,5 @@ function syncData() {
 }
 
 function logout() {
-    if(confirm("Deseja encerrar a sessão?")) {
-        window.location.href = "../../../index.html"; // Volta para o login
-    }
+    if(confirm("Deseja sair?")) window.location.href = "../../../index.html";
 }
