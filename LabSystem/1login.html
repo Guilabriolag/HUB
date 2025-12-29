@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Acesso Seguro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #020617; 
+            overflow-x: hidden;
+        }
+
+        .neon-glow {
+            filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.8));
+            animation: pulseNeon 2s infinite alternate;
+        }
+
+        @keyframes pulseNeon {
+            0% { filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5)); transform: scale(1); }
+            100% { filter: drop-shadow(0 0 25px rgba(99, 102, 241, 1)); transform: scale(1.05); }
+        }
+
+        .perspective-1000 { perspective: 1000px; }
+        .flip-card-inner {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            height: 580px;
+        }
+        .flipped { transform: rotateY(180deg); }
+        .flip-front, .flip-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+        .flip-back { transform: rotateY(180deg); }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="splash" class="fixed inset-0 flex flex-col items-center justify-center bg-[#020617] z-[100] transition-opacity duration-1000">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2IcBgN5wifwJ3Sh08hSH3IJkyRp3gdMr_XSIn6feHwZ4fraxb5n42_lGOUXFPL_zT_7_GmGJWGVXPCFmD-BeNyRoecwBJ4NOnhCmRepsjQBmm8vwJR7S-2m8usRDFRfyYB78ofoPbkiXRatCw3mJi-ZBg_yJrxbfSgEvW3V81tNoO2UJQqvnwQQ7LJMFP/s1536/ChatGPT%20Image%2027%20de%20dez.%20de%202025,%2015_59_29.png" 
+             class="neon-glow w-64 md:w-80" alt="LabSystem Logo">
+        <div class="mt-8 flex space-x-2">
+            <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+        </div>
+    </div>
+
+    <div id="login-container" class="hidden w-full max-w-[420px] h-[580px] perspective-1000 animate__animated animate__fadeInUp">
+        <div id="flip-inner" class="flip-card-inner w-full relative">
+            
+            <div class="flip-front glass rounded-[2.5rem] shadow-2xl p-10 flex flex-col items-center border-b-8 border-indigo-600">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjqnIRYFuxL7DNEdwWxSq8iLlHCm_eAPDQn99rTKB4fcI1KEG9Nn0R49bJSFqq8I11CwN-lhhxdpgkOganKpP6IsExQ2rZbqVCGmHOflRbc2oIQ86taINDfBZLiUK8jaV2jgET_-Mvjnja0ZKRX-xg05SpPEPQsADvLRs_Xp1xcd8m0pPcRTbT8Oclaqgus/s855/20251227_160229.png" 
+                     class="w-16 h-16 mb-4 drop-shadow-md" alt="LabSystem Icon">
+                
+                <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-1">Bem-vindo</h2>
+                <p class="text-slate-400 text-sm mb-8 font-medium">Validação via JSONBin Cloud</p>
+
+                <div class="w-full space-y-4">
+                    <input type="text" id="user" placeholder="@usuário" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-semibold text-slate-700">
+                    
+                    <input type="text" id="bin_id" placeholder="ID do Recipiente (BIN_ID)" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-mono text-sm">
+                    
+                    <input type="password" id="key" placeholder="Master Key" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-mono text-sm">
+                </div>
+
+                <button id="btn-login" onclick="validaAcesso()" class="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-indigo-200 transform active:scale-95 transition-all uppercase tracking-wider text-sm">
+                    Acessar Painel
+                </button>
+
+                <button onclick="toggleFlip()" class="mt-6 text-indigo-600 font-bold hover:text-indigo-800 transition text-xs uppercase tracking-widest">
+                    Não tem acesso? Solicite aqui
+                </button>
+            </div>
+
+            <div class="flip-back glass rounded-[2.5rem] shadow-2xl p-10 flex flex-col items-center justify-center text-center">
+                <div class="bg-indigo-600 text-white p-5 rounded-3xl mb-6 shadow-lg shadow-indigo-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-black text-slate-800 mb-2">Plataforma Serverless</h3>
+                <p class="text-slate-500 mb-8 leading-relaxed text-sm">Adquira sua licença para desbloquear sua BIN_ID exclusiva e gerenciar seu totem.</p>
+                
+                <button onclick="openPlanos()" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 rounded-2xl shadow-xl transition-all mb-4 uppercase text-xs tracking-widest">
+                    Ver Planos de Assinatura
+                </button>
+                
+                <button onclick="toggleFlip()" class="text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-600">Voltar para o login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPlanos" class="fixed inset-0 z-[150] bg-white hidden animate__animated animate__slideInUp">
+        <div class="h-16 w-full flex items-center justify-between px-6 bg-slate-50 border-b">
+            <span class="font-black text-indigo-600 tracking-tighter">LABSYSTEM SHOP</span>
+            <button onclick="closePlanos()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl font-bold text-xs transition-colors">FECHAR</button>
+        </div>
+        <iframe src="https://www.labriolag.shop/LabSystem/Shop/planos.html" class="w-full h-[calc(100%-64px)] border-none"></iframe>
+    </div>
+
+    <script>
+        // 1. Splash Screen Control
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash');
+                const container = document.getElementById('login-container');
+                splash.classList.add('opacity-0');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    container.classList.remove('hidden');
+                    document.body.style.backgroundColor = '#f1f5f9';
+                }, 1000);
+            }, 2500); 
+        });
+
+        // 2. Flip Card Animation
+        function toggleFlip() {
+            document.getElementById('flip-inner').classList.toggle('flipped');
+        }
+
+        // 3. Validação Dinâmica com JSONBin
+        async function validaAcesso() {
+            const user = document.getElementById('user').value.replace('@', '').trim();
+            const binId = document.getElementById('bin_id').value.trim();
+            const masterKey = document.getElementById('key').value.trim();
+            const btn = document.getElementById('btn-login');
+
+            if (!user || !binId || !masterKey) {
+                alert("⚠️ Por favor, preencha todos os campos.");
+                return;
+            }
+
+            // Feedback visual de carregamento
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner"></span> Validando...`;
+
+            try {
+                // Tenta buscar o arquivo no servidor JSONBin
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': masterKey,
+                        'X-Bin-Meta': 'false'
+                    }
+                });
+
+                if (response.ok) {
+                    // SUCESSO: A Master Key é válida para essa BIN
+                    const sessionData = {
+                        authenticated: true,
+                        user: user,
+                        bin: binId,
+                        token: masterKey,
+                        timestamp: Date.now()
+                    };
+
+                    // Salva na sessionStorage (Segurança: apaga ao fechar a aba)
+                    sessionStorage.setItem(`ls_auth_${user}`, JSON.stringify(sessionData));
+
+                    // Redireciona para o diretório privado do usuário
+                    window.location.href = `/LabSystem/${user}/cms_admin/index.html`;
+                } else {
+                    // ERRO 401/403: Chave ou BIN incorretos
+                    alert("❌ Acesso Negado: A BIN_ID ou Master Key não conferem com o servidor.");
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                alert("🌐 Erro de conexão: Verifique sua internet ou o status da API.");
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // 4. Modal de Planos
+        function openPlanos() {
+            document.getElementById('modalPlanos').classList.remove('hidden');
+        }
+        function closePlanos() {
+            const modal = document.getElementById('modalPlanos');
+            modal.classList.replace('animate__slideInUp', 'animate__slideOutDown');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.replace('animate__slideOutDown', 'animate__slideInUp');
+            }, 600);
+        }
+
+        // Atalho Enter
+        document.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') validaAcesso();
+        });
+    </script>
+</body>
+</html>
