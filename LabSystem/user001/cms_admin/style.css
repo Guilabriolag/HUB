@@ -1,24 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
-* { -webkit-tap-highlight-color: transparent; }
 body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-.sidebar-active {
-    background-color: #4f46e5 !important;
-    color: white !important;
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+.input-field {
+    width: 100%; padding: 1rem; background-color: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 1.25rem; outline: none; transition: all 0.2s;
 }
+.input-field:focus { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+
+.label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #94a3b8; margin-bottom: 0.5rem; display: block; }
+
+.sidebar-active { background-color: #4f46e5 !important; color: white !important; font-weight: 700; }
 
 .tab-section { animation: fadeInUp 0.4s ease-out; }
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-#sidebar.mobile-open { transform: translateX(0); }
-
-input::placeholder { color: #cbd5e1; font-weight: 500; }
-
-/* Custom Switch/Table Scroll */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.hidden { display: none; }
