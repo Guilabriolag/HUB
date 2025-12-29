@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LabSystem CMS | Professional Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#f9f9f9] flex min-h-screen overflow-x-hidden">
+
+    <div id="overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm"></div>
+
+    <aside id="sidebar" class="w-72 bg-[#1f298f] text-white flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl">
+        <div class="p-8 text-center">
+            <img id="side-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="w-20 mx-auto mb-4 rounded-lg shadow-lg">
+            <h2 class="text-xl font-black tracking-tighter uppercase">LabSystem CMS</h2>
+            <p class="text-[10px] opacity-50" id="display-user">@user</p>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto custom-scroll">
+            <button data-tab="preview" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl sidebar-active">📱 Pre-visualização</button>
+            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-white/10">🏢 Info & Contato</button>
+            <button data-tab="pagamentos" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-white/10">💰 Pagamentos</button>
+            <button data-tab="entrega" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-white/10">🚚 Área de Cobertura</button>
+            <button data-tab="cardapio" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-white/10">🍔 Gerenciar Cardápio</button>
+            <button data-tab="design" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-white/10">🎨 Design & Cores</button>
+            <button data-tab="sinc" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-white/10">☁️ Cloud & Backup</button>
+        </nav>
+
+        <div class="p-4 space-y-2 border-t border-white/10">
+            <button onclick="saveDraft()" class="w-full p-3 bg-[#ffcf69] text-[#1f298f] rounded-xl font-bold text-xs uppercase shadow-lg active:scale-95 transition">💾 Salvar Rascunho</button>
+            <button onclick="logout()" class="w-full p-3 bg-red-500/20 text-red-200 rounded-xl font-bold text-xs uppercase">Sair</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 lg:ml-72 p-4 md:p-10 transition-all">
+        
+        <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-[#1f298f] text-white rounded-2xl shadow-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <div id="tabs-container">
+            
+            <section id="preview" class="tab-section active">
+                <div class="flex flex-col lg:flex-row gap-8 items-start">
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-black text-[#1f298f] mb-2">Pre-visualização</h2>
+                        <p class="mb-6 text-slate-500">Veja como seu Totem aparecerá em <b>www.labriolag.shop/<span id="preview-user-url">...</span>/index.html</b></p>
+                        <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100 mb-6">
+                            <h4 class="font-bold text-indigo-900 mb-2">Dica de Publicação</h4>
+                            <p class="text-sm text-indigo-700">Após editar tudo, vá na aba <b>Cloud</b> e clique em <b>Publicar no Totem</b> para as alterações entrarem ao vivo.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="w-[320px] h-[600px] bg-black rounded-[3rem] p-3 shadow-[0_0_50px_rgba(0,0,0,0.2)] border-[8px] border-slate-800 sticky top-10 mx-auto">
+                        <div id="phone-screen" class="w-full h-full bg-white rounded-[2rem] overflow-y-auto overflow-x-hidden relative">
+                            </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="operacional" class="tab-section hidden max-w-4xl">
+                <h2 class="text-2xl font-black text-[#1f298f] mb-6">Informações de Contato</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-8 rounded-[2rem] shadow-sm">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase text-slate-400">Nome da Loja</label>
+                        <input type="text" id="store-name" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase text-slate-400">Telefone / WhatsApp</label>
+                        <input type="text" id="store-phone" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase text-slate-400">Status Atual</label>
+                        <select id="store-status" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                            <option value="aberto">🟢 Aberto</option>
+                            <option value="fechado">🔴 Fechado</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-bold uppercase text-slate-400">Endereço Físico</label>
+                        <textarea id="store-address" class="w-full p-4 bg-slate-50 border rounded-2xl h-24"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pagamentos" class="tab-section hidden max-w-4xl">
+                <h2 class="text-2xl font-black text-[#1f298f] mb-6">Detalhes de Pagamento</h2>
+                <div class="space-y-6">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border-l-8 border-[#ffcf69]">
+                        <h3 class="font-bold mb-4">💠 PIX & Lightning (BTC)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="pix-key" placeholder="Chave PIX (E-mail, CPF, etc)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                            <input type="text" id="btc-address" placeholder="Lightning Address (BTC)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm">
+                        <h3 class="font-bold mb-4">🏦 Dados Bancários (Opcional)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="bank-name" placeholder="Nome do Banco" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                            <input type="text" id="bank-agency" placeholder="Agência" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                            <input type="text" id="bank-account" placeholder="Conta com Dígito" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                            <input type="text" id="bank-owner" placeholder="Nome do Titular" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cardapio" class="tab-section hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold mb-4">🗂️ Categorias</h3>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="new-cat-name" placeholder="Ex: Pizzas" class="flex-1 p-3 bg-slate-50 border rounded-xl">
+                            <button onclick="addCategory()" class="bg-[#1f298f] text-white px-4 rounded-xl font-bold">+</button>
+                        </div>
+                        <div id="categories-list" class="space-y-2">
+                            </div>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold">🍕 Produtos</h3>
+                            <button onclick="openProductModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold">+ Novo Produto</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="border-b">
+                                    <tr class="text-slate-400 font-bold uppercase text-[10px]">
+                                        <th class="py-4">Produto</th>
+                                        <th class="py-4">Categoria</th>
+                                        <th class="py-4">Preço</th>
+                                        <th class="py-4">Estoque</th>
+                                        <th class="py-4 text-right">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="products-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="design" class="tab-section hidden max-w-4xl">
+                <h2 class="text-2xl font-black text-[#1f298f] mb-6">Identidade Visual</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm space-y-4">
+                        <h3 class="font-bold">Cores do Sistema</h3>
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                            <span class="text-sm font-bold">Cor Primária (Botões)</span>
+                            <input type="color" id="color-primary" value="#1f298f">
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                            <span class="text-sm font-bold">Cor Secundária (Textos)</span>
+                            <input type="color" id="color-secondary" value="#ffcf69">
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                            <span class="text-sm font-bold">Cor de Fundo</span>
+                            <input type="color" id="color-bg" value="#f9f9f9">
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm space-y-4">
+                        <h3 class="font-bold">Mídia & Logo</h3>
+                        <input type="text" id="logo-url" placeholder="URL da Logo" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="text" id="bg-image-url" placeholder="URL da Imagem de Fundo (Opcional)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <hr>
+                        <h3 class="font-bold">Música (YouTube)</h3>
+                        <input type="text" id="yt-music-url" placeholder="Link do YouTube" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <label class="text-xs font-bold text-slate-400">Volume: <span id="vol-val">100</span>%</label>
+                        <input type="range" id="yt-volume" class="w-full accent-indigo-600" min="0" max="100" value="100">
+                    </div>
+                </div>
+            </section>
+
+            <section id="entrega" class="tab-section hidden max-w-2xl">
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm">
+                    <h2 class="text-2xl font-black text-[#1f298f] mb-6">Taxas de Entrega</h2>
+                    <div class="flex gap-2 mb-6">
+                        <input type="text" id="area-name" placeholder="Nome do Bairro" class="flex-1 p-4 bg-slate-50 border rounded-2xl">
+                        <input type="number" id="area-fee" placeholder="R$ 0.00" class="w-32 p-4 bg-slate-50 border rounded-2xl">
+                        <button onclick="addDeliveryArea()" class="bg-[#1f298f] text-white px-6 rounded-2xl font-bold">Adicionar</button>
+                    </div>
+                    <div id="delivery-list" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <section id="sinc" class="tab-section hidden max-w-xl">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 text-center">
+                    <h2 class="text-2xl font-black text-slate-800 mb-2">Publicação & Cloud</h2>
+                    <p class="text-sm text-slate-500 mb-8">Utilize o JSONBin para sincronizar seu Totem instantaneamente.</p>
+                    
+                    <div class="space-y-4 text-left mb-8">
+                        <input type="text" id="bin-id" placeholder="BIN ID" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="password" id="master-key" placeholder="X-Master-Key" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="syncToCloud()" id="btn-sync" class="py-5 bg-[#1f298f] text-white rounded-[1.5rem] font-black text-lg shadow-xl active:scale-95 transition">🌐 PUBLICAR NO TOTEM</button>
+                        <button onclick="exportJSON()" class="py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold flex items-center justify-center gap-2">📥 Exportar Backup (.json)</button>
+                        <label class="py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold cursor-pointer text-center">📤 Importar Arquivo JSON <input type="file" id="import-file" class="hidden" accept=".json"></label>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+                                                                </html>
