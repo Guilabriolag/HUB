@@ -1,36 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
-body { 
-    font-family: 'Plus Jakarta Sans', sans-serif; 
+* {
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
 }
 
 /* Estado Ativo do Menu Lateral */
 .sidebar-active {
     background-color: #4f46e5 !important;
     color: white !important;
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-    font-weight: 700;
+    box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+    font-weight: 800;
 }
 
-/* Animações de Transição de Abas */
-.tab-section { 
-    animation: fadeInUp 0.4s ease-out; 
+/* Transições das Abas */
+.tab-section {
+    display: none;
+    animation: fadeInSlide 0.4s ease-out;
 }
 
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
+.tab-section.active {
+    display: block;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Tamanho mínimo para botões em dispositivos Touch (iOS/Android) */
-input, button, select { 
-    min-height: 48px; 
+/* Inputs para Touch */
+input, select, button {
+    min-height: 48px;
 }
 
-/* Menu Mobile Overlay */
-#sidebar.mobile-open { 
-    transform: translateX(0); 
+/* Sidebar Mobile */
+@media (max-width: 1023px) {
+    #sidebar.open {
+        transform: translateX(0);
+    }
 }
-
-.hidden { display: none; }
