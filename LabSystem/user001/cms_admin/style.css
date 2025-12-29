@@ -1,27 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-
-body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-
-/* Navegação */
 .sidebar-active {
-    background-color: #4f46e5 !important;
-    color: white !important;
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-    font-weight: 700;
+    background-color: white !important;
+    color: #1f298f !important;
+    font-weight: 800;
 }
 
-/* Transições de Aba */
-.tab-section { animation: fadeInUp 0.4s ease-out; }
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.input-field {
+    width: 100%;
+    padding: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    outline: none;
+    transition: all 0.2s;
 }
 
-/* Scroll Customizado */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.input-field:focus {
+    border-color: #1f298f;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(31, 41, 143, 0.05);
+}
 
-/* Mobile Drawer */
-#sidebar.mobile-open { transform: translateX(0); }
+.tab-section { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
 
-.hidden { display: none !important; }
+/* Estilo para Tabela e Botões Mobile */
+@media (max-width: 768px) {
+    .lg\:ml-72 { margin-left: 0; }
+    .input-field { font-size: 16px; } /* Evita zoom no iPhone */
+}
