@@ -3,161 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LabSystem CMS | Gerenciamento Profissional</title>
+    <title>LabSystem CMS | Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 flex min-h-screen">
+<body class="bg-slate-50 flex min-h-screen overflow-x-hidden">
 
     <div id="overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm"></div>
 
     <aside id="sidebar" class="w-72 bg-slate-900 text-slate-400 flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 border-r border-slate-800">
         <div class="p-8">
             <h2 class="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
-                <span class="bg-indigo-600 px-2 py-0.5 rounded-lg">LS</span> LabSystem
+                <span class="bg-indigo-600 px-2 py-0.5 rounded-lg text-white">LS</span> LabSystem
             </h2>
         </div>
 
         <nav class="flex-1 px-4 space-y-2 overflow-y-auto" id="nav-tabs">
-            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active">📊 Dashboard</button>
-            <button data-tab="sincronizacao" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">🔄 Sincronização</button>
-            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">⚙️ Operacional</button>
-            <button data-tab="itens" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">🍔 Cardápio</button>
-            <button data-tab="customizar" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">🎨 Customizar</button>
-            <button data-tab="preview" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">👁️ Pré-visualização</button>
+            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active">Dashboard</button>
+            <button data-tab="sincronizacao" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Sincronização</button>
+            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Operacional</button>
+            <button data-tab="itens" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Produtos</button>
+            <button data-tab="customizar" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Customização</button>
         </nav>
 
-        <div class="p-4 border-t border-slate-800 space-y-2">
-            <a href="https://wa.me/5511943198316" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-white transition font-bold text-xs">SUPORTE WHATSAPP</a>
-            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition font-bold text-xs">SAIR DO SISTEMA</button>
+        <div class="p-4 border-t border-slate-800 space-y-3">
+            <a href="https://wa.me/5511943198316" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-white transition font-bold text-xs uppercase">Suporte</a>
+            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition font-bold text-xs uppercase">Sair</button>
         </div>
     </aside>
 
-    <main class="flex-1 lg:ml-72 p-4 md:p-10">
-        <header class="flex justify-between items-center mb-10 pt-12 lg:pt-0">
-            <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-indigo-600 text-white rounded-xl shadow-xl">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            
-            <div>
-                <h1 class="text-3xl font-black text-slate-800 uppercase leading-none">Olá, <span id="display-user" class="text-indigo-600">...</span></h1>
-                <p id="license-status" class="text-sm font-bold text-emerald-500 mt-1">LICENÇA ATIVA • 240 DIAS</p>
+    <main class="flex-1 lg:ml-72 p-4 md:p-10 transition-all duration-300">
+        
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pt-14 lg:pt-0 gap-6">
+            <div class="animate__animated animate__fadeInLeft">
+                <h1 class="text-3xl font-extrabold text-slate-800 leading-tight">Olá, <span id="display-user" class="text-indigo-600 uppercase">...</span></h1>
+                <p class="text-sm text-slate-500 font-medium" id="license-info">Licença Gold Ativa</p>
             </div>
-
-            <button onclick="saveDraft()" id="saveBtn" class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-black text-sm shadow-lg transition-all">
-                💾 SALVAR RASCUNHO
-            </button>
+            
+            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto animate__animated animate__fadeInRight">
+                <button onclick="saveDraft()" id="btn-save-draft" class="flex-1 md:flex-none px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl shadow-lg font-bold text-sm transition-all">
+                    💾 Salvar Rascunho
+                </button>
+                <button onclick="exportJSON()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl font-bold text-sm transition-all">
+                    📤 Exportar
+                </button>
+                <button onclick="document.getElementById('importFile').click()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl font-bold text-sm transition-all">
+                    📥 Importar
+                </button>
+                <input type="file" id="importFile" class="hidden" accept=".json" onchange="importJSON(event)">
+            </div>
         </header>
 
         <div id="tabs-container">
             <section id="dashboard" class="tab-section active">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                        <p class="text-slate-400 text-xs font-black uppercase">Vendas Hoje</p>
-                        <h3 class="text-4xl font-black text-slate-800 mt-2">R$ 850,00</h3>
-                        <span class="text-indigo-500 font-bold text-xs">4 novos pedidos</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Visualizações</p>
+                        <h3 class="text-4xl font-black text-slate-800 mt-2">1.284</h3>
                     </div>
                     <div class="bg-indigo-600 p-8 rounded-[2rem] shadow-xl text-white">
-                        <p class="opacity-70 text-xs font-black uppercase">Status do Totem</p>
-                        <h3 class="text-3xl font-black mt-2">🟢 ONLINE</h3>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sincronizacao" class="tab-section hidden">
-                <div class="max-w-xl bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
-                    <h2 class="text-2xl font-black text-slate-800 mb-6 uppercase italic">Sync Totem</h2>
-                    <div class="space-y-4">
-                        <input type="text" id="bin-id" placeholder="BIN ID PUBLIC" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold uppercase text-xs">
-                        <input type="password" id="master-key" placeholder="MASTER KEY (SECRET)" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="exportData()" class="p-3 bg-slate-100 rounded-xl font-bold text-xs">EXPORTAR JSON</button>
-                            <button onclick="importData()" class="p-3 bg-slate-100 rounded-xl font-bold text-xs">IMPORTAR JSON</button>
-                        </div>
-                        <button onclick="syncToCloud()" id="btn-sync" class="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black text-lg shadow-xl hover:scale-[1.02] transition-all">🌐 PUBLICAR AGORA</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="operacional" class="tab-section hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm">
-                        <h3 class="font-black text-slate-800 mb-4 uppercase">Dados do Estabelecimento</h3>
-                        <div class="space-y-4">
-                            <input type="text" id="store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-xl font-bold">
-                            <input type="text" id="store-phone" placeholder="WhatsApp (DDI+DDD+NUM)" class="w-full p-4 bg-slate-50 border rounded-xl">
-                            <select id="store-status" class="w-full p-4 bg-slate-50 border rounded-xl font-bold">
-                                <option value="open">🟢 ABERTO</option>
-                                <option value="closed">🔴 FECHADO</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm">
-                        <h3 class="font-black text-slate-800 mb-4 uppercase">Pagamento</h3>
-                        <input type="text" id="pix-key" placeholder="Chave PIX" class="w-full p-4 bg-slate-50 border rounded-xl mb-4">
-                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-                            <span class="font-bold text-xs text-slate-500">TAXA BRASIL</span>
-                            <span class="font-black text-indigo-600">R$ 0,01</span>
-                        </div>
+                        <p class="opacity-70 text-xs font-bold uppercase tracking-widest">Status</p>
+                        <h3 class="text-2xl font-black mt-2">🟢 LOJA ABERTA</h3>
                     </div>
                 </div>
             </section>
 
             <section id="itens" class="tab-section hidden">
-                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm">
-                    <div class="flex justify-between items-center mb-8">
-                        <h3 class="font-black text-slate-800 uppercase">Gerenciar Produtos</h3>
-                        <button onclick="openProductModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs">+ NOVO ITEM</button>
+                <div class="bg-white p-6 rounded-[2rem] shadow-sm border">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-slate-800">Cardápio</h2>
+                        <button onclick="addItem()" class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold">+ Novo Item</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
-                            <thead class="text-slate-400 text-[10px] uppercase font-black border-b">
-                                <tr><th class="pb-4">Produto</th><th class="pb-4">Categoria</th><th class="pb-4">Preço</th><th class="pb-4">Ação</th></tr>
+                            <thead class="text-slate-400 text-xs uppercase">
+                                <tr><th class="py-4">Produto</th><th class="py-4">Preço</th><th class="py-4 text-center">Ações</th></tr>
                             </thead>
-                            <tbody id="product-list" class="font-bold text-slate-700">
-                                </tbody>
+                            <tbody id="items-list"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <section id="customizar" class="tab-section hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4">
-                        <h3 class="font-black text-slate-800 uppercase">Cores do Sistema</h3>
-                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border">
-                            <input type="color" id="primary-color" class="w-12 h-12 rounded-lg cursor-pointer">
-                            <span class="text-xs font-black uppercase">Cor Principal</span>
-                        </div>
-                        <input type="text" id="logo-url" placeholder="URL da Logo (PNG/JPG)" class="w-full p-4 bg-slate-50 border rounded-xl">
+            <section id="sincronizacao" class="tab-section hidden">
+                <div class="max-w-xl bg-white p-8 rounded-[2.5rem] shadow-xl border">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Cloud Sync</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="bin-id" placeholder="BIN ID (JSONBin)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                        <input type="password" id="master-key" placeholder="Master Key" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                        <button onclick="syncData()" id="btn-sync" class="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black shadow-xl">🌐 PUBLICAR NO TOTEM</button>
                     </div>
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4">
-                        <h3 class="font-black text-slate-800 uppercase">Música & Mídia</h3>
-                        <input type="text" id="yt-url" placeholder="Link YouTube (Loop)" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        <label class="text-[10px] font-black text-slate-400 block uppercase">Volume da Música</label>
-                        <input type="range" id="volume-range" class="w-full h-2 bg-indigo-200 rounded-lg accent-indigo-600">
+                </div>
+            </section>
+
+            <section id="operacional" class="tab-section hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border space-y-4">
+                        <h3 class="font-bold">Dados da Loja</h3>
+                        <input type="text" id="store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-xl">
+                        <input type="text" id="store-whatsapp" placeholder="WhatsApp" class="w-full p-4 bg-slate-50 border rounded-xl">
                     </div>
                 </div>
             </section>
         </div>
     </main>
 
-    <div id="modal" class="fixed inset-0 bg-slate-900/80 z-[100] flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl scale-in">
-            <h2 class="text-xl font-black mb-6 uppercase">Novo Produto</h2>
-            <div class="space-y-4">
-                <input type="text" id="p-name" placeholder="NOME DO PRODUTO" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                <input type="text" id="p-cat" placeholder="CATEGORIA (EX: PIZZAS)" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                <input type="number" id="p-price" placeholder="PREÇO (EX: 29.90)" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                <div class="flex gap-2 pt-4">
-                    <button onclick="closeModal()" class="flex-1 p-4 bg-slate-100 rounded-2xl font-bold uppercase">Cancelar</button>
-                    <button onclick="confirmAddProduct()" class="flex-1 p-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase shadow-lg">Salvar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-indigo-600 text-white rounded-2xl">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h1
