@@ -3,100 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LabSystem CMS | Gestão Serverless</title>
+    <title>LabSystem CMS | Master Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 flex min-h-screen overflow-x-hidden">
+<body class="bg-[#f8fafc] flex min-h-screen overflow-x-hidden text-slate-900">
 
-    <div id="overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm"></div>
+    <div id="overlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden lg:hidden backdrop-blur-sm"></div>
 
-    <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-indigo-600 text-white rounded-2xl shadow-xl active:scale-95">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-
-    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-400 flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 border-r border-slate-800">
+    <aside id="sidebar" class="w-72 bg-[#0f172a] text-slate-400 flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 border-r border-slate-800">
         <div class="p-8">
             <h2 class="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
-                <span class="bg-indigo-600 px-2 py-0.5 rounded-lg text-white">LS</span> LabSystem
+                <span class="bg-indigo-600 px-2 py-1 rounded-lg">LS</span> LabSystem
             </h2>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-2">CMS Gerenciador</p>
+            <p class="text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-widest">Painel Administrativo</p>
         </div>
 
-        <nav class="flex-1 px-4 space-y-2 overflow-y-auto" id="nav-tabs">
-            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active">Dashboard</button>
-            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Dados da Loja</button>
-            <button data-tab="itens" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Cardápio / Itens</button>
-            <button data-tab="customizar" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Layout Totem</button>
-            <button data-tab="sincronizacao" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Sincronização @</button>
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto" id="nav-tabs">
+            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active transition-all">
+                <span>Dashboard</span>
+            </button>
+            <button data-tab="sincronizacao" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition-all">
+                <span>Sincronização</span>
+            </button>
+            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition-all">
+                <span>Operacional</span>
+            </button>
+            <button data-tab="cardapio" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition-all">
+                <span>Cardápio / Itens</span>
+            </button>
+            <button data-tab="customizar" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition-all">
+                <span>Customização</span>
+            </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-800 space-y-3">
-            <a href="https://wa.me/5511943198316" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-white transition font-bold text-xs">SUPORTE TÉCNICO</a>
-            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition font-bold text-xs">SAIR DO SISTEMA</button>
+        <div class="p-4 border-t border-slate-800 space-y-2">
+            <a href="https://wa.me/5511943198316" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-white transition font-bold text-xs">
+                SUPORTE WHATSAPP
+            </a>
+            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition font-bold text-xs">
+                SAIR DO SISTEMA
+            </button>
         </div>
     </aside>
 
     <main class="flex-1 lg:ml-72 p-4 md:p-10 transition-all">
         
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pt-14 lg:pt-0 gap-6">
-            <div class="animate__animated animate__fadeInLeft">
-                <h1 class="text-3xl font-extrabold text-slate-800">Olá, <span id="display-user" class="text-indigo-600 uppercase">...</span></h1>
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pt-14 lg:pt-0 gap-4">
+            <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-indigo-600 text-white rounded-xl shadow-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+
+            <div>
+                <h1 class="text-3xl font-black text-slate-800">Olá, <span id="display-user" class="text-indigo-600 uppercase">...</span></h1>
                 <p class="text-sm text-slate-500 font-medium">Status: <span class="text-emerald-500 font-bold">Plano Gold Ativo</span></p>
             </div>
             
-            <div class="flex items-center gap-3 w-full md:w-auto animate__animated animate__fadeInRight">
-                <button onclick="saveDraft()" id="btn-save-draft" class="flex-1 md:flex-none px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl shadow-lg font-bold text-sm transition-all">
-                    💾 Salvar Rascunho Local
-                </button>
-            </div>
+            <button onclick="saveDraft()" id="btn-save-draft" class="w-full md:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl shadow-xl shadow-amber-200 transition-all font-bold">
+                💾 SALVAR RASCUNHO
+            </button>
         </header>
 
         <div id="tabs-container">
             
             <section id="dashboard" class="tab-section active">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Visualizações</p>
-                        <h3 class="text-4xl font-black text-slate-800 mt-2">1,284</h3>
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 animate__animated animate__fadeInUp">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Acessos no Mês</p>
+                        <h3 class="text-4xl font-black mt-2">1,284</h3>
                     </div>
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
                         <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Vendas Hoje</p>
-                        <h3 class="text-4xl font-black text-slate-800 mt-2">R$ 850,00</h3>
+                        <h3 class="text-4xl font-black mt-2">R$ 850,00</h3>
                     </div>
-                    <div class="bg-indigo-600 p-8 rounded-[2rem] shadow-xl text-white">
-                        <p class="opacity-70 text-xs font-bold uppercase tracking-widest">Expira em</p>
-                        <h3 class="text-3xl font-black mt-2">240 Dias</h3>
+                    <div class="bg-indigo-600 p-8 rounded-[2.5rem] shadow-xl text-white animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                        <p class="opacity-70 text-xs font-bold uppercase tracking-widest">Sua Licença</p>
+                        <h3 class="text-2xl font-bold mt-2">Expira em 240 dias</h3>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sincronizacao" class="tab-section hidden">
+                <div class="max-w-xl bg-white p-8 rounded-[2.5rem] shadow-sm border">
+                    <h2 class="text-xl font-bold mb-6">Conexão Totem (Serverless)</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="bin-id" placeholder="BIN ID (Ex: 68e367...)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-indigo-500">
+                        <input type="password" id="master-key" placeholder="Master Key (Secreta)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-indigo-500">
+                        <button onclick="syncData()" id="btn-sync" class="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black text-lg shadow-lg hover:scale-[1.02] transition-all">
+                            🌐 PUBLICAR E SINCRONIZAR
+                        </button>
                     </div>
                 </div>
             </section>
 
             <section id="operacional" class="tab-section hidden">
-                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-4">
-                    <h2 class="text-xl font-bold text-slate-800 mb-4">Informações da Loja</h2>
-                    <input type="text" id="store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600/20">
-                    <input type="text" id="store-whatsapp" placeholder="WhatsApp (Ex: 551199999999)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                    <input type="text" id="pix-key" placeholder="Chave PIX para pagamentos" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800">Informações de Contato</h3>
+                        <input type="text" id="store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="text" id="store-whatsapp" placeholder="WhatsApp (DDI DDD Número)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <select id="store-status" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                            <option value="open">🟢 Aberta</option>
+                            <option value="closed">🔴 Fechada</option>
+                        </select>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800">Pagamento (PIX)</h3>
+                        <input type="text" id="pix-key" placeholder="Chave PIX" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="text" id="pix-name" placeholder="Nome do Titular" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    </div>
                 </div>
             </section>
 
-            <section id="itens" class="tab-section hidden">
-                <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-slate-800">Cardápio Digital</h2>
-                        <button onclick="addItem()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-100">+ Novo Produto</button>
+            <section id="cardapio" class="tab-section hidden">
+                <div class="bg-white p-6 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                        <h2 class="text-xl font-bold">Gerenciar Produtos</h2>
+                        <button onclick="openProductModal()" class="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold">+ NOVO PRODUTO</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
-                            <thead>
-                                <tr class="text-slate-400 text-xs uppercase border-b border-slate-100">
+                            <thead class="text-xs uppercase text-slate-400 border-b">
+                                <tr>
                                     <th class="py-4">Produto</th>
                                     <th class="py-4">Preço</th>
                                     <th class="py-4 text-center">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="items-list">
+                            <tbody id="items-list" class="font-medium text-slate-700">
                                 </tbody>
                         </table>
                     </div>
@@ -104,34 +139,41 @@
             </section>
 
             <section id="customizar" class="tab-section hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4 border border-slate-100">
-                        <h3 class="font-bold text-slate-800">Cores do Totem</h3>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
-                            <span class="text-sm font-bold">Cor Principal</span>
-                            <input type="color" id="color-primary" value="#1f298f" class="w-12 h-12 rounded-lg border-none cursor-pointer">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm max-w-2xl">
+                    <h3 class="font-bold mb-6">Identidade do Totem</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400">COR PRIMÁRIA</label>
+                            <input type="color" id="color-primary" value="#1f298f" class="w-full h-12 rounded-xl mt-1 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400">COR SECUNDÁRIA</label>
+                            <input type="color" id="color-secondary" value="#ffcf69" class="w-full h-12 rounded-xl mt-1 cursor-pointer">
                         </div>
                     </div>
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4 border border-slate-100">
-                        <h3 class="font-bold text-slate-800">Música de Fundo</h3>
-                        <input type="text" id="yt-url" placeholder="Link do YouTube" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                    </div>
-                </div>
-            </section>
-
-            <section id="sincronizacao" class="tab-section hidden">
-                <div class="max-w-xl bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
-                    <h2 class="text-2xl font-bold text-slate-800 mb-6 tracking-tight">Publicar no Servidor</h2>
                     <div class="space-y-4">
-                        <input type="text" id="bin-id" placeholder="BIN ID (JSONBin)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                        <input type="password" id="master-key" placeholder="Master Key (Secreta)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                        <button onclick="syncData()" id="btn-sync" class="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black text-lg shadow-xl hover:scale-[1.01] transition-all">🌐 PUBLICAR AGORA</button>
+                        <input type="url" id="logo-url" placeholder="URL da Logo (PNG)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="url" id="music-url" placeholder="Link YouTube (Música)" class="w-full p-4 bg-slate-50 border rounded-2xl">
                     </div>
                 </div>
             </section>
 
         </div>
     </main>
+
+    <div id="modal-product" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 hidden backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl animate__animated animate__zoomIn">
+            <h3 class="text-xl font-bold mb-6">Detalhes do Produto</h3>
+            <div class="space-y-4">
+                <input type="text" id="modal-p-name" placeholder="Nome do Produto" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                <input type="number" id="modal-p-price" placeholder="Preço (Ex: 25.00)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                <div class="flex gap-2">
+                    <button onclick="closeProductModal()" class="flex-1 py-4 bg-slate-100 rounded-2xl font-bold">Cancelar</button>
+                    <button onclick="saveNewProduct()" class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
