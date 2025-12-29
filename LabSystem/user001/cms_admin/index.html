@@ -3,111 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LabSystem CMS | Admin</title>
+    <title>LabSystem CMS | Master Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .sidebar-active { background: #4f46e5 !important; color: white !important; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; animation: fadeInUp 0.4s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        input, select, textarea { min-height: 44px; }
+    </style>
 </head>
 <body class="bg-slate-50 flex min-h-screen overflow-x-hidden">
 
-    <div id="overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm"></div>
+    <div id="overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm" onclick="toggleMenu()"></div>
 
-    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-400 flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 border-r border-slate-800">
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-400 flex flex-col fixed h-full z-50 -translate-x-full lg:translate-x-0 border-r border-slate-800">
         <div class="p-8">
             <h2 class="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
-                <span class="bg-indigo-600 px-2 py-0.5 rounded-lg text-white">LS</span> LabSystem
+                <span class="bg-indigo-600 px-2 py-0.5 rounded-lg">LS</span> LabSystem
             </h2>
+            <p id="user-display-sidebar" class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mt-2">USER_001</p>
         </div>
 
-        <nav class="flex-1 px-4 space-y-2 overflow-y-auto" id="nav-tabs">
-            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active">Dashboard</button>
-            <button data-tab="sincronizacao" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Sincronização</button>
-            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Operacional</button>
-            <button data-tab="itens" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Produtos</button>
-            <button data-tab="customizar" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition">Customização</button>
+        <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+            <button onclick="showTab('dashboard')" class="nav-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active" data-id="dashboard">Dashboard</button>
+            <button onclick="showTab('operacional')" class="nav-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition" data-id="operacional">Operacional</button>
+            <button onclick="showTab('cardapio')" class="nav-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition" data-id="cardapio">Cardápio/Produtos</button>
+            <button onclick="showTab('customizacao')" class="nav-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition" data-id="customizacao">Customizar Totem</button>
+            <button onclick="showTab('sincronizacao')" class="nav-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-800 transition text-amber-400" data-id="sincronizacao">Nuvem & Sinc</button>
         </nav>
 
-        <div class="p-4 border-t border-slate-800 space-y-3">
-            <a href="https://wa.me/5511943198316" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-white transition font-bold text-xs uppercase">Suporte</a>
-            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition font-bold text-xs uppercase">Sair</button>
+        <div class="p-4 border-t border-slate-800 space-y-2">
+            <a href="https://wa.me/5511943198316" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold text-xs uppercase hover:bg-emerald-500 hover:text-white transition">Suporte Técnico</a>
+            <button onclick="logout()" class="w-full p-3 bg-red-500/10 text-red-400 rounded-xl font-bold text-xs uppercase hover:bg-red-500 hover:text-white transition">Sair</button>
         </div>
     </aside>
 
-    <main class="flex-1 lg:ml-72 p-4 md:p-10 transition-all duration-300">
-        
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pt-14 lg:pt-0 gap-6">
-            <div class="animate__animated animate__fadeInLeft">
-                <h1 class="text-3xl font-extrabold text-slate-800 leading-tight">Olá, <span id="display-user" class="text-indigo-600 uppercase">...</span></h1>
-                <p class="text-sm text-slate-500 font-medium" id="license-info">Licença Gold Ativa</p>
+    <main class="flex-1 lg:ml-72 p-4 md:p-10">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pt-12 lg:pt-0">
+            <button onclick="toggleMenu()" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-indigo-600 text-white rounded-xl shadow-lg">Menu</button>
+            <div>
+                <h1 class="text-3xl font-black text-slate-800">Olá, <span id="user-name-title" class="text-indigo-600">...</span></h1>
+                <p class="text-slate-500 text-sm font-medium">Controle total do seu terminal de vendas.</p>
             </div>
-            
-            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto animate__animated animate__fadeInRight">
-                <button onclick="saveDraft()" id="btn-save-draft" class="flex-1 md:flex-none px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl shadow-lg font-bold text-sm transition-all">
-                    💾 Salvar Rascunho
-                </button>
-                <button onclick="exportJSON()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl font-bold text-sm transition-all">
-                    📤 Exportar
-                </button>
-                <button onclick="document.getElementById('importFile').click()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl font-bold text-sm transition-all">
-                    📥 Importar
-                </button>
-                <input type="file" id="importFile" class="hidden" accept=".json" onchange="importJSON(event)">
+            <div class="flex gap-2 w-full md:w-auto">
+                <button onclick="saveToLocal()" class="flex-1 md:flex-none px-6 py-3 bg-amber-500 text-white rounded-2xl font-bold shadow-lg hover:bg-amber-600 transition">💾 Salvar Rascunho</button>
             </div>
         </header>
 
-        <div id="tabs-container">
-            <section id="dashboard" class="tab-section active">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border">
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Visualizações</p>
-                        <h3 class="text-4xl font-black text-slate-800 mt-2">1.284</h3>
-                    </div>
-                    <div class="bg-indigo-600 p-8 rounded-[2rem] shadow-xl text-white">
-                        <p class="opacity-70 text-xs font-bold uppercase tracking-widest">Status</p>
-                        <h3 class="text-2xl font-black mt-2">🟢 LOJA ABERTA</h3>
-                    </div>
+        <section id="tab-dashboard" class="tab-section active">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-[2rem] shadow-sm">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Status da Licença</p>
+                    <h3 class="text-2xl font-black text-emerald-500 mt-2">Plano Gold</h3>
+                    <p class="text-xs text-slate-500">Expira em 240 dias</p>
                 </div>
-            </section>
+                <div class="glass-card p-6 rounded-[2rem] shadow-sm bg-indigo-600">
+                    <p class="text-indigo-200 text-xs font-bold uppercase">Loja Atual</p>
+                    <h3 id="stat-store-name" class="text-2xl font-black text-white mt-2">---</h3>
+                </div>
+            </div>
+        </section>
 
-            <section id="itens" class="tab-section hidden">
-                <div class="bg-white p-6 rounded-[2rem] shadow-sm border">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-slate-800">Cardápio</h2>
-                        <button onclick="addItem()" class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold">+ Novo Item</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="text-slate-400 text-xs uppercase">
-                                <tr><th class="py-4">Produto</th><th class="py-4">Preço</th><th class="py-4 text-center">Ações</th></tr>
-                            </thead>
-                            <tbody id="items-list"></tbody>
-                        </table>
+        <section id="tab-operacional" class="tab-section">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border space-y-4">
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Informações de Contato</h2>
+                    <input type="text" id="inp-store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-indigo-500">
+                    <input type="text" id="inp-whatsapp" placeholder="WhatsApp (DDI+DDD+Número)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <textarea id="inp-address" placeholder="Endereço Físico" class="w-full p-4 bg-slate-50 border rounded-2xl h-24"></textarea>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border space-y-4">
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Pagamento PIX</h2>
+                    <input type="text" id="inp-pix" placeholder="Chave PIX" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <div class="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                        <p class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Área de Cobertura</p>
+                        <div class="flex justify-between font-bold text-indigo-900">
+                            <span>BRASIL</span>
+                            <span>R$ 0,01</span>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="sincronizacao" class="tab-section hidden">
-                <div class="max-w-xl bg-white p-8 rounded-[2.5rem] shadow-xl border">
-                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Cloud Sync</h2>
-                    <div class="space-y-4">
-                        <input type="text" id="bin-id" placeholder="BIN ID (JSONBin)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                        <input type="password" id="master-key" placeholder="Master Key" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                        <button onclick="syncData()" id="btn-sync" class="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black shadow-xl">🌐 PUBLICAR NO TOTEM</button>
-                    </div>
+        <section id="tab-cardapio" class="tab-section">
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800">Gerenciar Produtos</h2>
+                    <button onclick="addProduct()" class="px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700">+ Novo Produto</button>
                 </div>
-            </section>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="text-slate-400 uppercase text-[10px] font-bold tracking-widest border-b">
+                            <tr>
+                                <th class="pb-4">Produto</th>
+                                <th class="pb-4">Categoria</th>
+                                <th class="pb-4">Preço (R$)</th>
+                                <th class="pb-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-list-render" class="text-slate-700 font-medium">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-            <section id="operacional" class="tab-section hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border space-y-4">
-                        <h3 class="font-bold">Dados da Loja</h3>
-                        <input type="text" id="store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        <input type="text" id="store-whatsapp" placeholder="WhatsApp" class="w-full p-4 bg-slate-50 border rounded-xl">
+        <section id="tab-customizacao" class="tab-section">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border space-y-4">
+                    <h2 class="text-xl font-bold text-slate-800">Cores e Logo</h2>
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                        <span class="flex-1 text-sm font-bold">Cor Primária</span>
+                        <input type="color" id="inp-color-primary" value="#1f298f" class="w-12 h-12 border-none bg-transparent">
+                    </div>
+                    <input type="text" id="inp-logo-url" placeholder="URL da Logo (.png)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border space-y-4">
+                    <h2 class="text-xl font-bold text-slate-800">Multimídia</h2>
+                    <input type="text" id="inp-yt-link" placeholder="Link do YouTube" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <label class="text-xs font-bold text-slate-400">Volume da Música</label>
+                    <input type="range" id="inp-yt-volume" class="w-full accent-indigo-600">
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-sincronizacao" class="tab-section">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border max-w-2xl">
+                <h2 class="text-2xl font-black text-slate-800 mb-2">JSONBin Sincronização</h2>
+                <p class="text-slate-500 text-sm mb-8">Conecte o servidor remoto para atualizar o Totem em tempo real.</p>
+                
+                <div class="space-y-4 mb-10">
+                    <input type="text" id="inp-bin-id" placeholder="BIN ID Público" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <input type="password" id="inp-master-key" placeholder="Master Key (Segredo)" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <button onclick="syncToCloud()" id="btn-cloud" class="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black text-lg shadow-xl shadow-indigo-100 active:scale-95 transition-all">🌐 PUBLICAR AGORA</button>
+                </div>
+
+                <div class="pt-8 border-t space-y-4">
+                    <h3 class="font-bold text-slate-800">Backup Manual</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="exportJSON()" class="p-4 bg-slate-100 text-slate-700 rounded-2xl font-bold hover:bg-slate-200 transition">Exportar .JSON</button>
+                        <label class="p-4 bg-slate-100 text-slate-700 rounded-2xl font-bold hover:bg-slate-200 transition text-center cursor-pointer">
+                            Importar .JSON
+                            <input type="file" id="import-file" class="hidden" accept=".json" onchange="importJSON(event)">
+                        </label>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
-    <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-indigo-600 text-white rounded-2xl">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h1
+    <script>
+        // --- DATA STATE ---
+        let appData = {
+            store: { name: '', whatsapp: '', address: '', pix: '' },
+            products: [],
+            theme: { primary: '#4f46e5', logo: '', yt: '', volume: 50 },
+            cloud: { bin: '', key: '' }
+        };
+
+        // --- CORE INITIALIZATION ---
+        window.onload = () => {
+            const path = window.location.pathname;
+            const user = path.split('/').slice(-3, -2)[0] || "USER_DEFAULT";
+            document.getElementById('user-name-title').textContent = user;
+            document.getElementById('user-display-sidebar').textContent = user;
+            
+            // Load from LocalStorage
+            const saved = localStorage.getItem(`labsystem_${user}`);
+            if(saved) {
+                appData = JSON.parse(saved);
+                syncInputs();
+                renderProducts();
+            }
+        };
+
+        // --- NAVIGATION ---
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('sidebar-active'));
+            
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.querySelector(`[data-id="${tabId}"]`).classList.add('sidebar-active');
+            
+            if(window.innerWidth < 1024) toggleMenu();
+        }
+
+        function toggleMenu() {
+            const side = document.getElementById('sidebar');
+            const over = document.getElementById('overlay');
+            side.classList.toggle('-translate-x-full');
+            over.classList.toggle('hidden');
+        }
+
+        // --- PRODUCT CRUD ---
+        function renderProducts() {
+            const container = document.getElementById('product-list-render');
+            container.innerHTML = appData.products.map(p => `
+                <tr class="border-b border-slate-50 animate__animated animate__fadeIn">
+                    <td class="py-4 font-bold text-slate-800">${p.name}</td>
+                    <td class="py-4"><span class="bg-slate-100 px-3 py-1 rounded-lg text-[10px] font-bold text-slate-500 uppercase">${p.category}</span></td>
+                    <td class="py-4 text-indigo-600 font-black">R$ ${p.price}</td>
+                    <td class="py-4 text-center">
+                        <button onclick="removeProduct(${p.id})" class="text-red-400 hover:text-red-600 transition font-bold">Remover</button>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('stat-store-name').textContent = appData.store.name || "Sem Nome";
+        }
+
+        function addProduct() {
+            const name = prompt("Nome do Produto:");
+            const price = prompt("Preço (Ex: 45.90):");
+            const category = prompt("Categoria (Ex: Bebidas):");
+            if(name && price) {
+                appData.products.push({ id: Date.now(), name, price, category: category || 'Geral' });
+                renderProducts();
+            }
+        }
+
+        function removeProduct(id) {
+            if(confirm("Excluir item?")) {
+                appData.products = appData.products.filter(p => p.id !== id);
+                renderProducts();
+            }
+        }
+
+        // --- SAVE & SYNC ---
+        function collectInputs() {
+            appData.store = {
+                name: document.getElementById('inp-store-name').value,
+                whatsapp: document.getElementById('inp-whatsapp').value,
+                address: document.getElementById('inp-address').value,
+                pix: document.getElementById('inp-pix').value
+            };
+            appData.theme = {
+                primary: document.getElementById('inp-color-primary').value,
+                logo: document.getElementById('inp-logo-url').value,
+                yt: document.getElementById('inp-yt-link').value,
+                volume: document.getElementById('inp-yt-volume').value
+            };
+            appData.cloud = {
+                bin: document.getElementById('inp-bin-id').value,
+                key: document.getElementById('inp-master-key').value
+            };
+        }
+
+        function syncInputs() {
+            document.getElementById('inp-store-name').value = appData.store.name;
+            document.getElementById('inp-whatsapp').value = appData.store.whatsapp;
+            document.getElementById('inp-address').value = appData.store.address;
+            document.getElementById('inp-pix').value = appData.store.pix;
+            document.getElementById('inp-color-primary').value = appData.theme.primary;
+            document.getElementById('inp-logo-url').value = appData.theme.logo;
+            document.getElementById('inp-yt-link').value = appData.theme.yt;
+            document.getElementById('inp-yt-volume').value = appData.theme.volume;
+            document.getElementById('inp-bin-id').value = appData.cloud.bin;
+            document.getElementById('inp-master-key').value = appData.cloud.key;
+        }
+
+        function saveToLocal() {
+            collectInputs();
+            const user = document.getElementById('user-name-title').textContent;
+            localStorage.setItem(`labsystem_${user}`, JSON.stringify(appData));
+            
+            const btn = event.target;
+            btn.innerHTML = "✅ Rascunho Salvo!";
+            btn.classList.replace('bg-amber-500', 'bg-emerald-500');
+            setTimeout(() => {
+                btn.innerHTML = "💾 Salvar Rascunho";
+                btn.classList.replace('bg-emerald-500', 'bg-amber-500');
+            }, 2000);
+            renderProducts();
+        }
+
+        // --- IMPORT / EXPORT ---
+        function exportJSON() {
+            collectInputs();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 4));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", `config_${appData.store.name || 'labsystem'}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    appData = JSON.parse(e.target.result);
+                    syncInputs();
+                    renderProducts();
+                    alert("Dados importados com sucesso!");
+                } catch (err) {
+                    alert("Erro ao ler arquivo JSON.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- CLOUD SYNC (JSONBin) ---
+        async function syncToCloud() {
+            collectInputs();
+            const btn = document.getElementById('btn-cloud');
+            if(!appData.cloud.bin || !appData.cloud.key) return alert("Preencha as chaves de nuvem!");
+
+            btn.disabled = true;
+            btn.innerHTML = "🌀 SINCRONIZANDO...";
+
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${appData.cloud.bin}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': appData.cloud.key
+                    },
+                    body: JSON.stringify(appData)
+                });
+
+                if(response.ok) {
+                    btn.innerHTML = "🚀 PUBLICADO NO TOTEM!";
+                    btn.classList.replace('bg-indigo-600', 'bg-emerald-500');
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
+                alert("Erro ao publicar. Verifique o BIN ID e a Master Key.");
+                btn.innerHTML = "❌ ERRO NA SINCRONIZAÇÃO";
+            }
+
+            setTimeout(() => {
+                btn.innerHTML = "🌐 PUBLICAR AGORA";
+                btn.classList.replace('bg-emerald-500', 'bg-indigo-600');
+                btn.disabled = false;
+            }, 3000);
+        }
+
+        function logout() {
+            if(confirm("Sair do sistema?")) window.location.href = "../index.html";
+        }
+    </script>
+</body>
+                        </html>
