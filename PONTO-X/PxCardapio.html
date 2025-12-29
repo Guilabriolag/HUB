@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pastelaria Ponto X - Cardápio Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="PxCardapio.css">
+</head>
+<body>
+
+    <div class="background-fix"></div>
+
+    <header>
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjB6c19-2fGbhqEYzI6_53zxDgiSskUkpHpzfd2RvzCsvyUwFHRk_C4s1repU9xlWcErFanYeneXCCsgSBiZ21XlMpxtEvWQrLvdwoQFvjejZXrHnhdmlXnKLmE9PH1vEs1OmWQELgwKVbpSjP9pWO4wODoUJzVPZ2ISO2oa_fj2FqLeClyvQ2O9A8-_1g_/s1536/copilot_image_1766789238349.jpeg" 
+             class="logo-top" alt="Logo Ponto X">
+        <h3>+ de 30 pastéis artesanais fritos na hora</h3>
+    </header>
+
+    <nav class="main-nav">
+        <button class="btn-nav active" id="btn-mais_pedidos" onclick="selecionar('mais_pedidos')">MAIS PEDIDOS</button>
+        <button class="btn-nav" id="btn-tradicionais" onclick="selecionar('tradicionais')">TRADICIONAIS</button>
+        <button class="btn-nav" id="btn-especiais" onclick="selecionar('especiais')">ESPECIAIS</button>
+        <button class="btn-nav" id="btn-combinados" onclick="selecionar('combinados')">COMBINADOS</button>
+        <button class="btn-nav" id="btn-doces" onclick="selecionar('doces')">DOCES</button>
+        <button class="btn-nav" id="btn-porcoes" onclick="selecionar('porcoes')">PORÇÕES</button>
+        <button class="btn-nav" id="btn-bebidas" onclick="selecionar('bebidas')">BEBIDAS</button>
+    </nav>
+
+    <main id="sabores" class="categoria-container"></main>
+
+    <div id="carrinhoToggle" onclick="toggleCarrinho()">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKzQ4HTTrh0wvX7t4utVGspGkRk3x0SIqzCDg0DIcGX-wabyCigxuPDsymqdaA2b-S2BeqE9hhCpXkHr9t9T5-9ndv4MB_BpKSvGfelM92CQ_sNbjza1gf240jcBitzcRgAaBRFOgfIQpskLb1TubrphlBAy7Pd8B-9Y9MsqnMsLlh1p-oRaHBfW2PliEC/s1536/copilot_image_1766789695033.jpeg" 
+             class="mascote-carrinho-img" alt="Carrinho">
+        <span id="cart-count">0</span>
+    </div>
+
+    <section id="carrinho">
+        <h2>MEU PEDIDO</h2>
+        <textarea id="pedido" readonly placeholder="Seu carrinho está vazio..."></textarea>
+        
+        <div class="carrinho-acoes">
+            <button class="btn-secundario" onclick="editarPedido()">🗑️ LIMPAR</button>
+            <button class="btn-secundario" onclick="toggleCarrinho()">⬅️ VOLTAR</button>
+        </div>
+
+        <div class="total-container">
+            <h3>Total: R$ <span id="total-valor">0.00</span></h3>
+        </div>
+
+        <input type="text" id="obs" class="input-grande" placeholder="Observações (ex: sem cebola)">
+
+        <hr class="divisor-pontilhado">
+
+        <div class="entrega-grid">
+            <button class="btn-opcao-gigante active" id="btn-retirar" onclick="mostrarDados('retirar')">📍 RETIRAR</button>
+            <button class="btn-opcao-gigante" id="btn-delivery" onclick="mostrarDados('delivery')">🛵 DELIVERY</button>
+        </div>
+
+        <div id="entregaCampos" style="display:none;">
+            <input id="endereco" class="input-grande" placeholder="Rua, número e referência">
+            <select id="bairro" class="input-grande" onchange="atualizarFrete()">
+                <option value="0">Escolha o Bairro (Taxa)</option>
+                <option value="3">CENTRO - R$ 3,00</option>
+                <option value="3">JD BOM JESUS - R$ 3,00</option>
+                <option value="3">VILA NOVA - R$ 3,00</option>
+                <option value="4">MORRO BRANCO - R$ 4,00</option>
+                <option value="7">PAIOL / KM 50 - R$ 7,00</option>
+                <option value="10">GREEN HILLS - R$ 10,00</option>
+            </select>
+        </div>
+
+        <select id="pagamento" class="input-grande" onchange="mostrarTroco()">
+            <option value="">FORMA DE PAGAMENTO</option>
+            <option value="Pix">Pix</option>
+            <option value="Cartão">Cartão (Levamos a máquina)</option>
+            <option value="Dinheiro">Dinheiro</option>
+        </select>
+        
+        <input id="valorTroco" class="input-grande" style="display:none;" placeholder="Troco para quanto?">
+
+        <button id="enviar" onclick="enviarPedido()">✅ FINALIZAR NO WHATSAPP</button>
+    </section>
+
+    <div id="toast" class="toast-aviso"></div>
+
+    <script src="PxCardapio.js"></script>
+</body>
+</html>
