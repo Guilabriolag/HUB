@@ -1,94 +1,123 @@
+// --- CONTROLE DE UI E INICIALIZAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
-    setupNavigation();
+    const userName = detectUser();
+    setupTabs();
     setupMobileMenu();
+    loadDraft(userName);
 });
 
-// 1. LÓGICA MODULAR (DETECÇÃO DE USUÁRIO)
-function initApp() {
+// Detecta o nome do usuário pela URL (Pasta Pai)
+function detectUser() {
     const path = window.location.pathname;
-    const parts = path.split('/');
-    // Tenta pegar o nome da pasta pai de 'cms_admin'
-    const index = parts.indexOf('cms_admin');
-    const userName = (index > 0) ? parts[index - 1] : "Administrador";
-
-    // Atualiza UI
-    document.getElementById('display-user').textContent = userName;
-    document.getElementById('user-tag').textContent = `@${userName}`;
-    document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${userName}&background=6366f1&color=fff&bold=true`;
+    const segments = path.split('/');
+    const cmsIndex = segments.indexOf('cms_admin');
+    const user = (cmsIndex > 0) ? segments[cmsIndex - 1] : "Usuario_Admin";
+    
+    document.getElementById('display-user').textContent = user;
+    document.getElementById('user-tag').textContent = `@${user.toLowerCase()}`;
+    document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${user}&background=6366f1&color=fff&bold=true&rounded=true`;
+    
+    return user;
 }
 
-// 2. NAVEGAÇÃO DE ABAS
-function setupNavigation() {
-    const tabs = document.querySelectorAll('.tab-btn');
+// Navegação entre abas
+function setupTabs() {
+    const buttons = document.querySelectorAll('.tab-btn');
     const sections = document.querySelectorAll('.tab-section');
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.dataset.tab;
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.dataset.tab;
+            
+            buttons.forEach(b => b.classList.remove('sidebar-active'));
+            btn.classList.add('sidebar-active');
 
-            // Altera classes dos botões
-            tabs.forEach(t => t.classList.remove('sidebar-active', 'bg-slate-800'));
-            tab.classList.add('sidebar-active');
-
-            // Exibe a seção correta
             sections.forEach(s => s.classList.add('hidden'));
             document.getElementById(target).classList.remove('hidden');
 
-            // Se estiver no mobile, fecha a sidebar ao clicar
-            if (window.innerWidth < 1024) {
-                closeSidebar();
-            }
+            // Fecha menu no mobile após clique
+            if(window.innerWidth < 1024) closeMenu();
         });
     });
 }
 
-// 3. CONTROLE MENU MOBILE (DRAWER)
+// Menu Mobile
 function setupMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-
+    
     toggle.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-        sidebar.classList.contains('open') ? openSidebar() : closeSidebar();
+        document.getElementById('sidebar').classList.toggle('mobile-open');
+        overlay.classList.toggle('hidden');
     });
 
-    overlay.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeMenu);
 }
 
-function openSidebar() {
-    document.getElementById('sidebar').classList.add('open', 'translate-x-0');
-    document.getElementById('overlay').classList.remove('hidden');
-}
-
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open', 'translate-x-0');
-    document.getElementById('sidebar').classList.add('-translate-x-full');
+function closeMenu() {
+    document.getElementById('sidebar').classList.remove('mobile-open');
     document.getElementById('overlay').classList.add('hidden');
 }
 
-// 4. SINCRONIZAÇÃO (FEEDBACK VISUAL)
-async function syncData() {
-    const btn = document.getElementById('sync-btn');
-    const binId = document.getElementById('bin-id').value;
+// --- SISTEMA DE SALVAMENTO (LOCALSTORAGE) ---
+
+function saveDraft() {
+    const user = document.getElementById('display-user').textContent;
+    const btn = document.getElementById('btn-save-draft');
     
-    if(!binId) return alert("Insira a BIN ID para sincronizar.");
+    const data = {
+        binId: document.getElementById('bin-id').value,
+        masterKey: document.getElementById('master-key').value,
+        storeName: document.getElementById('store-name').value,
+        whatsapp: document.getElementById('store-whatsapp').value,
+        address: document.getElementById('store-address').value,
+        pix: document.getElementById('pix-key').value,
+        updatedAt: new Date().toLocaleString()
+    };
+
+    localStorage.setItem(`ls_draft_${user}`, JSON.stringify(data));
+
+    // Feedback visual
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "✅ Dados Salvos!";
+    btn.classList.replace('bg-amber-500', 'bg-emerald-500');
+    btn.classList.add('pulse-save');
+
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.replace('bg-emerald-500', 'bg-amber-500');
+        btn.classList.remove('pulse-save');
+    }, 2500);
+}
+
+function loadDraft(user) {
+    const saved = localStorage.getItem(`ls_draft_${user}`);
+    if(saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('bin-id').value = data.binId || '';
+        document.getElementById('master-key').value = data.masterKey || '';
+        document.getElementById('store-name').value = data.storeName || '';
+        document.getElementById('store-whatsapp').value = data.whatsapp || '';
+        document.getElementById('store-address').value = data.address || '';
+        document.getElementById('pix-key').value = data.pix || '';
+        console.log("Rascunho carregado com sucesso.");
+    }
+}
+
+// Sincronização (Feedback de Publicação)
+function syncData() {
+    const btn = document.getElementById('btn-sync');
+    const originalText = btn.innerHTML;
 
     btn.disabled = true;
-    btn.innerHTML = `<span class="flex items-center justify-center gap-2">
-        <svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg> Sincronizando...</span>`;
+    btn.innerHTML = "🌀 PUBLICANDO...";
 
-    // Simula envio para JSONBin
     setTimeout(() => {
-        btn.innerHTML = "✅ Dados Sincronizados!";
+        btn.innerHTML = "🚀 SUCESSO NO TOTEM!";
         btn.classList.replace('bg-indigo-600', 'bg-emerald-500');
         
         setTimeout(() => {
-            btn.innerHTML = "Sincronizar Agora";
+            btn.innerHTML = originalText;
             btn.classList.replace('bg-emerald-500', 'bg-indigo-600');
             btn.disabled = false;
         }, 3000);
@@ -96,7 +125,7 @@ async function syncData() {
 }
 
 function logout() {
-    if(confirm("Deseja sair do painel?")) {
-        window.location.href = "../../index.html";
+    if(confirm("Deseja encerrar a sessão?")) {
+        window.location.href = "../../../index.html"; // Volta para o login
     }
 }
