@@ -1,46 +1,44 @@
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-
-* {
-    -webkit-tap-highlight-color: transparent;
-    box-sizing: border-box;
-}
-
+/* Font and Base */
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* Sidebar Active State */
+/* Sidebar Active Link */
 .sidebar-active {
     background-color: #4f46e5 !important;
     color: white !important;
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 12px 20px -5px rgba(79, 70, 229, 0.4);
+    font-weight: 700;
 }
 
-/* Tab Transitions */
+/* Animations */
 .tab-section {
-    animation: fadeInUp 0.4s ease-out;
+    animation: slideUp 0.5s ease-out;
 }
 
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
+/* Custom Scroll */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-/* Responsive Drawer Mobile */
-@media (max-width: 1023px) {
-    #sidebar.open {
-        transform: translateX(0);
-    }
+/* Pulse for Save Success */
+.pulse-save {
+    animation: pulse-success 0.6s ease-in-out;
 }
 
-/* Inputs adaptados para touch */
-input, button, select {
-    min-height: 48px;
+@keyframes pulse-success {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive sidebar toggle */
+#sidebar.mobile-open {
+    transform: translateX(0);
 }
