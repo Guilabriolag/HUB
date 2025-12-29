@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cardápio Digital | user002</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.5s ease; }
+        .product-card { transition: transform 0.2s; border: 1px solid rgba(0,0,0,0.05); }
+        .product-card:active { transform: scale(0.96); }
+        .loader { border-top-color: #1f298f; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #yt-player { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-32">
+
+    <div id="yt-player"></div>
+
+    <div id="loading-screen" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+        <p class="text-slate-500 font-bold animate-pulse">A carregar o menu de user002...</p>
+    </div>
+
+    <header class="p-6 text-center">
+        <img id="store-logo" src="" class="w-24 h-24 mx-auto rounded-full shadow-xl mb-4 hidden border-4 border-white">
+        <h1 id="store-name" class="text-2xl font-black uppercase tracking-tighter"></h1>
+        <p id="store-address" class="text-xs opacity-70 mt-1"></p>
+        <div id="store-status" class="inline-block mt-3 px-4 py-1 rounded-full text-[10px] font-bold uppercase text-white"></div>
+    </header>
+
+    <main id="menu-container" class="p-4 space-y-8 max-w-2xl mx-auto">
+        </main>
+
+    <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-lg border-t border-gray-100 z-50 hidden">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <div>
+                <p class="text-[10px] uppercase font-bold text-gray-400">Total do Pedido</p>
+                <p id="cart-total" class="text-xl font-black text-slate-800">R$ 0,00</p>
+            </div>
+            <button onclick="finalizarPedido()" id="btn-finalizar" class="px-8 py-4 rounded-2xl font-black text-sm uppercase shadow-lg active:scale-95 transition-all">
+                Enviar Pedido
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let config = {};
+        let carrinho = [];
+        
+        // Chave fixa para o user002
+        const BIN_ID = "69528dbbae596e708fb82cfd";
+
+        async function initTotem() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { "X-Bin-Meta": "false" }
+                });
+                config = await response.json();
+                
+                document.title = config.info.name || "Cardápio Digital";
+                applyDesign();
+                renderMenu();
+                initMusic();
+                
+                document.getElementById('loading-screen').classList.add('hidden');
+            } catch (error) {
+                alert("Erro ao carregar os dados do Totem. Verifique a ligação.");
+            }
+        }
+
+        function applyDesign() {
+            const d = config.design;
+            document.body.style.backgroundColor = d.bg;
+            if(d.bgImage) {
+                document.body.style.backgroundImage = `url(${d.bgImage})`;
+                document.body.style.backgroundSize = "cover";
+                document.body.style.backgroundAttachment = "fixed";
+            }
+
+            document.getElementById('store-name').style.color = d.primary;
+            document.getElementById('store-name').innerText = config.info.name;
+            document.getElementById('store-address').innerText = config.info.address;
+            document.getElementById('btn-finalizar').style.backgroundColor = d.primary;
+            document.getElementById('btn-finalizar').style.color = d.secondary;
+
+            if(d.logo) {
+                const logo = document.getElementById('store-logo');
+                logo.src = d.logo;
+                logo.classList.remove('hidden');
+            }
+
+            const status = document.getElementById('store-status');
+            status.innerText = config.info.status;
+            status.style.backgroundColor = config.info.status === 'aberto' ? '#10b981' : '#ef4444';
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            let html = '';
+
+            config.categories.forEach(cat => {
+                const items = config.products.filter(p => p.category === cat.name);
+                if(items.length > 0) {
+                    html += `<div class="animate__animated animate__fadeIn">
+                        <h2 class="text-xs font-black uppercase mb-4 tracking-widest border-l-4 pl-3" 
+                            style="border-color: ${config.design.primary}; color: ${config.design.primary}">${cat.name}</h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            ${items.map(p => `
+                                <div onclick="addToCart('${p.name}', ${p.price})" class="product-card bg-white p-3 rounded-2xl shadow-sm">
+                                    <img src="${p.image}" class="w-full h-24 object-cover rounded-xl mb-3">
+                                    <h3 class="text-[10px] font-bold text-gray-800 leading-tight h-8 overflow-hidden">${p.name}</h3>
+                                    <p class="text-sm font-black mt-2" style="color: ${config.design.primary}">R$ ${p.price}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
+                }
+            });
+            container.innerHTML = html;
+        }
+
+        function addToCart(name, price) {
+            carrinho.push({ name, price });
+            const total = carrinho.reduce((sum, item) => sum + parseFloat(item.price), 0);
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
+            document.getElementById('checkout-bar').classList.remove('hidden');
+        }
+
+        function finalizarPedido() {
+            let pedido = `*PEDIDO: ${config.info.name}*\n\n`;
+            carrinho.forEach(item => pedido += `• ${item.name}\n`);
+            pedido += `\n*TOTAL: ${document.getElementById('cart-total').innerText}*`;
+            
+            const waLink = `https://wa.me/${config.info.phone.replace(/\D/g, '')}?text=${encodeURIComponent(pedido)}`;
+            window.location.href = waLink;
+        }
+
+        function initMusic() {
+            if(config.design.ytUrl) {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+
+                window.onYouTubeIframeAPIReady = () => {
+                    const videoId = config.design.ytUrl.split('v=')[1]?.split('&')[0] || config.design.ytUrl.split('/').pop();
+                    new YT.Player('yt-player', {
+                        height: '0', width: '0', videoId: videoId,
+                        playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': videoId },
+                        events: { 'onReady': (e) => { e.target.setVolume(config.design.ytVol || 100); } }
+                    });
+                };
+            }
+        }
+
+        initTotem();
+    </script>
+</body>
+</html>
