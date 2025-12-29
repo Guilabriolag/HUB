@@ -1,157 +1,178 @@
-// VARIÁVEL GLOBAL DE PRODUTOS
-let products = [];
-
-// --- INICIALIZAÇÃO ---
+// --- INICIALIZAÇÃO E MODULARIDADE ---
 document.addEventListener('DOMContentLoaded', () => {
-    const user = initUser();
+    const user = detectUser();
     setupNavigation();
     setupMobileMenu();
-    loadFromLocalStorage(user);
+    loadDraft(user);
 });
 
-// Detecta o nome do usuário pela estrutura de pastas (/user001/cms_admin/)
-function initUser() {
-    const pathSegments = window.location.pathname.split('/');
-    const adminIndex = pathSegments.indexOf('cms_admin');
-    const userName = (adminIndex > 0) ? pathSegments[adminIndex - 1] : "Convidado";
+function detectUser() {
+    const path = window.location.pathname;
+    const parts = path.split('/');
+    // Tenta pegar a pasta anterior à pasta "cms_admin"
+    const idx = parts.indexOf('cms_admin');
+    const user = (idx > 0) ? parts[idx-1] : "user001";
     
-    document.getElementById('display-user').textContent = userName;
-    return userName;
+    document.getElementById('display-user').textContent = user;
+    return user;
 }
 
 // --- NAVEGAÇÃO ENTRE ABAS ---
 function setupNavigation() {
-    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabs = document.querySelectorAll('.tab-btn');
     const sections = document.querySelectorAll('.tab-section');
 
-    tabButtons.forEach(btn => {
+    tabs.forEach(btn => {
         btn.addEventListener('click', () => {
             const target = btn.dataset.tab;
-
-            // Muda cor do botão lateral
-            tabButtons.forEach(b => b.classList.remove('sidebar-active'));
+            
+            tabs.forEach(t => t.classList.remove('sidebar-active'));
             btn.classList.add('sidebar-active');
 
-            // Troca o conteúdo visível
-            sections.forEach(s => s.classList.add('hidden'));
-            document.getElementById(target).classList.remove('hidden');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(target).classList.add('active');
 
-            // No Mobile: Fecha o menu automaticamente ao clicar em uma aba
-            if(window.innerWidth < 1024) closeMenu();
+            if(window.innerWidth < 1024) closeSidebar();
         });
     });
 }
 
-// --- MENU MOBILE (DRAWER) ---
+// --- MENU MOBILE ---
 function setupMobileMenu() {
-    const btnToggle = document.getElementById('menu-toggle');
+    const toggle = document.getElementById('menu-toggle');
     const overlay = document.getElementById('overlay');
-    const sidebar = document.getElementById('sidebar');
-
-    btnToggle.addEventListener('click', () => {
-        sidebar.classList.add('mobile-open');
+    
+    toggle.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.add('open');
         overlay.classList.remove('hidden');
     });
 
-    overlay.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeSidebar);
 }
 
-function closeMenu() {
-    document.getElementById('sidebar').classList.remove('mobile-open');
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
     document.getElementById('overlay').classList.add('hidden');
 }
 
-// --- SISTEMA DE SALVAMENTO LOCAL (APENAS AO CLICAR) ---
-function saveDraft() {
-    const user = document.getElementById('display-user').textContent;
-    const btn = document.getElementById('btn-save-draft');
+// --- GERENCIAMENTO DE PRODUTOS ---
+let productList = [];
 
-    const configData = {
-        storeName: document.getElementById('store-name').value,
-        whatsapp: document.getElementById('store-whatsapp').value,
-        pixKey: document.getElementById('pix-key').value,
-        binId: document.getElementById('bin-id').value,
-        masterKey: document.getElementById('master-key').value,
-        ytUrl: document.getElementById('yt-url').value,
-        color: document.getElementById('color-primary').value,
-        items: products // Salva a lista de produtos atual
-    };
-
-    localStorage.setItem(`labsystem_draft_${user}`, JSON.stringify(configData));
-
-    // Feedback visual de sucesso
-    const originalText = btn.innerHTML;
-    btn.innerHTML = "✅ Rascunho Salvo!";
-    btn.classList.replace('bg-amber-500', 'bg-emerald-500');
-
-    setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.classList.replace('bg-emerald-500', 'bg-amber-500');
-    }, 2000);
+function openProductModal() {
+    document.getElementById('modal-product').classList.remove('hidden');
 }
 
-function loadFromLocalStorage(user) {
-    const rawData = localStorage.getItem(`labsystem_draft_${user}`);
-    if(rawData) {
-        const data = JSON.parse(rawData);
-        
-        // Preenche campos de texto
-        document.getElementById('store-name').value = data.storeName || '';
-        document.getElementById('store-whatsapp').value = data.whatsapp || '';
-        document.getElementById('pix-key').value = data.pixKey || '';
-        document.getElementById('bin-id').value = data.binId || '';
-        document.getElementById('master-key').value = data.masterKey || '';
-        document.getElementById('yt-url').value = data.ytUrl || '';
-        document.getElementById('color-primary').value = data.color || '#1f298f';
-        
-        // Carrega produtos
-        products = data.items || [];
-        renderItems();
-    }
+function closeProductModal() {
+    document.getElementById('modal-product').classList.add('hidden');
 }
 
-// --- GERENCIADOR DE ITENS (PRODUTOS) ---
-function addItem() {
-    const nome = prompt("Nome do Produto:");
-    const preco = prompt("Preço (Ex: 35.00):");
+function saveNewProduct() {
+    const name = document.getElementById('modal-p-name').value;
+    const price = document.getElementById('modal-p-price').value;
+
+    if(!name || !price) return alert("Preencha os campos!");
+
+    productList.push({ id: Date.now(), name, price });
+    renderProducts();
+    closeProductModal();
     
-    if(nome && preco) {
-        products.push({ id: Date.now(), nome, preco });
-        renderItems();
-    }
+    // Limpa campos
+    document.getElementById('modal-p-name').value = "";
+    document.getElementById('modal-p-price').value = "";
 }
 
-function deleteItem(id) {
-    products = products.filter(item => item.id !== id);
-    renderItems();
+function removeProduct(id) {
+    productList = productList.filter(p => p.id !== id);
+    renderProducts();
 }
 
-function renderItems() {
-    const tbody = document.getElementById('items-list');
-    tbody.innerHTML = products.map(item => `
+function renderProducts() {
+    const container = document.getElementById('items-list');
+    container.innerHTML = productList.map(p => `
         <tr class="border-b border-slate-50 animate__animated animate__fadeIn">
-            <td class="py-4 font-bold text-slate-700">${item.nome}</td>
-            <td class="py-4 text-indigo-600 font-black">R$ ${item.preco}</td>
+            <td class="py-4 font-bold text-slate-800">${p.name}</td>
+            <td class="py-4 text-indigo-600 font-black">R$ ${p.price}</td>
             <td class="py-4 text-center">
-                <button onclick="deleteItem(${item.id})" class="text-red-400 hover:text-red-600 transition">Remover</button>
+                <button onclick="removeProduct(${p.id})" class="text-red-400 font-bold hover:text-red-600 transition">Excluir</button>
             </td>
         </tr>
     `).join('');
 }
 
-// --- SINCRONIZAÇÃO (FEEDBACK) ---
+// --- SALVAMENTO LOCAL (RASCUNHO) ---
+function saveDraft() {
+    const user = document.getElementById('display-user').textContent;
+    const btn = document.getElementById('btn-save-draft');
+
+    const draftData = {
+        config: {
+            binId: document.getElementById('bin-id').value,
+            masterKey: document.getElementById('master-key').value,
+            storeName: document.getElementById('store-name').value,
+            whatsapp: document.getElementById('store-whatsapp').value,
+            status: document.getElementById('store-status').value
+        },
+        payment: {
+            pixKey: document.getElementById('pix-key').value,
+            pixName: document.getElementById('pix-name').value
+        },
+        design: {
+            primary: document.getElementById('color-primary').value,
+            secondary: document.getElementById('color-secondary').value,
+            logo: document.getElementById('logo-url').value,
+            music: document.getElementById('music-url').value
+        },
+        products: productList
+    };
+
+    localStorage.setItem(`labsystem_draft_${user}`, JSON.stringify(draftData));
+
+    // Efeito Visual de Sucesso
+    btn.innerHTML = "✅ SALVO COM SUCESSO!";
+    btn.classList.replace('bg-amber-500', 'bg-emerald-500');
+
+    setTimeout(() => {
+        btn.innerHTML = "💾 SALVAR RASCUNHO";
+        btn.classList.replace('bg-emerald-500', 'bg-amber-500');
+    }, 2500);
+}
+
+function loadDraft(user) {
+    const raw = localStorage.getItem(`labsystem_draft_${user}`);
+    if(!raw) return;
+
+    const d = JSON.parse(raw);
+    
+    // Mapeamento dos campos
+    document.getElementById('bin-id').value = d.config.binId || "";
+    document.getElementById('master-key').value = d.config.masterKey || "";
+    document.getElementById('store-name').value = d.config.storeName || "";
+    document.getElementById('store-whatsapp').value = d.config.whatsapp || "";
+    document.getElementById('store-status').value = d.config.status || "open";
+    document.getElementById('pix-key').value = d.payment.pixKey || "";
+    document.getElementById('pix-name').value = d.payment.pixName || "";
+    document.getElementById('color-primary').value = d.design.primary || "#1f298f";
+    document.getElementById('color-secondary').value = d.design.secondary || "#ffcf69";
+    document.getElementById('logo-url').value = d.design.logo || "";
+    document.getElementById('music-url').value = d.design.music || "";
+
+    productList = d.products || [];
+    renderProducts();
+}
+
+// --- SINCRONIZAÇÃO (SIMULADA) ---
 function syncData() {
     const btn = document.getElementById('btn-sync');
-    btn.innerHTML = "🌀 CONECTANDO AO SERVIDOR...";
+    btn.innerHTML = "🌀 SINCRONIZANDO...";
     btn.disabled = true;
 
-    // Simulação de Sincronização
+    // Simulação de delay para API
     setTimeout(() => {
         btn.innerHTML = "🚀 PUBLICADO COM SUCESSO!";
         btn.classList.replace('bg-indigo-600', 'bg-emerald-500');
         
         setTimeout(() => {
-            btn.innerHTML = "🌐 PUBLICAR AGORA";
+            btn.innerHTML = "🌐 PUBLICAR E SINCRONIZAR";
             btn.classList.replace('bg-emerald-500', 'bg-indigo-600');
             btn.disabled = false;
         }, 3000);
@@ -159,7 +180,7 @@ function syncData() {
 }
 
 function logout() {
-    if(confirm("Deseja sair do painel?")) {
-        window.location.href = "../../../index.html"; 
+    if(confirm("Deseja sair e voltar para a tela inicial?")) {
+        window.location.href = "../../../index.html";
     }
 }
