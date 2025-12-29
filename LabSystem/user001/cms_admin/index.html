@@ -3,183 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LabSystem Master CMS</title>
+    <title>LabSystem CMS | Painel Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 flex min-h-screen">
+<body class="bg-[#f9f9f9] flex min-h-screen">
 
-    <div id="overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm"></div>
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden backdrop-blur-sm"></div>
 
-    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-400 flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 border-r border-slate-800">
-        <div class="p-8 border-b border-slate-800">
-            <h2 class="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
-                <span class="bg-indigo-600 px-2 py-1 rounded-lg">LS</span> LabSystem
-            </h2>
-            <p id="display-user" class="text-xs font-bold text-indigo-400 mt-2 uppercase tracking-widest">USER: ...</p>
+    <aside id="sidebar" class="w-72 bg-[#1f298f] text-white flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl">
+        <div class="p-8 border-b border-white/10">
+            <h2 class="text-2xl font-black tracking-tighter italic">LABSYSTEM</h2>
+            <p class="text-[10px] text-indigo-200 font-bold uppercase tracking-widest">Painel Administrativo</p>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto" id="nav-tabs">
-            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl sidebar-active">📊 Dashboard</button>
-            <button data-tab="operacional" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">🏪 Dados da Loja</button>
-            <button data-tab="financeiro" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">💰 Pagamentos / Pix</button>
-            <button data-tab="logistica" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">🚚 Bairros e Taxas</button>
-            <button data-tab="cardapio" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">🍔 Cardápio</button>
-            <button data-tab="design" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">🎨 Identidade Visual</button>
-            <button data-tab="preview" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">👁️ Pré-visualização</button>
-            <button data-tab="sincronizacao" class="tab-btn w-full flex items-center gap-3 p-4 rounded-xl hover:bg-slate-800 transition">☁️ Cloud & Backup</button>
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scroll">
+            <button data-tab="dashboard" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl sidebar-active">📊 Dashboard</button>
+            <button data-tab="contato" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-white/10 transition">📞 Inf. de Contato</button>
+            <button data-tab="pagamento" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-white/10 transition">💳 Pagamentos</button>
+            <button data-tab="cobertura" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-white/10 transition">🚚 Área de Entrega</button>
+            <button data-tab="categorias" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-white/10 transition">📁 Categorias</button>
+            <button data-tab="produtos" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-white/10 transition">🍔 Cardápio</button>
+            <button data-tab="design" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl hover:bg-white/10 transition">🎨 Identidade Visual</button>
+            <button data-tab="preview" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl bg-amber-500 text-slate-900 font-bold mt-4">📱 Pre-Visualização</button>
         </nav>
 
-        <div class="p-4 border-t border-slate-800 space-y-2">
-            <a href="https://wa.me/5511943198316" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500 hover:text-white transition font-bold text-xs uppercase">Suporte WhatsApp</a>
+        <div class="p-4 border-t border-white/10 space-y-2">
+            <button onclick="exportJSON()" class="w-full p-3 bg-white/10 rounded-xl text-xs font-bold hover:bg-white/20 transition uppercase">📥 Backup JSON</button>
+            <button onclick="syncToCloud()" class="w-full p-3 bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg uppercase">🚀 Publicar Totem</button>
         </div>
     </aside>
 
-    <main class="flex-1 lg:ml-72 p-4 md:p-10">
-        
-        <header class="flex justify-between items-center mb-8 pt-10 lg:pt-0">
-            <button id="menu-toggle" class="lg:hidden p-3 bg-indigo-600 text-white rounded-2xl shadow-xl">
+    <main class="flex-1 lg:ml-72 p-4 md:p-8 transition-all duration-300">
+        <header class="flex justify-between items-center mb-8 pt-12 lg:pt-0">
+            <button id="menu-toggle" class="lg:hidden p-3 bg-white rounded-2xl shadow-md text-[#1f298f]">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
+            <h1 class="text-xl font-black text-slate-800 uppercase italic">LabSystem <span class="text-indigo-600">CMS</span></h1>
             <div class="flex gap-2">
-                <button onclick="saveDraft()" id="btn-save" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl shadow-lg font-bold text-sm transition-all">💾 Salvar Rascunho</button>
+                <button onclick="saveDraft()" class="p-3 bg-white rounded-2xl shadow-sm text-amber-500 border border-amber-100">💾</button>
             </div>
         </header>
 
         <div id="tabs-container">
             
-            <section id="operacional" class="tab-section hidden">
-                <div class="bg-white p-6 rounded-[2rem] shadow-sm border space-y-4">
-                    <h2 class="text-xl font-bold text-slate-800 mb-4">Informações de Contato</h2>
-                    <input type="text" id="store-name" placeholder="Nome da Loja" class="w-full p-4 bg-slate-50 border rounded-xl">
-                    <input type="text" id="store-whatsapp" placeholder="Telefone/WhatsApp (Ex: 5511...)" class="w-full p-4 bg-slate-50 border rounded-xl">
-                    <select id="store-status" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        <option value="aberto">🟢 Loja Aberta</option>
-                        <option value="fechado">🔴 Loja Fechada</option>
+            <section id="dashboard" class="tab-section active">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                        <h2 class="text-4xl font-black text-[#1f298f]" id="count-prod">0</h2>
+                        <p class="text-slate-500 font-bold uppercase text-xs tracking-widest mt-2">Produtos Cadastrados</p>
+                    </div>
+                    <div class="bg-indigo-900 p-8 rounded-[2rem] text-white shadow-xl">
+                        <p class="text-xs font-bold opacity-60 uppercase">Link Público:</p>
+                        <p class="font-mono text-sm mt-2 break-all" id="public-link">www.labriolag.shop/user/index.html</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contato" class="tab-section hidden">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm max-w-2xl space-y-4">
+                    <h2 class="text-xl font-black text-slate-800 mb-6 uppercase tracking-tighter">Informações de Contato</h2>
+                    <input type="text" id="store-name" placeholder="Nome da Loja" class="custom-input">
+                    <input type="text" id="store-whatsapp" placeholder="Telefone/WhatsApp (Ex: 5511...)" class="custom-input">
+                    <select id="store-status" class="custom-input">
+                        <option value="aberto">🟢 Status: ABERTO</option>
+                        <option value="fechado">🔴 Status: FECHADO</option>
                     </select>
-                    <textarea id="store-address" placeholder="Endereço Físico Completo" class="w-full p-4 bg-slate-50 border rounded-xl h-24"></textarea>
+                    <textarea id="store-address" placeholder="Endereço Físico Completo" class="custom-input h-24"></textarea>
                 </div>
             </section>
 
-            <section id="financeiro" class="tab-section hidden">
-                <div class="bg-white p-6 rounded-[2rem] shadow-sm border space-y-6">
-                    <div>
-                        <h3 class="font-bold text-indigo-600 mb-2 uppercase text-xs">Chave PIX</h3>
-                        <input type="text" id="pix-key" placeholder="Pix@xmail.net" class="w-full p-4 bg-slate-50 border rounded-xl">
+            <section id="pagamento" class="tab-section hidden">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm max-w-2xl space-y-6">
+                    <h2 class="text-xl font-black text-slate-800 uppercase">Detalhes de Pagamento</h2>
+                    <div class="space-y-2">
+                        <label class="label-info">Chave PIX</label>
+                        <input type="text" id="pix-key" placeholder="pix@email.com" class="custom-input">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <h3 class="font-bold text-slate-500 mb-2 uppercase text-xs">Dados Bancários (Opcional)</h3>
-                            <textarea id="bank-details" placeholder="Banco, Agência, Conta, Nome do Titular" class="w-full p-4 bg-slate-50 border rounded-xl h-24"></textarea>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-500 mb-2 uppercase text-xs">Lightning Address (Bitcoin)</h3>
-                            <input type="text" id="btc-lightning" placeholder="satoshi@venda.com" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        </div>
+                    <div class="p-6 bg-slate-50 rounded-3xl space-y-4 border border-slate-100">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Dados Bancários (Opcional)</p>
+                        <input type="text" id="bank-info" placeholder="Banco, Agência, Conta, Nome" class="custom-input">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="label-info">Lightning Address (Bitcoin)</label>
+                        <input type="text" id="btc-address" placeholder="satoshi@venda.com" class="custom-input">
                     </div>
                 </div>
             </section>
 
-            <section id="logistica" class="tab-section hidden">
-                <div class="bg-white p-6 rounded-[2rem] shadow-sm border">
-                    <h2 class="text-xl font-bold mb-4">Área de Cobertura & Taxas</h2>
+            <section id="cobertura" class="tab-section hidden">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm max-w-3xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-black text-slate-800 uppercase italic">Taxas de Entrega</h2>
+                        <button onclick="addBairro()" class="btn-add">+ Bairro</button>
+                    </div>
+                    <div id="list-bairros" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <section id="categorias" class="tab-section hidden">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm max-w-xl">
+                    <h2 class="text-xl font-black text-slate-800 mb-6 uppercase">Gerenciar Categorias</h2>
                     <div class="flex gap-2 mb-6">
-                        <input type="text" id="delivery-neighborhood" placeholder="Bairro" class="flex-1 p-3 bg-slate-50 border rounded-xl">
-                        <input type="number" id="delivery-fee" placeholder="Taxa R$" class="w-24 p-3 bg-slate-50 border rounded-xl">
-                        <button onclick="addDeliveryArea()" class="bg-indigo-600 text-white px-6 rounded-xl font-bold">+</button>
+                        <input type="text" id="new-cat" placeholder="Ex: Pizzas" class="custom-input">
+                        <button onclick="addCat()" class="bg-[#1f298f] text-white px-6 rounded-2xl font-bold">Add</button>
                     </div>
-                    <ul id="delivery-list" class="space-y-2"></ul>
+                    <div id="list-cats" class="space-y-2"></div>
                 </div>
             </section>
 
-            <section id="cardapio" class="tab-section hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-[2rem] border shadow-sm h-fit">
-                        <h3 class="font-bold mb-4">Categorias</h3>
-                        <div class="flex gap-2 mb-4">
-                            <input type="text" id="cat-name" placeholder="Ex: Pizzas" class="flex-1 p-3 bg-slate-50 border rounded-xl text-sm">
-                            <button onclick="addCategory()" class="bg-indigo-600 text-white px-4 rounded-xl font-bold">+</button>
-                        </div>
-                        <ul id="category-list" class="space-y-2 text-sm font-bold text-slate-600"></ul>
+            <section id="produtos" class="tab-section hidden">
+                <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6 px-4">
+                        <h2 class="text-xl font-black text-slate-800 uppercase italic">Cardápio</h2>
+                        <button onclick="openProdModal()" class="btn-add">➕ Novo Produto</button>
                     </div>
-                    <div class="bg-white p-6 rounded-[2rem] border shadow-sm lg:col-span-2">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold">Produtos</h3>
-                            <button onclick="openProductModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold">➕ NOVO PRODUTO</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead class="text-slate-400 uppercase text-[10px] border-b">
-                                    <tr>
-                                        <th class="pb-4">Produto</th>
-                                        <th class="pb-4">Categoria</th>
-                                        <th class="pb-4">Preço</th>
-                                        <th class="pb-4">Estoque</th>
-                                        <th class="pb-4 text-right">Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="product-list-body"></tbody>
-                            </table>
-                        </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="text-[10px] uppercase text-slate-400 font-bold border-b">
+                                <tr>
+                                    <th class="p-4">Produto</th>
+                                    <th class="p-4">Categoria</th>
+                                    <th class="p-4">Preço</th>
+                                    <th class="p-4">Estoque</th>
+                                    <th class="p-4 text-right">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-prods"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
 
             <section id="design" class="tab-section hidden">
-                <div class="bg-white p-6 rounded-[2rem] border shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-4">
-                        <h3 class="font-bold border-b pb-2">Cores e Logo</h3>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                            <label class="text-sm font-bold">Cor Primária (Botões)</label>
-                            <input type="color" id="color-primary" value="#1f298f" class="h-10 w-20 rounded cursor-pointer">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm max-w-3xl space-y-8">
+                    <h2 class="text-xl font-black text-slate-800 uppercase">Identidade Visual</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="label-info">Cor Botões</label>
+                            <input type="color" id="color-primary" value="#1f298f" class="w-full h-12 rounded-xl mt-2 cursor-pointer">
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                            <label class="text-sm font-bold">Cor Secundária (Texto)</label>
-                            <input type="color" id="color-secondary" value="#ffcf69" class="h-10 w-20 rounded cursor-pointer">
+                        <div>
+                            <label class="label-info">Cor Texto</label>
+                            <input type="color" id="color-sec" value="#ffcf69" class="w-full h-12 rounded-xl mt-2 cursor-pointer">
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                            <label class="text-sm font-bold">Cor de Fundo</label>
-                            <input type="color" id="color-bg" value="#f9f9f9" class="h-10 w-20 rounded cursor-pointer">
+                        <div>
+                            <label class="label-info">Fundo</label>
+                            <input type="color" id="color-bg" value="#f9f9f9" class="w-full h-12 rounded-xl mt-2 cursor-pointer">
                         </div>
-                        <input type="text" id="logo-url" placeholder="URL da Logo (PNG)" value="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        <input type="text" id="bg-image-url" placeholder="URL da Imagem de Fundo (Opcional)" class="w-full p-4 bg-slate-50 border rounded-xl">
                     </div>
                     <div class="space-y-4">
-                        <h3 class="font-bold border-b pb-2">Música de Fundo (YouTube)</h3>
-                        <input type="text" id="yt-music-url" placeholder="Link do YouTube (Loop)" value="https://youtu.be/kueMeMf1Ggg?si=h0fSQnBwZUv0YLGZ" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        <label class="text-xs font-bold text-slate-400">Volume da Música: <span id="vol-value">100</span>%</label>
-                        <input type="range" id="music-volume" min="0" max="100" value="100" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                        <input type="text" id="img-bg" placeholder="URL da Imagem de Fundo (Ex: Imgur)" class="custom-input">
+                        <input type="text" id="img-logo" placeholder="URL da Logomarca" class="custom-input">
+                    </div>
+                    <hr>
+                    <h2 class="text-xl font-black text-slate-800 uppercase">Multimídia</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="yt-link" placeholder="YouTube Link" class="custom-input">
+                        <div class="flex items-center gap-4">
+                            <span class="text-xs font-bold text-slate-400">Vol:</span>
+                            <input type="range" id="yt-vol" class="flex-1">
+                        </div>
                     </div>
                 </div>
             </section>
 
             <section id="preview" class="tab-section hidden">
-                <div class="bg-slate-200 rounded-[2rem] border-8 border-slate-800 h-[600px] overflow-hidden relative shadow-2xl mx-auto max-w-sm">
-                    <div id="preview-content" class="w-full h-full p-6 flex flex-col items-center justify-center text-center">
-                        <p class="text-slate-500 font-bold">Clique em "Salvar" para carregar a prévia do Totem.</p>
+                <div class="flex flex-col items-center">
+                    <div id="phone-mockup" class="w-[360px] h-[640px] bg-white border-[12px] border-slate-900 rounded-[3rem] shadow-2xl overflow-hidden relative">
+                        <div id="preview-bg" class="absolute inset-0 bg-cover bg-center"></div>
+                        <div class="relative z-10 h-full flex flex-col p-6 overflow-y-auto custom-scroll">
+                            <img id="preview-logo" src="" class="w-24 h-24 mx-auto rounded-full shadow-lg object-cover bg-white">
+                            <h2 id="preview-name" class="text-center font-black mt-4 text-xl italic uppercase"></h2>
+                            <div id="preview-status" class="text-center text-[10px] font-bold py-1 px-4 rounded-full mx-auto mt-2"></div>
+                            <div id="preview-menu" class="mt-8 space-y-4">
+                                </div>
+                        </div>
                     </div>
-                </div>
-                <div class="mt-6 flex justify-center gap-4">
-                    <button onclick="syncToCloud()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-xl">🚀 PUBLICAR AGORA</button>
-                </div>
-            </section>
-
-            <section id="sincronizacao" class="tab-section hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-[2rem] border space-y-4">
-                        <h3 class="font-bold">Nuvem (JSONBin)</h3>
-                        <input type="text" id="bin-id" placeholder="BIN ID" class="w-full p-4 bg-slate-50 border rounded-xl">
-                        <input type="password" id="master-key" placeholder="X-Master-Key" class="w-full p-4 bg-slate-50 border rounded-xl">
-                    </div>
-                    <div class="bg-white p-8 rounded-[2rem] border space-y-4 text-center">
-                        <h3 class="font-bold">Arquivos Físicos</h3>
-                        <button onclick="exportJSON()" class="w-full p-4 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200">📥 Baixar Configuração (.json)</button>
-                        <label class="w-full p-4 bg-indigo-50 text-indigo-700 rounded-xl font-bold hover:bg-indigo-100 cursor-pointer block">
-                            📤 Importar Arquivo
-                            <input type="file" id="import-file" class="hidden">
-                        </label>
-                    </div>
+                    <button onclick="syncToCloud()" class="mt-8 bg-emerald-500 text-white px-10 py-4 rounded-3xl font-black shadow-xl animate-bounce">PUBLICAR ESTA VERSÃO</button>
                 </div>
             </section>
 
