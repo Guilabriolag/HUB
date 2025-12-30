@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSystem CMS - Portal de Acesso</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="splash" class="fixed inset-0 flex flex-col items-center justify-center bg-[#020617] z-[100]">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2IcBgN5wifwJ3Sh08hSH3IJkyRp3gdMr_XSIn6feHwZ4fraxb5n42_lGOUXFPL_zT_7_GmGJWGVXPCFmD-BeNyRoecwBJ4NOnhCmRepsjQBmm8vwJR7S-2m8usRDFRfyYB78ofoPbkiXRatCw3mJi-ZBg_yJrxbfSgEvW3V81tNoO2UJQqvnwQQ7LJMFP/s1536/ChatGPT%20Image%2027%20de%20dez.%20de%202025,%2015_59_29.png" 
+             class="neon-glow w-64 md:w-80" alt="LabSystem Logo">
+        <div class="mt-12 flex space-x-2">
+            <div class="w-3 h-3 bg-indigo-500 rounded-full animate-bounce"></div>
+            <div class="w-3 h-3 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-3 h-3 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+        </div>
+    </div>
+
+    <div id="login-container" class="hidden w-full max-w-[400px] h-[580px] perspective-1000 animate__animated animate__fadeInUp">
+        <div id="flip-inner" class="flip-card-inner w-full h-full relative">
+            
+            <div class="flip-front glass rounded-[2.5rem] shadow-2xl p-8 flex flex-col items-center border-t-4 border-indigo-600">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjqnIRYFuxL7DNEdwWxSq8iLlHCm_eAPDQn99rTKB4fcI1KEG9Nn0R49bJSFqq8I11CwN-lhhxdpgkOganKpP6IsExQ2rZbqVCGmHOflRbc2oIQ86taINDfBZLiUK8jaV2jgET_-Mvjnja0ZKRX-xg05SpPEPQsADvLRs_Xp1xcd8m0pPcRTbT8Oclaqgus/s855/20251227_160229.png" 
+                     class="w-20 h-20 mb-4 drop-shadow-lg" alt="Icon">
+                
+                <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Painel de Acesso</h2>
+                <p class="text-gray-500 text-sm mb-8">Insira suas credenciais mestras</p>
+
+                <div class="w-full space-y-4">
+                    <input type="text" id="user" placeholder="@usuário" class="input-field">
+                    <input type="text" id="bin_id" placeholder="BIN_ID (____)" class="input-field">
+                    <input type="password" id="key" placeholder="MASTER KEY" class="input-field">
+                </div>
+
+                <button onclick="validaAcesso()" class="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl transform active:scale-95 transition-all">
+                    Entrar no Sistema
+                </button>
+
+                <button onclick="toggleFlip()" class="mt-6 text-indigo-600 font-semibold hover:text-indigo-800 transition">
+                    Solicitar acesso
+                </button>
+            </div>
+
+            <div class="flip-back glass rounded-[2.5rem] shadow-2xl p-8 flex flex-col items-center justify-center text-center">
+                <div class="bg-indigo-100 p-4 rounded-full mb-6 text-indigo-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Novo Membro?</h3>
+                <p class="text-gray-600 mb-8 leading-relaxed">Escolha um plano para obter sua BIN_ID e chave de acesso personalizada.</p>
+                
+                <button onclick="openPlanos()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all mb-4">
+                    Escolher Meu Plano
+                </button>
+                
+                <button onclick="toggleFlip()" class="text-gray-500 hover:underline text-sm">Voltar para login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPlanos" class="fixed inset-0 z-[150] bg-white hidden animate__animated animate__fadeInUp">
+        <div class="h-16 w-full flex items-center justify-between px-6 bg-gray-50 border-b">
+            <span class="font-bold text-gray-700">LabSystem Shop</span>
+            <button onclick="closePlanos()" class="bg-red-500 text-white px-4 py-1 rounded-full font-bold">FECHAR</button>
+        </div>
+        <iframe src="https://www.labriolag.shop/LabSystem/Shop/planos.html" class="w-full h-[calc(100%-64px)] border-none"></iframe>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
