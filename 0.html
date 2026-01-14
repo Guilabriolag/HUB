@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labriolag.shop | Ecossistema Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --azul-eletrico: #0077B6;
+            --amarelo: #FFCC00;
+            --preto: #000000;
+            --branco: #FFFFFF;
+            --cinza: #1a1a1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: radial-gradient(circle at center, #0d1b2a 0%, #000000 100%);
+            color: var(--branco);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- SPLASH SCREEN --- */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--preto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .splash-logo {
+            width: 180px;
+            animation: bounceIn 1s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* --- LAYOUT PRINCIPAL --- */
+        main {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header { text-align: center; margin-bottom: 60px; }
+        .main-logo { width: 120px; margin-bottom: 20px; }
+        h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; letter-spacing: -1px; }
+        span.highlight { color: var(--azul-eletrico); }
+
+        /* --- GRID DE LABS --- */
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .lab-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--azul-eletrico);
+            box-shadow: 0 0 30px rgba(0, 119, 182, 0.4);
+            background: rgba(0, 119, 182, 0.05);
+        }
+
+        .lab-card h3 { color: var(--amarelo); margin-bottom: 10px; font-family: 'Montserrat'; }
+        .lab-card p { font-size: 0.9rem; color: #ccc; }
+
+        /* Status Badge */
+        .status {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .active .status { background: var(--azul-eletrico); color: white; }
+
+        /* --- NOTIFICAÇÃO --- */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--amarelo);
+            color: black;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: none;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* --- MODAL FULLSCREEN --- */
+        #explorer-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--preto);
+            z-index: 10001;
+            display: none;
+        }
+
+        #explorer-modal iframe { width: 100%; height: 100%; border: none; }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 30px;
+            font-size: 40px;
+            color: var(--branco);
+            cursor: pointer;
+            z-index: 10002;
+            transition: color 0.3s;
+        }
+        .close-btn:hover { color: var(--amarelo); }
+
+        .btn-explorer {
+            margin-top: 50px;
+            padding: 15px 40px;
+            background: var(--azul-eletrico);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Montserrat';
+            transition: 0.3s;
+        }
+        .btn-explorer:hover { background: var(--amarelo); color: black; transform: scale(1.05); }
+
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="splash-logo" alt="Logo Labriolag">
+    </div>
+
+    <main id="main-content">
+        <header>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="main-logo">
+            <h1>Labriolag<span class="highlight">.Shop</span></h1>
+            <p>Selecione um laboratório para iniciar a experiência</p>
+        </header>
+
+        <div class="labs-grid">
+            <div class="lab-card active" onclick="window.location.href='1.html'">
+                <div class="status">Disponível</div>
+                <h3>LabSystem</h3>
+                <p>Gerenciamento Serverless para lojas e estabelecimentos.</p>
+            </div>
+
+            <div class="lab-card active" onclick="window.location.href='1.html'">
+                <div class="status">Disponível</div>
+                <h3>SocialLab</h3>
+                <p>Impulsionamento inteligente e automação de redes sociais.</p>
+            </div>
+
+            <div class="lab-card" onclick="showDevAlert('LabMenu')">
+                <div class="status">Em Breve</div>
+                <h3>LabMenu</h3>
+                <p>Cardápios digitais interativos de alta conversão.</p>
+            </div>
+
+            <div class="lab-card" onclick="showDevAlert('LabPay')">
+                <div class="status">Em Breve</div>
+                <h3>LabPay</h3>
+                <p>Gateway de pagamentos integrado e seguro.</p>
+            </div>
+
+            <div class="lab-card" onclick="showDevAlert('LabZap')">
+                <div class="status">Em Breve</div>
+                <h3>LabZap</h3>
+                <p>Automação completa para vendas via WhatsApp.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn-explorer" onclick="openExplorer()">EXPLORAR ECOSSISTEMA COMPLETO</button>
+        </div>
+    </main>
+
+    <div id="toast">Este lab está em desenvolvimento 🧪</div>
+
+    <div id="explorer-modal">
+        <span class="close-btn" onclick="closeExplorer()">&times;</span>
+        <iframe id="explorer-iframe" src=""></iframe>
+    </div>
+
+    <script>
+        // Lógica do Splash Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash');
+                const main = document.getElementById('main-content');
+                
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    main.style.opacity = '1';
+                }, 800);
+            }, 1500); // 1.5 segundos de bounce
+        });
+
+        // Alerta de Desenvolvimento
+        function showDevAlert(labName) {
+            const toast = document.getElementById('toast');
+            toast.innerText = `O ${labName} está em desenvolvimento 🧪`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Abrir 1.html em Fullscreen
+        function openExplorer() {
+            const modal = document.getElementById('explorer-modal');
+            const iframe = document.getElementById('explorer-iframe');
+            iframe.src = '1.html';
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Trava scroll
+        }
+
+        function closeExplorer() {
+            const modal = document.getElementById('explorer-modal');
+            const iframe = document.getElementById('explorer-iframe');
+            modal.style.display = 'none';
+            iframe.src = ''; // Limpa o iframe
+            document.body.style.overflow = 'auto'; // Destrava scroll
+        }
+    </script>
+</body>
+</html>
