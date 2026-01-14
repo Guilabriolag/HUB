@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labriolag - Transforme Ideias em Soluções</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis de Cores e Fontes */
+        :root {
+            --azul-eletrico: #0077B6;
+            --amarelo: #FFCC00;
+            --preto: #000000;
+            --branco: #FFFFFF;
+            --cinza-escuro: #1a1a1a;
+            --cinza-claro: #f4f4f4;
+            --font-principal: 'Poppins', sans-serif;
+            --font-secundaria: 'Montserrat', sans-serif;
+        }
+
+        /* Estilos Base */
+        body {
+            font-family: var(--font-principal);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: var(--cinza-claro);
+            color: var(--preto);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-secundaria);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--azul-eletrico);
+        }
+
+        /* Botões */
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            border: 2px solid var(--azul-eletrico);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--amarelo);
+            color: var(--preto);
+            border-color: var(--amarelo);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--branco);
+            border: 2px solid var(--branco);
+            margin-left: 15px;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            border-color: var(--azul-eletrico);
+        }
+
+        .btn-tertiary { /* Botão amarelo para CTAs finais */
+            background-color: var(--amarelo);
+            color: var(--preto);
+            border: 2px solid var(--amarelo);
+        }
+
+        .btn-tertiary:hover {
+            background-color: var(--azul-eletrico);
+            color: var(--branco);
+            border-color: var(--azul-eletrico);
+        }
+
+        /* Container Geral */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--preto);
+            color: var(--branco);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+            vertical-align: middle;
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        header nav ul li {
+            margin-left: 30px;
+        }
+
+        header nav ul li a {
+            color: var(--branco);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: var(--azul-eletrico);
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--preto);
+            color: var(--branco);
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before { /* Fundo com padrão de circuito */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labriolag-circuit-pattern.png'); /* Crie um padrão de circuito sutil ou use um placeholder */
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            max-width: 800px;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .hero h2 {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            max-width: 700px;
+            color: var(--cinza-claro);
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            margin-top: 30px;
+        }
+
+        /* About Section */
+        .about {
+            background-color: var(--branco);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 2.5em;
+            color: var(--preto);
+            margin-bottom: 30px;
+        }
+
+        .about p {
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            font-size: 1.1em;
+            color: var(--cinza-escuro);
+        }
+
+        /* Labs Section */
+        .labs-section {
+            background-color: var(--cinza-escuro);
+            color: var(--branco);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .labs-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: var(--branco);
+        }
+
+        .lab-category {
+            margin-bottom: 60px;
+        }
+
+        .lab-category h3 {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: var(--azul-eletrico);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .lab-category h3::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            width: 80px;
+            height: 3px;
+            background-color: var(--amarelo);
+            border-radius: 5px;
+        }
+
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .lab-card {
+            background-color: rgba(255, 255, 255, 0.08); /* Fundo sutil para o card */
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-10px);
+            background-color: rgba(0, 119, 182, 0.2); /* Azul Elétrico translúcido no hover */
+        }
+
+        .lab-card .icon {
+            margin-bottom: 15px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lab-card .icon img {
+            max-height: 100%;
+            width: auto; /* Garante que a imagem se ajuste */
+            filter: drop-shadow(0 0 5px rgba(0, 119, 182, 0.5)); /* Sombra azul para o ícone */
+        }
+
+        .lab-card h4 {
+            font-size: 1.3em;
+            color: var(--branco);
+            margin-bottom: 10px;
+        }
+
+        .lab-card p {
+            font-size: 0.95em;
+            color: var(--cinza-claro);
+            flex-grow: 1; /* Para que a descrição ocupe o espaço */
+        }
+        
+        /* Como Funciona Section */
+        .how-it-works {
+            background-color: var(--branco);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .how-it-works h2 {
+            font-size: 2.5em;
+            color: var(--preto);
+            margin-bottom: 50px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-item .icon {
+            background-color: var(--azul-eletrico);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 119, 182, 0.3);
+        }
+        
+        .step-item .icon img {
+            width: 45px;
+            height: 45px;
+            filter: brightness(0) invert(1); /* Torna o ícone branco */
+        }
+
+
+        .step-item h3 {
+            font-size: 1.4em;
+            color: var(--preto);
+            margin-bottom: 10px;
+        }
+
+        .step-item p {
+            color: var(--cinza-escuro);
+            font-size: 1em;
+            max-width: 280px;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: var(--cinza-escuro);
+            color: var(--branco);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonials h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: var(--branco);
+        }
+
+        .testimonial-card {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .testimonial-card::before, .testimonial-card::after {
+            content: '“';
+            font-family: var(--font-secundaria);
+            font-size: 8em;
+            color: rgba(0, 119, 182, 0.3); /* Citação azul translúcida */
+            position: absolute;
+            line-height: 1;
+        }
+
+        .testimonial-card::before {
+            top: 10px;
+            left: 20px;
+        }
+
+        .testimonial-card::after {
+            content: '”';
+            bottom: 10px;
+            right: 20px;
+        }
+
+        .testimonial-card p {
+            font-size: 1.2em;
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-card span {
+            font-weight: 600;
+            color: var(--amarelo);
+            font-size: 1.1em;
+        }
+
+        /* CTA Final Section */
+        .cta-final {
+            background-image: linear-gradient(135deg, var(--azul-eletrico), var(--preto));
+            padding: 100px 0;
+            text-align: center;
+            color: var(--branco);
+        }
+
+        .cta-final h2 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            color: var(--branco);
+        }
+
+        .cta-final .cta-buttons .btn {
+            margin: 0 10px;
+        }
+        
+        .cta-final .btn-tertiary {
+             background-color: var(--amarelo);
+             color: var(--preto);
+             border-color: var(--amarelo);
+        }
+
+        .cta-final .btn-tertiary:hover {
+            background-color: var(--branco);
+            color: var(--azul-eletrico);
+            border-color: var(--branco);
+        }
+
+        .cta-final .btn-secondary {
+            border-color: var(--amarelo);
+            color: var(--amarelo);
+        }
+
+        .cta-final .btn-secondary:hover {
+            background-color: var(--amarelo);
+            color: var(--preto);
+        }
+
+
+        /* Footer */
+        footer {
+            background-color: var(--preto);
+            color: var(--cinza-claro);
+            padding: 40px 0;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        footer .logo img {
+            height: 50px;
+            margin-bottom: 20px;
+        }
+
+        footer .social-icons a {
+            color: var(--branco);
+            font-size: 1.5em;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-icons a:hover {
+            color: var(--azul-eletrico);
+        }
+
+        footer p {
+            margin-top: 20px;
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            header nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            header nav ul li {
+                margin: 0 10px 10px 10px;
+            }
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            .hero h2 {
+                font-size: 1.2em;
+            }
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+            .labs-grid, .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            .testimonial-card {
+                padding: 30px 20px;
+            }
+            .testimonial-card::before, .testimonial-card::after {
+                font-size: 6em;
+            }
+            .cta-final h2 {
+                font-size: 2em;
+            }
+            .cta-final .cta-buttons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .cta-final .cta-buttons .btn {
+                margin: 10px 0;
+                width: 80%; /* Para botões ficarem maiores em mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="#hero">
+                    <img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labriolag-logo.png" alt="Labriolag Logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#about">O que é</a></li>
+                    <li><a href="#labs">Nossos Labs</a></li>
+                    <li><a href="#how-it-works">Como Funciona</a></li>
+                    <li><a href="#testimonials">Depoimentos</a></li>
+                    <li><a href="#contact" class="btn btn-primary">Fale com a gente</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="hero" class="hero">
+        <div class="container">
+            <h1>Transforme ideias em soluções com o Ecossistema Lab</h1>
+            <h2>Tecnologia, inovação e impacto social reunidos em uma única plataforma de Labs modulares.</h2>
+            <div class="hero-actions">
+                <a href="#labs" class="btn btn-primary">Conheça os Labs</a>
+                <a href="#contact" class="btn btn-secondary">Fale com a gente</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2>O que é o Ecossistema Lab?</h2>
+            <p>O Ecossistema Lab é uma suíte de soluções digitais e presenciais que conecta tecnologia, experiência do cliente, automação e impacto social. Cada Lab é uma unidade independente, mas todos se integram para criar experiências completas e escaláveis.</p>
+        </div>
+    </section>
+
+    <section id="labs" class="labs-section">
+        <div class="container">
+            <h2>Nossos Labs</h2>
+
+            <div class="lab-category">
+                <h3>🍕 Gastronomia & Experiência</h3>
+                <div class="labs-grid">
+                    <a href="https://guilabriolag.github.io/LabMenu/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labmenu-icon.png" alt="LabMenu Icon"></div>
+                        <h4>LabMenu</h4>
+                        <p>Cardápios digitais e interativos para restaurantes e delivery.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabMimo/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labmimo-icon.png" alt="LabMimo Icon"></div>
+                        <h4>LabMimo</h4>
+                        <p>Gestão de brindes, cortesias e fidelização de clientes.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabClub/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labclub-icon.png" alt="LabClub Icon"></div>
+                        <h4>LabClub</h4>
+                        <p>Programa de fidelidade, comunidade VIP e benefícios exclusivos.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="lab-category">
+                <h3>🛒 Comércio & Vendas</h3>
+                <div class="labs-grid">
+                    <a href="https://guilabriolag.github.io/LabLoja/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labloja-icon.png" alt="LabLoja Icon"></div>
+                        <h4>LabLoja</h4>
+                        <p>Soluções para lojas físicas, vitrines e pontos de venda.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabShop/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labshop-icon.png" alt="LabShop Icon"></div>
+                        <h4>LabShop</h4>
+                        <p>Plataforma de e-commerce integrada.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabSite/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labsite-icon.png" alt="LabSite Icon"></div>
+                        <h4>LabSite</h4>
+                        <p>Criação e gestão de sites institucionais e promocionais.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabWeb/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labweb-icon.png" alt="LabWeb Icon"></div>
+                        <h4>LabWeb</h4>
+                        <p>Desenvolvimento web sob demanda e soluções digitais personalizadas.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="lab-category">
+                <h3>💳 Pagamentos & Finanças</h3>
+                <div class="labs-grid">
+                    <a href="https://guilabriolag.github.io/LabPay/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labpay-icon.png" alt="LabPay Icon"></div>
+                        <h4>LabPay</h4>
+                        <p>Integração de meios de pagamento (PIX, cartão, boleto etc.).</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabBitcoin/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labbitcoin-icon.png" alt="LabBitcoin Icon"></div>
+                        <h4>LabBitcoin</h4>
+                        <p>Pagamentos com criptomoedas e integração com carteiras digitais.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="lab-category">
+                <h3>🖥️ Tecnologia & Infraestrutura</h3>
+                <div class="labs-grid">
+                    <a href="https://guilabriolag.github.io/LabSystem/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labsystem-icon.png" alt="LabSystem Icon"></div>
+                        <h4>LabSystem</h4>
+                        <p>Sistemas internos, ERPs, CRMs e automações administrativas.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabTotem/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labtotem-icon.png" alt="LabTotem Icon"></div>
+                        <h4>LabTotem</h4>
+                        <p>Totens de autoatendimento e soluções interativas para o ponto físico.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabHUB/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labhub-icon.png" alt="LabHUB Icon"></div>
+                        <h4>LabHUB</h4>
+                        <p>Central de integração entre sistemas, APIs e plataformas.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabLink/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/lablink-icon.png" alt="LabLink Icon"></div>
+                        <h4>LabLink</h4>
+                        <p>Criação de links inteligentes, bio links e rastreamento de cliques.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/LabZap/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labzap-icon.png" alt="LabZap Icon"></div>
+                        <h4>LabZap</h4>
+                        <p>Comunicação automatizada via WhatsApp e atendimento digital.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="lab-category">
+                <h3>🌱 Impacto Social & Crescimento</h3>
+                <div class="labs-grid">
+                    <a href="https://guilabriolag.github.io/LabSolidario/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labsolidario-icon.png" alt="LabSolidario Icon"></div>
+                        <h4>LabSolidario</h4>
+                        <p>Projetos sociais, doações e engajamento comunitário.</p>
+                    </a>
+                    <a href="https://guilabriolag.github.io/SocialLab/" target="_blank" class="lab-card">
+                        <div class="icon"><img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/sociallab-icon.png" alt="SocialLab Icon"></div>
+                        <h4>SocialLab</h4>
+                        <p>Crescimento em redes sociais com automação e inteligência de dados.</p>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2>Como Funciona</h2>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="icon">
+                        <img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/icons/check-circle.svg" alt="Ícone Escolha">
+                    </div>
+                    <h3>1. Escolha os Labs</h3>
+                    <p>Selecione as soluções que melhor se encaixam nas necessidades do seu negócio.</p>
+                </div>
+                <div class="step-item">
+                    <div class="icon">
+                        <img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/icons/settings.svg" alt="Ícone Personalizar">
+                    </div>
+                    <h3>2. Personalize</h3>
+                    <p>Adapte cada Lab à identidade visual e aos processos da sua marca.</p>
+                </div>
+                <div class="step-item">
+                    <div class="icon">
+                        <img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/icons/play-circle.svg" alt="Ícone Operar">
+                    </div>
+                    <h3>3. Integre e Opere</h3>
+                    <p>Conecte os Labs entre si e comece a operar com eficiência e inovação.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>Quem usa o Ecossistema Lab aprova</h2>
+            <div class="testimonial-card">
+                <p>“Com o LabMenu e o LabZap, aumentamos nossos pedidos em 40% em apenas 2 meses.”</p>
+                <span>— Cliente Satisfeito</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="cta-final">
+        <div class="container">
+            <h2>Pronto para transformar sua operação?</h2>
+            <div class="cta-buttons">
+                <a href="#contact-form" class="btn btn-tertiary">Solicitar Demonstração</a>
+                <a href="https://api.whatsapp.com/send?phone=SEU_NUMERO_WHATSAPP" target="_blank" class="btn btn-secondary">Fale com um Especialista</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="logo">
+                <img src="https://raw.githubusercontent.com/guilabriolag/Labriolag.github.io/main/assets/img/labriolag-logo.png" alt="Labriolag Logo">
+            </div>
+            <div class="social-icons">
+                <a href="#" target="_blank">f</a> 
+                <a href="#" target="_blank">in</a> 
+                <a href="#" target="_blank">ig</a> 
+            </div>
+            <p>&copy; 2023 Labriolag. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
