@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB_PACKER v3.0 | Multi-Engine</title>
+    <link rel="stylesheet" href="../shared-components/global-lab.css">
+    <style>
+        body { padding: 20px; font-size: 14px; }
+        .config-box { max-width: 600px; margin: 0 auto; padding: 30px; }
+        label { display: block; margin-bottom: 8px; color: var(--secondary); font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 20px; background: #000; border: 1px solid #222; border-radius: 8px; color: #00ff00; font-family: monospace; }
+        .btn-gen { background: var(--primary); color: #fff; padding: 20px; width: 100%; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px; }
+        .result-area { margin-top: 30px; display: none; }
+        .copy-box { background: #0a0a0a; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--secondary); }
+    </style>
+</head>
+<body class="bg-main-radial">
+
+    <div class="config-box glass">
+        <h1 style="margin-top:0; italic">LAB_PACKER <span style="font-size:12px; font-style:normal; color:#555;">v3.0</span></h1>
+        
+        <label>1. Domínio Destino (sem https/www)</label>
+        <input type="text" id="target-dom" value="labriolag.shop">
+
+        <label>2. ID do Cliente (ex: MC-TONNY-01)</label>
+        <input type="text" id="client-id" placeholder="VITORELLI-SP-02">
+
+        <label>3. Tipo de Negócio (Engine)</label>
+        <select id="engine-type">
+            <option value="combo-engine.js">🍔 Lanches e Combos (ComboEngine)</option>
+            <option value="pizza-engine.js">🍕 Pizzaria Meia-a-Meia (PizzaEngine)</option>
+            <option value="weight-engine.js">🐾 Petshop / Granel (WeightEngine)</option>
+        </select>
+
+        <button class="btn-gen" onclick="generateDeployment()">GERAR CÉLULA DE SOFTWARE</button>
+
+        <div id="results" class="result-area">
+            <div class="copy-box">
+                <label style="color:#0f0">📄 ARQUIVO: index.html</label>
+                <textarea id="res-html" rows="5" readonly></textarea>
+                <button onclick="copy('res-html')" style="background:#222; color:#fff; font-size:10px; padding:5px; border:none; border-radius:5px; cursor:pointer;">COPIAR HTML</button>
+            </div>
+
+            <div class="copy-box">
+                <label style="color:var(--secondary)">🛡️ ARQUIVO: license.lab</label>
+                <input type="text" id="res-lic" readonly>
+                <button onclick="copy('res-lic')" style="background:#222; color:#fff; font-size:10px; padding:5px; border:none; border-radius:5px; cursor:pointer;">COPIAR LICENÇA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateDeployment() {
+            const dom = document.getElementById('target-dom').value.trim();
+            const id = document.getElementById('client-id').value.trim();
+            const eng = document.getElementById('engine-type').value;
+            const salt = "LABRIOLAG_PRO_2026_@!"; 
+
+            if(!id) return alert("Defina um ID para o cliente!");
+
+            // 1. Gerar Licença
+            const license = btoa(dom + "|" + id + "|" + salt);
+            document.getElementById('res-lic').value = license;
+
+            // 2. Gerar HTML Master
+            const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://guilabriolag.github.io/core/shared-components/global-lab.css">
+</head>
+<body style="background:#000">
+    <lab-loader></lab-loader>
+    <div id="app"></div>
+    <script src="https://guilabriolag.github.io/core/shared-components/loaders/lab-loader.js"><\/script>
+    <script src="https://guilabriolag.github.io/core/shared-components/scripts/lab-shield.js"><\/script>
+    <script>
+        LabShield.verify("${id}").then(ok => {
+            if(ok) {
+                const s = document.createElement('script');
+                s.src = "https://guilabriolag.github.io/core/engines/${eng}";
+                document.body.appendChild(s);
+            }
+        });
+    <\/script>
+</body>
+</html>`;
+
+            document.getElementById('res-html').value = html;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function copy(id) {
+            const el = document.getElementById(id);
+            el.select();
+            document.execCommand('copy');
+            alert("Copiado com sucesso!");
+        }
+    </script>
+</body>
+</html>

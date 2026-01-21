@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB_FACTORY | Restricted</title>
+    <link rel="stylesheet" href="../shared-components/global-lab.css">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .login-card { width: 100%; max-width: 350px; padding: 40px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 20px 0; background: rgba(255,255,255,0.05); border: 1px solid #222; border-radius: 12px; color: #fff; text-align: center; font-size: 1.2rem; letter-spacing: 5px; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: var(--secondary); transform: scale(1.02); }
+    </style>
+</head>
+<body class="bg-main-radial">
+    <div class="login-card glass">
+        <h2 style="font-family: 'Montserrat'; letter-spacing: 2px;">FACTORY_AUTH</h2>
+        <p style="font-size: 10px; color: #555;">INSIRA A CHAVE MESTRA PARA GERAR CÉLULAS</p>
+        
+        <input type="password" id="master-key" placeholder="••••">
+        
+        <button onclick="auth()">DESBLOQUEAR</button>
+    </div>
+
+    <script>
+        function auth() {
+            const key = document.getElementById('master-key').value;
+            if(key === "1234") { // Sugestão: mude para sua senha secreta
+                window.location.href = "Lab_Packer.html";
+            } else {
+                alert("ACESSO NEGADO: Chave inválida.");
+            }
+        }
+    </script>
+</body>
+</html>
