@@ -1,110 +1,182 @@
-/**
- * 🧬 LAB-LOADER v3.0
- * A primeira impressão do Ecossistema Labriolag
- */
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>LABRIOLAG • Em Manutenção</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-class LabLoader extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
+  <!-- Fonte -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #020B13;
+      --azul: #2BB0FF;
+      --amarelo: #FFCC00;
+      --branco: #FFFFFF;
     }
 
-    connectedCallback() {
-        this.render();
-        // Auto-destruição: Remove o loader quando o evento 'lab-ready' é disparado
-        window.addEventListener('lab-ready', () => this.hide());
-        
-        // Fallback: Se a engine demorar mais de 5s, ele libera a tela
-        setTimeout(() => this.hide(), 5000);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    hide() {
-        const container = this.shadowRoot.getElementById('loader-wrapper');
-        if (container) {
-            container.style.opacity = '0';
-            setTimeout(() => {
-                container.style.display = 'none';
-            }, 800);
-        }
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at center, #061A28, var(--bg-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      color: var(--branco);
     }
 
-    render() {
-        this.shadowRoot.innerHTML = `
-        <style>
-            #loader-wrapper {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: #000;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                z-index: 99999;
-                transition: opacity 0.8s ease;
-                font-family: 'Poppins', sans-serif;
-            }
-
-            .logo-container {
-                position: relative;
-                width: 120px;
-                height: 120px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            /* Círculo Giratório */
-            .spinner {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border: 2px solid rgba(0, 119, 182, 0.1);
-                border-top: 2px solid #0077B6;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-            }
-
-            /* Texto Labriolag Centralizado */
-            .brand-text {
-                color: #fff;
-                font-weight: 700;
-                font-style: italic;
-                letter-spacing: -1px;
-                font-size: 1.2rem;
-                z-index: 2;
-            }
-
-            .status-text {
-                margin-top: 30px;
-                color: #444;
-                font-size: 9px;
-                text-transform: uppercase;
-                letter-spacing: 4px;
-                animation: pulse 1.5s infinite;
-            }
-
-            @keyframes spin {
-                to { transform: rotate(360deg); }
-            }
-
-            @keyframes pulse {
-                0%, 100% { opacity: 0.4; }
-                50% { opacity: 1; }
-            }
-        </style>
-
-        <div id="loader-wrapper">
-            <div class="logo-container">
-                <div class="spinner"></div>
-                <div class="brand-text">LAB</div>
-            </div>
-            <div class="status-text">Iniciando Célula...</div>
-        </div>
-        `;
+    .maintenance-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      animation: fadeIn 1.2s ease forwards;
     }
-}
 
-customElements.define('lab-loader', LabLoader);
+    .logo-title {
+      font-size: 22px;
+      letter-spacing: 4px;
+      font-weight: 700;
+    }
+
+    .status {
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--amarelo);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      opacity: 0.75;
+      max-width: 300px;
+      line-height: 1.6;
+    }
+
+    svg {
+      max-width: 220px;
+      width: 60vw;
+      height: auto;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="maintenance-container">
+
+    <!-- 🔥 LOADER SVG LABRIOLAG -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 240 240"
+         width="240" height="240">
+
+      <defs>
+        <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.2" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <filter id="glowYellow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.8" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <clipPath id="brainMask">
+          <circle cx="120" cy="120" r="108"/>
+        </clipPath>
+      </defs>
+
+      <circle cx="120" cy="120" r="114" fill="#061A28"/>
+      <circle cx="120" cy="120" r="114" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+
+      <circle cx="120" cy="120" r="12" fill="#FFCC00" filter="url(#glowYellow)">
+        <animate attributeName="opacity"
+                 values="1;0.4;1"
+                 dur="2.2s"
+                 repeatCount="indefinite"/>
+      </circle>
+
+      <g clip-path="url(#brainMask)"
+         fill="none"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+
+        <path d="M20 40 H70 V70 H95"
+              stroke="#2BB0FF" stroke-width="1.4"
+              filter="url(#glowBlue)"
+              stroke-dasharray="120"
+              stroke-dashoffset="120">
+          <animate attributeName="stroke-dashoffset"
+                   values="120;0"
+                   dur="2.4s"
+                   repeatCount="indefinite"/>
+        </path>
+
+        <path d="M220 40 H170 V70 H145"
+              stroke="#2BB0FF" stroke-width="1.4"
+              filter="url(#glowBlue)"
+              stroke-dasharray="120"
+              stroke-dashoffset="120">
+          <animate attributeName="stroke-dashoffset"
+                   values="120;0"
+                   dur="2.4s"
+                   repeatCount="indefinite"/>
+        </path>
+
+        <path d="M90 40 V80 H110 V110"
+              stroke="#FFCC00" stroke-width="1"
+              stroke-dasharray="90"
+              stroke-dashoffset="90">
+          <animate attributeName="stroke-dashoffset"
+                   values="90;0"
+                   dur="1.8s"
+                   repeatCount="indefinite"/>
+        </path>
+
+        <path d="M150 40 V90 H130 V115"
+              stroke="#FFFFFF" stroke-width="0.9"
+              stroke-dasharray="95"
+              stroke-dashoffset="95">
+          <animate attributeName="stroke-dashoffset"
+                   values="95;0"
+                   dur="2s"
+                   repeatCount="indefinite"/>
+        </path>
+      </g>
+
+    </svg>
+
+    <div class="logo-title">LABRIOLAG</div>
+    <div class="status">EM MANUTENÇÃO</div>
+    <div class="subtitle">
+      Estamos aprimorando nossas conexões para entregar
+      uma experiência ainda mais influente.
+    </div>
+
+  </div>
+
+</body>
+</html>
