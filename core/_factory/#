@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Em Manutenção | LABRIOLAG</title>
+
+<style>
+:root {
+  --bg: #050d14;
+  --blue: #2BB0FF;
+  --yellow: #FFCC00;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #061a28, #02070c);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  color: var(--white);
+}
+
+lab-maintenance {
+  display: block;
+  width: 100%;
+}
+</style>
+</head>
+<body>
+
+<lab-maintenance
+  text="true"
+  neon="ultra"
+></lab-maintenance>
+
+<script>
+class LabMaintenance extends HTMLElement {
+  connectedCallback() {
+    const showText = this.getAttribute("text") !== "false";
+    const neon = this.getAttribute("neon") || "normal";
+
+    this.innerHTML = `
+    <div class="container">
+      ${this.loader(neon)}
+      ${showText ? this.text() : ""}
+    </div>
+    `;
+
+    this.styles(neon);
+  }
+
+  text() {
+    return `
+    <h1>Em manutenção</h1>
+    <p>Estamos aprimorando nossos sistemas.<br>Voltamos em breve.</p>
+    `;
+  }
+
+  loader(neon) {
+    return `
+<svg viewBox="0 0 240 240" width="220" height="220">
+<defs>
+
+<filter id="glowBlue">
+  <feGaussianBlur stdDeviation="${neon === 'ultra' ? 4 : 2}" result="b"/>
+  <feMerge>
+    <feMergeNode in="b"/>
+    <feMergeNode in="SourceGraphic"/>
+  </feMerge>
+</filter>
+
+<filter id="glowYellow">
+  <feGaussianBlur stdDeviation="${neon === 'ultra' ? 5 : 3}" result="b"/>
+  <feMerge>
+    <feMergeNode in="b"/>
+    <feMergeNode in="SourceGraphic"/>
+  </feMerge>
+</filter>
+
+<clipPath id="mask">
+  <circle cx="120" cy="120" r="108"/>
+</clipPath>
+
+</defs>
+
+<circle cx="120" cy="120" r="114" fill="#061A28"/>
+<circle cx="120" cy="120" r="114" fill="none" stroke="#ffffff" stroke-width="4"/>
+
+<circle cx="120" cy="120" r="10" fill="#FFCC00" filter="url(#glowYellow)">
+  <animate attributeName="r" values="8;12;8" dur="2.4s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="1;0.5;1" dur="2.4s" repeatCount="indefinite"/>
+</circle>
+
+<g clip-path="url(#mask)" fill="none" stroke-linecap="round">
+
+${this.microTrilhas()}
+
+</g>
+
+</svg>
+`;
+  }
+
+  microTrilhas() {
+    let paths = "";
+    const colors = ["#2BB0FF", "#FFCC00", "#FFFFFF"];
+    for (let i = 0; i < 40; i++) {
+      const c = colors[i % 3];
+      const w = (Math.random() * 0.6 + 0.6).toFixed(2);
+      const d = 80 + Math.random() * 120;
+      const dur = (1.5 + Math.random() * 2.5).toFixed(2);
+
+      const x1 = 40 + Math.random() * 160;
+      const y1 = 40 + Math.random() * 160;
+      const x2 = 40 + Math.random() * 160;
+      const y2 = 40 + Math.random() * 160;
+
+      paths += `
+      <path d="M${x1} ${y1} L${x2} ${y2}"
+        stroke="${c}"
+        stroke-width="${w}"
+        stroke-dasharray="${d}"
+        stroke-dashoffset="${d}"
+        filter="url(${c === '#FFCC00' ? '#glowYellow' : '#glowBlue'})">
+        <animate attributeName="stroke-dashoffset"
+          values="${d};0"
+          dur="${dur}s"
+          repeatCount="indefinite"/>
+      </path>`;
+    }
+    return paths;
+  }
+
+  styles(neon) {
+    const style = document.createElement("style");
+    style.textContent = `
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+h1 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+p {
+  margin: 0;
+  opacity: .75;
+  text-align: center;
+  font-size: 14px;
+}
+
+svg {
+  filter: drop-shadow(0 0 ${neon === 'ultra' ? 30 : 12}px rgba(43,176,255,.35));
+}
+`;
+    this.appendChild(style);
+  }
+}
+
+customElements.define("lab-maintenance", LabMaintenance);
+</script>
+
+</body>
+</html>
