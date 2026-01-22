@@ -5,25 +5,51 @@
   <title>LabSocial Admin</title>
 </head>
 <body>
-  <h2>Fornecedores</h2>
+  <h2>Login Admin</h2>
+
+  <input id="token" placeholder="Admin token" style="width:300px">
+  <button onclick="login()">Entrar</button>
+
+  <hr>
+
+  <h3>Fornecedores</h3>
   <textarea id="json" style="width:100%;height:300px;"></textarea>
-  <br><br>
+  <br>
   <button onclick="salvar()">Salvar</button>
 
   <script>
-    const API = "https://labproxy-labsocial.workers.dev"
+    const API = "https://labproxy-labsocial.g-labri.workers.dev"
+    let TOKEN = ""
 
-    fetch(API + "/admin/providers")
-      .then(r => r.json())
+    function login() {
+      TOKEN = document.getElementById("token").value
+      carregar()
+    }
+
+    function carregar() {
+      fetch(API + "/admin/providers", {
+        headers: {
+          Authorization: "Bearer " + TOKEN
+        }
+      })
+      .then(r => {
+        if (!r.ok) throw "Token inválido"
+        return r.json()
+      })
       .then(d => {
         document.getElementById("json").value =
           JSON.stringify(d, null, 2)
       })
+      .catch(() => alert("Acesso negado"))
+    }
 
     function salvar() {
       fetch(API + "/admin/providers/save", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + TOKEN
+        },
         body: document.getElementById("json").value
       })
       .then(() => alert("Salvo com sucesso"))
