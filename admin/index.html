@@ -11,6 +11,11 @@
   <button onclick="login()">Entrar</button>
 
   <hr>
+
+  <h3>Fornecedores</h3>
+  <textarea id="json" style="width:100%;height:300px;"></textarea>
+  <br>
+  <button onclick="salvar()">Salvar</button>
 <hr>
 <h3>Relatórios</h3>
 <button onclick="carregarRelatorios()">Atualizar</button>
@@ -30,12 +35,7 @@ function carregarRelatorios() {
       JSON.stringify(d, null, 2)
   })
 }
-
-
-  <h3>Fornecedores</h3>
-  <textarea id="json" style="width:100%;height:300px;"></textarea>
-  <br>
-  <button onclick="salvar()">Salvar</button>
+</script>
 
   <script>
     const API = "https://labproxy-labsocial.g-labri.workers.dev"
