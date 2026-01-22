@@ -11,6 +11,26 @@
   <button onclick="login()">Entrar</button>
 
   <hr>
+<hr>
+<h3>Relatórios</h3>
+<button onclick="carregarRelatorios()">Atualizar</button>
+
+<pre id="reports" style="max-height:400px;overflow:auto;"></pre>
+
+<script>
+function carregarRelatorios() {
+  fetch(API + "/admin/reports", {
+    headers: {
+      Authorization: "Bearer " + TOKEN
+    }
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById("reports").textContent =
+      JSON.stringify(d, null, 2)
+  })
+}
+
 
   <h3>Fornecedores</h3>
   <textarea id="json" style="width:100%;height:300px;"></textarea>
