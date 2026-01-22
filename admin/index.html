@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LabSocial Admin</title>
+</head>
+<body>
+  <h2>Fornecedores</h2>
+  <textarea id="json" style="width:100%;height:300px;"></textarea>
+  <br><br>
+  <button onclick="salvar()">Salvar</button>
+
+  <script>
+    const API = "https://labproxy-labsocial.workers.dev"
+
+    fetch(API + "/admin/providers")
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById("json").value =
+          JSON.stringify(d, null, 2)
+      })
+
+    function salvar() {
+      fetch(API + "/admin/providers/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: document.getElementById("json").value
+      })
+      .then(() => alert("Salvo com sucesso"))
+    }
+  </script>
+</body>
+</html>
